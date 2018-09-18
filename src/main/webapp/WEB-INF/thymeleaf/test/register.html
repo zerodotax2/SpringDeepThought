@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--Content type-->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <!--Css-->
+    <!--<link rel="stylesheet" href="../../../resources/css/materialize.min.css"/>-->
+    <link rel="stylesheet" href="../../../resources/css/colors.min.css"/>
+    <link rel="stylesheet" href="../../../resources/css/normalize.min.css"/>
+    <link rel="stylesheet" href="../../../resources/css/global.css"/>
+    <link rel="stylesheet" href="../../../resources/css/footer.css"/>
+    <link rel="stylesheet" href="../../../resources/css/typography.css"/>
+    <link rel="stylesheet" href="../../../resources/css/header.css"/>
+    <link rel="stylesheet" href="../../../resources/css/right-panel.css"/>
+    <link rel="stylesheet" href="../../../resources/css/register.css"/>
+
+
+
+    <!--Top icon-->
+    <link rel="shortcut icon" href="../../../resources/images/icon2.ico" type="image/x-icon"/>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="background-color: white">
+
+    <div class="nav z-depth-2">
+        <div class="nav-wrapper bg-dark-blue">
+            <div class="container">
+                <!--Logo div-->
+                <a  href="/" class="brand-logo" style="display: flex;">
+                    <div class="valign-wrapper">
+                        <img src="../../../resources/images/science-logo.png" style="width: 40px; height: 40px"/>
+                        <h5 class="white-text">DeepThought</h5>
+                    </div>
+                </a>
+                <!--Menu icon for mobiles-->
+                <a href="#" data-target="mobile-demo" class="sidenav-trigger" style="font-weight: bold; transform: rotate(90deg)">|||</a>
+    
+                <!--Search div-->
+                <!-- Modal Trigger -->
+                <!--<a class="right modal-trigger" href="#search1" style="padding-top: 7px"><img src="../../../resources/images/search.svg" style="width: 25px; height:25px" /></a>-->
+                <!-- Modal Structure -->
+                <div id="search1" class="modal">
+                    <div class="modal-content">
+                        <form method="post" action="#">
+                            <div class="input-field cyan-text">
+                                <span class="prefix">
+                                    <img src="../../../resources/images/search2.svg" style="height: 30px; width: 30px;margin-top: 10px;"/>
+                                </span>
+                                <input name="search_value" type="text" style="border-bottom: 2px solid cornflowerblue" placeholder="Поиск..."/>
+                                <input class="find_button" style="display: none;" type="submit" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+    
+                <!--Menu div-->
+                <ul id="nav-mobile" class="right hide-on-med-and-down" style="display: flex;">
+                    <li id="feedElement"><a class="white-text" href="/articles">СТАТЬИ</a></li>
+                    <li id="questionElement"><a class="white-text" href="/questions">ВОПРОСЫ</a></li>
+                    <li id="problemsElement"><a class="white-text" href="/problems">ЗАДАЧИ</a></li>
+                    <li id="supportElement"><a class="white-text" href="/support">ПОМОЩЬ</a></li>
+                    <!--Dropdown button-->
+                    <!--<div>-->
+                        <!--<a class="dropdown-trigger options_trigger" href="/profile" data-target="dropdown-profile" style="display: flex;">-->
+                            <!--<img src="../../../resources/images/user.png" style="width: 40px; height: 40px; margin-top: 12px; margin-right: 10px"/>-->
+                            <!--<div>firstName</div>-->
+                        <!--</a>-->
+                        <!--&lt;!&ndash;Dropdown content&ndash;&gt;-->
+                        <!--<ul id="dropdown-profile" class="dropdown-content">-->
+                            <!--<li style="font-weight: 100"><a style="font-weight: 100" href="/profile">Аккаунт</a></li>-->
+                            <!--<li><a href="/settings">Редактировать</a></li>-->
+                            <!--<li><a href="/personalize">Персонализация</a></li>-->
+                            <!--<li class="divider"></li>-->
+                            <!--<li><a href="/logout">Выход</a></li>-->
+                        <!--</ul>-->
+                    <!--</div>-->
+                        <li class="valign-wrapper" >
+                            <a class="btn orange darken-2" id="log-btn" href="/login" >Вход</a>
+                        </li>
+                        <li class="valign-wrapper">
+                            <div class="left-divider"></div>
+                        </li>
+                        <li class="valign-wrapper" >
+                            <a class="btn-flat" href="/register" id="reg-btn">Регистрация</a>
+                        </li>
+                </ul>
+    
+                <!--Для мобилок-->
+                <ul id="mobile-demo" class="sidenav bg-dark-blue center-align">
+                    <!--<div if="${not empty sessionScope.user.firstName}">-->
+                        <img src="../../../resources/images/user.png" style="width: 100px; height: 100px; margin-top: 10px"/>
+                        <li><a class="white-text" href="/profile" >firstName</a></li>
+                    <!--</div>-->
+                    <li><a class="white-text" href="/login">Войти</a></li>
+                    <li><a class="cyan-text text-darken-4" href="/articles">СТАТЬИ</a></li>
+                    <li><a class="cyan-text text-darken-4" href="/questions">ВОПРОСЫ</a></li>
+                    <li><a class="cyan-text text-darken-4" href="/problems">ЗАДАЧИ</a></li>
+                    <li><a class="cyan-text text-darken-4" href="/about">О НАС</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main" id="main">
+        <div class="container">
+            <div class="row">
+                <div class="col s12 offset-l3 l6 reg_panel z-depth-5" >
+                    <div class="row top_logo center-align">
+                        <img src="../../../resources/images/science-logo.png" class="reg_img"/>
+                        <div class="center-align" style="padding: 10px;">
+                            <h4 class="white-text header_reg">Зарегистрируйтесь</h4>
+                            <h6 class="white-text header_reg2">и получите больше возможностей</h6>
+                        </div>
+                    </div>
+                    <form class="reg_form" method="post" action="/register">
+                        <div class="row center-align">
+                            <!--<span th:if="${error!=null}" th:text="${'Не удалось зарегистрироваться'}" class="red-text text-lighten-2"></span>-->
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <img class="prefix" src="../../../resources/images/user_login.png" style="width: 30px;height: 30px; margin-top: 5px;"/>
+                                <input type="text" id="login" class="login_input"/>
+                                <label for="login">Придумайте login</label>
+                                <!--<span id="login_temp" class="helper-text red-text text-lighten-2" ></span>-->
+                                <!--<span data-success="" data-error="" class="helper-text login_text red-text text-lighten-2" ></span>-->
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12 l6">
+                                <img class="prefix" src="../../../resources/images/user_password.png" style="width: 30px;height: 30px; margin-top: 5px;"/>
+                                <input type="password" id="pass" class="p_input"/>
+                                <label for="pass">Пароль</label>
+                                <!--<span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" id="password_temp" class="helper-text red-text text-lighten-2" ></span>-->
+                                <!--<span data-success="" data-error="" class="helper-text password_text red-text text-lighten-2" ></span>-->
+                            </div>
+                            <div class="input-field col s12 l6">
+                                <input type="password" id="cpass"  class="pc_input"/>
+                                <label for="cpass" >Подтвердите пароль</label>
+                                <!--<span th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" id="cpassword_temp" class="helper-text red-text text-lighten-2" ></span>-->
+                                <!--<span data-success="" data-error="" class="helper-text cpassword_text red-text text-lighten-2" ></span>-->
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12 l6">
+                                <img class="prefix" src="../../../resources/images/user_email.png" style="width: 30px;height: 30px; margin-top: 5px;"/>
+                                <input  id="email_id" class="email_input"/>
+                                <label for="email_id">Email</label>
+                                <!--<span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" id="email_temp" class="helper-text red-text text-lighten-2" ></span>-->
+                                <!--<span data-success="" data-error="" class="helper-text email_text red-text text-lighten-2" ></span>-->
+                            </div>
+                        </div>
+                        <div class="row">
+                            <input type="submit" value="Зарегистрироваться" class="btn col s12 offset-l2 l6"/>
+                            <div class="col s12 l4 center-align switch" style="padding-top: 7px;">
+                                <label>
+                                    <input type="checkbox" name="remember" class="" checked="checked" />
+                                    <span>Запомнить меня</span>
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-footer bg-dark-blue">
+        <div class="container">
+            <div class="row">
+                <div class="col s12 l3 left-align">
+                    <h4 class="cyan-text text-lighten-4 unselectable">Аккаунт</h4>
+                    <ul class="left-align">
+                        <li style="margin-bottom: 10px" ><a class="cyan-text bottom_links text-lighten-4"  href="/login">Войти</a></li>
+                        <li style="margin-bottom: 10px"><a class="cyan-text bottom_links text-lighten-4"  href="/register">Зарегистрироваться</a></li>
+                    </ul>
+                </div>
+                <div class="col s12 l3 left-align">
+                    <h4 class="cyan-text text-lighten-4 unselectable">Основное</h4>
+                    <ul class="left-align">
+                        <li style="margin-bottom: 10px" ><a class="cyan-text bottom_links text-lighten-4"  href="/articles">Статьи</a></li>
+                        <li style="margin-bottom: 10px"><a class="cyan-text bottom_links text-lighten-4"  href="/questions">Вопросы</a></li>
+                        <li style="margin-bottom: 10px" ><a class="cyan-text bottom_links text-lighten-4"  href="/problems">Задачи</a></li>
+                        <li style="margin-bottom: 10px"><a class="cyan-text bottom_links text-lighten-4"  href="/support">О нас</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 l5"  style="margin-bottom: 30px">
+                    <h5 class="cyan-text text-lighten-5 unselectable"> О проекте</h5>
+                    <p class="cyan-text text-lighten-4 unselectable">Проект научного сайта, опирающийся на технологии Java EE
+                        и использующий фреймворки JSF, Materialize, написан разработчиком prog_ja.</p>
+                </div>
+                <div class="col s12 offset-l3 l4" style="margin-top: 40px">
+                    <a class="bottom_links" href="https://fb.com"><img src="../../../resources/images/fb.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
+                    <a href="https://vk.com"> <img src="../../../resources/images/vk.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
+                    <a href="https://instagram.com"> <img src="../../../resources/images/instagram.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
+                    <a href="https://twitter.com"> <img src="../../../resources/images/twitter.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container cyan-text center-align text-lighten-3" style="font-size: 12px">
+                © 2018 prog_ja - All rights reserved
+                <a class="right cyan-text text-lighten-3" href="/license">License</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../../resources/js/materialize.min.js"></script>
+    <script src="../../../resources/js/header_script.js"></script>
+    <script src="../../../resources/js/xhr.js"></script>
+    <script src="../../../resources/js/register_script.js"/>
+</body>
+</html>

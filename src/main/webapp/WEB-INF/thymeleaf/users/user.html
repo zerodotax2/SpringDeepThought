@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html layout:decorate="~{templates/layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:charset="UTF-8">
+<head>
+    <link rel="stylesheet" th:href="@{/resources/css/user.css}"/>
+    <title th:title="${user.login}"></title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="top-panel center-align" th:style="'background: url('${#{fileServerLocation}.concat(user.bgImage)}') no-repeat top / cover;'">
+
+    </div>
+    <div class="main" id="main" style="margin-top: -200px;">
+        <div class="container">
+
+            <div class="row">
+
+                <div class="col s12 l5">
+                    <div class="card hoverable basic-profile" >
+                        <div class="card-title">
+                            Профиль пользователя
+                        </div>
+                        <div class="card-content" >
+                            <div class="profile-image">
+                                <img th:src="${#{fileServerLocation}.concat(user.userImage)}"/>
+                            </div>
+                            <div class="profile-info">
+                                <div class="profile-title">
+                                    <div>
+                                        <img th:src="@{/resources/images/user-regular.svg}" style="width: 15px;height: 15px;margin: 5px;"/>
+                                    </div>
+                                    <div>
+                                        <h5 th:text="${user.login}"></h5>
+                                        <h6 th:text="'ID: ' + ${user.id}"></h6>
+                                        <meta id="user_id" th:content="${user.id}"/>
+                                    </div>
+                                </div>
+                                <div class="rating-line">
+                                    <img th:src="@{/resources/images/cup.png}" />
+                                    <span th:text="${user.rating}"></span>
+                                </div>
+                                <div class="soc-refs" style="margin-top: 20px;display: flex;justify-content: space-around">
+                                    <a href="#"><img th:src="@{/resources/images/vk.svg}" style="width: 40px;height: 32px;"/></a>
+                                    <a href="#"><img th:src="@{/resources/images/facebook.svg}" style="width: 40px;height: 32px;"/></a>
+                                    <a href="#"><img th:src="@{/resources/images/twitter.svg}" style="width: 40px;height: 32px;"/></a>
+                                    <a href="#"><img th:src="@{/resources/images/instagram.svg}" style="width: 40px;height: 32px;color: grey"/></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card about hoverable">
+                        <div class="card-title">
+                            О пользователе
+                        </div>
+                        <div class="card-content">
+                            <p th:text="${user.about}"></p>
+                        </div>
+                    </div>
+                    <div class="card hoverable interests center">
+                        <div class="card-title"> Интересы </div>
+                        <div class="card-content">
+                            <a th:each="tag : ${user.interests}" th:href="@{/tags/${tag.id}}"><div th:text="${tag.name}" class="chip" th:style="'background: ' + ${tag.color}" ></div></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s12 l7 right-panel">
+
+                    <div class="card hoverable best">
+                        <div class="card-title" style="border-radius: 10px 10px 0 0">
+                            <a class="tab-element active-tab" id="article-tab" content="articles"><img th:src="@{/resources/images/pen2.svg}" /><span>Статьи</span></a>
+                            <a class="tab-element" id="questions-tab" content="questions"><img th:src="@{/resources/images/question-solid.svg}" /><span>Вопросы</span></a>
+                            <a class="tab-element" id="problems-tab" content="problems"><img th:src="@{/resources/images/puzzle.svg}" /><span>Задачи</span></a>
+                        </div>
+                        <div class="card-content" style="padding: 0;">
+                            <div id="articles">
+                                <div class="collection" style="border: none">
+                                    <div th:each="article : ${user.commonArticles}" class='collection-item' style='display: flex;'>
+                                        <img th:src='${#{fileServerLocation}.concat(article.articleImage)}'/>
+                                        <div class='article-text'>
+                                            <span class='title grey-text text-darken-2' th:text="${article.title}"></span>
+                                            <div class='chips-line' style='margin-top: 5px;'>
+                                                <a th:each="tag : ${article.tags}" th:href="@{/tags/${tag.id}}"><div th:style="'background: ' + ${tag.color}" class="chip" th:text="${tag.name}"></div></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="questions" style="display: none">
+                            </div>
+                            <div id="problems" style="display: none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card hoverable stats ">
+                        <div class="card-title"> Статистика </div>
+                        <div class="card-content">
+                            <div class="stat-element">
+                                <div class="half-stat">Постов написано</div><div class="half-stat"><span class="stat-number" th:text="${user.articles}"></span></div>
+                            </div>
+                            <div class="stat-element">
+                                <div class="half-stat">Вопросов задано</div><div class="half-stat"><span class="stat-number" th:text="${user.questions}"></span></div>
+                            </div>
+                            <div class="stat-element">
+                                <div class="half-stat">Сделано ответов</div><div class="half-stat"><span class="stat-number" th:text="${user.answers}"></span></div>
+                            </div>
+                            <div class="stat-element">
+                                <div class="half-stat">Придумано задач</div><div class="half-stat"><span class="stat-number" th:text="${user.problems}"></span></div>
+                            </div>
+                            <div class="stat-element">
+                                <div class="half-stat">Решено задач</div><div class="half-stat"><span class="stat-number" th:text="${user.decided}"></span></div>
+                            </div>
+                            <div class="stat-element">
+                                <div class="half-stat">Отправлено фактов</div><div class="half-stat"><span class="stat-number" th:text="${user.facts}"></span></div>
+                            </div>
+                            <div class="stat-element">
+                                <div class="half-stat">Создано тегов</div><div class="half-stat"><span class="stat-number" th:text="${user.tags}"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="footerJS">
+    <script th:src="@{/resources/js/user.js}"></script>
+</th:block>
+
+</body>
+</html>

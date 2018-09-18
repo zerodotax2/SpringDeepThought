@@ -1,0 +1,26 @@
+.popular_item {
+  padding: 0 -20px 0 10px;
+  font-weight: 100; }
+
+.popular_item a {
+  font-weight: 100;
+  color: black;
+  font-size: 14px; }
+
+.popularity {
+  border-radius: 5px; }
+
+.more-button{
+  background-color: white;
+  border: 2px #d5d5d5 solid;
+  color: #717171;
+  font-weight: 500;
+  padding: 7px;
+  border-radius: 15px;
+  transition-duration: 0.2s;
+}
+
+.more-button:hover{
+  border: 1px white solid;
+}
+/*# sourceMappingURL=right-panel.css.map */

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="hibernate" name="Hibernate">
+      <configuration>
+        <datasource-map>
+          <unit-entry name="noname-hibernate-beans.xml@1465" value="15194fa2-419c-4e94-aa25-dbbd00329283" />
+          <unit-entry name="noname-hibernate-beans.xml@1953" value="15194fa2-419c-4e94-aa25-dbbd00329283" />
+        </datasource-map>
+        <naming-strategy-map>
+          <unit-entry name="noname-hibernate-beans.xml@1953" />
+        </naming-strategy-map>
+      </configuration>
+    </facet>
+  </component>
+</module>

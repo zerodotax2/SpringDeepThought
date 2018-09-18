@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html layout:decorate="~{templates/simple_layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:charset="UTF-8">
+<head>
+    <title>Регистрация</title>
+    <link rel="stylesheet" th:href="@{/resources/css/register.css}"/>
+</head>
+<body>
+
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col s12 offset-l2 l8 reg_panel z-depth-5" >
+                <div class="row top_logo center-align">
+                    <img th:src="@{/resources/images/science-logo.png}" class="reg_img"/>
+                    <div class="center-align" style="padding: 10px;">
+                        <h4 class="white-text header_reg">Зарегистрируйтесь</h4>
+                        <h6 class="white-text header_reg2">и получите больше возможностей</h6>
+                    </div>
+                </div>
+                <form class="reg_form" method="post" action="#" th:action="@{/register}" th:object="${createUserDTO}">
+                        <div class="row center-align">
+                            <span th:if="${error!=null}" th:text="${'Не удалось зарегистрироваться'}" class="red-text text-lighten-2"></span>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <img class="prefix" th:src="@{/resources/images/user_login.png}" style="width: 30px;height: 30px; margin-top: 5px;"/>
+                                <input type="text" th:field="*{login}" id="login" class="login_input"/>
+                                <label for="login">Придумайте login</label>
+                                <span th:if="${#fields.hasErrors('login')}" th:errors="*{login}" id="login_temp" class="helper-text red-text text-lighten-2" ></span>
+                                <span data-success="" data-error="" class="helper-text login_text red-text text-lighten-2" ></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12 l6">
+                                <img class="prefix" th:src="@{/resources/images/user_password.png}" style="width: 30px;height: 30px; margin-top: 5px;"/>
+                                <input th:field="*{password}" type="password" id="pass" class="p_input"/>
+                                <label for="pass">Пароль</label>
+                                <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" id="password_temp" class="helper-text red-text text-lighten-2" ></span>
+                                <span data-success="" data-error="" class="helper-text password_text red-text text-lighten-2" ></span>
+                            </div>
+                            <div class="input-field col s12 l6">
+                                <input th:field="*{confirmPassword}" type="password" id="cpass"  class="pc_input"/>
+                                <label for="cpass" >Подтвердите пароль</label>
+                                <span th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" id="cpassword_temp" class="helper-text red-text text-lighten-2" ></span>
+                                <span data-success="" data-error="" class="helper-text cpassword_text red-text text-lighten-2" ></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12 l6">
+                                <img class="prefix" th:src="@{/resources/images/user_email.png}" style="width: 30px;height: 30px; margin-top: 5px;"/>
+                                <input th:field="*{email}" id="email_id" class="email_input"/>
+                                <label for="email_id">Email</label>
+                                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" id="email_temp" class="helper-text red-text text-lighten-2" ></span>
+                                <span data-success="" data-error="" class="helper-text email_text red-text text-lighten-2" ></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <input type="submit" value="Зарегистрироваться" class="btn col s12 offset-l2 l6"/>
+                            <div class="col s12 l4 center-align switch" style="padding-top: 7px;">
+                                <label>
+                                    <input type="checkbox" th:field="*{createCookie}" name="remember" class="" checked="checked" />
+                                    <span>Запомнить меня</span>
+                                </label>
+                            </div>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <th:block layout:fragment="js">
+        <script th:src="@{/resources/js/register_script.js}"></script>
+    </th:block>
+</body>
+</html>

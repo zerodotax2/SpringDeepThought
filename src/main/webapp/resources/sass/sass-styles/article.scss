@@ -1,0 +1,12 @@
+@charset "UTF-8";
+//colors
+@import "materialize/color-variables";
+
+//variables
+@import "materialize/variables";
+
+
+body{
+    background: url("/resources/images/site-bg2.jpg") no-repeat center / cover;
+    background-attachment: fixed;
+}

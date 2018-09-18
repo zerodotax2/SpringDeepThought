@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:charset="UTF-8">
+<head>
+    <title>Header</title>
+</head>
+<body>
+
+<div class="nav" th:fragment="header">
+    <div class="nav-wrapper bg-dark-blue">
+        <div class="container">
+            <!--Logo div-->
+            <a href="/" th:href="@{/}" class="brand-logo" style="display: flex;">
+                <div class="valign-wrapper">
+                    <img th:src="@{/resources/images/science-logo.png}" style="width: 40px; height: 40px"/>
+                    <h5 class="white-text">DeepThought</h5>
+                </div>
+            </a>
+            <!--Menu icon for mobiles-->
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger" style="font-weight: bold; transform: rotate(90deg)">|||</a>
+
+            <!--Menu div-->
+            <ul id="nav-mobile" class="right hide-on-med-and-down" style="display: flex;">
+                <li><a class="white-text" th:href="@{/articles}">СТАТЬИ</a></li>
+                <li><a class="white-text" th:href="@{/questions}">ВОПРОСЫ</a></li>
+                <li><a class="white-text" th:href="@{/problems}">ЗАДАЧИ</a></li>
+                <li><a class="white-text" th:href="@{/about}">О НАС</a></li>
+                <!--Dropdown button-->
+                <div th:if="${user != null}">
+                        <a class="dropdown-trigger options_trigger" th:href="@{/profile}" data-target="dropdown-profile" style="display: flex;">
+                            <img th:src="${#{fileServerLocation}.concat(user.userImage)}" style="width: 40px; height: 40px; margin-top: 12px; margin-right: 10px"/>
+                            <div th:text="${user.login}"></div>
+                        </a>
+                        <!--Dropdown content-->
+                        <ul id="dropdown-profile" class="dropdown-content">
+                            <li style="font-weight: 100"><a style="font-weight: 100" th:href="@{/profile}">Аккаунт</a></li>
+                            <li><a th:href="@{/settings}">Редактировать</a></li>
+                            <li><a th:href="@{/personalize}">Персонализация</a></li>
+                            <li class="divider"></li>
+                            <li><a th:href="@{/logout}">Выход</a></li>
+                        </ul>
+                </div>
+                <th:block th:if="${user==null}">
+                    <li class="valign-wrapper" >
+                        <a class="btn orange darken-2" id="log-btn" th:href="@{/login}" >Вход</a>
+                    </li>
+                    <li class="valign-wrapper">
+                        <div class="left-divider"></div>
+                    </li>
+                    <li class="valign-wrapper" >
+                        <a class="btn-flat" th:href="@{/register}" id="reg-btn">Регистрация</a>
+                    </li>
+                </th:block>
+
+            </ul>
+
+            <!--Для мобилок-->
+            <ul id="mobile-demo" class="sidenav bg-dark-blue center-align">
+                <th:block th:if="${user!=null}">
+                    <img th:src="${#{fileServerLocation}.concat(user.userImage)}" style="width: 100px; height: 100px; margin-top: 10px"/>
+                    <li><a class="white-text" th:href="@{/profile}" th:text="${user.login}"></a></li>
+                </th:block>
+                <li th:if="${user==null}"><a class="white-text" th:href="@{/login}">Войти</a></li>
+                <li><a class="cyan-text text-darken-4" th:href="@{/articles}">СТАТЬИ</a></li>
+                <li><a class="cyan-text text-darken-4" th:href="@{/questions}">ВОПРОСЫ</a></li>
+                <li><a class="cyan-text text-darken-4" th:href="@{/problems}">ЗАДАЧИ</a></li>
+                <li><a class="cyan-text text-darken-4" th:href="@{/about}">О НАС</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

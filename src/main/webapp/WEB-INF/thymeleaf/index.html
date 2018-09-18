@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html layout:decorate="~{templates/layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    th:charset="UTF-8">
+<head>
+    <title>Главная</title>
+    <link rel="stylesheet" th:href="@{/resources/css/main.css}"/>
+</head>
+<body>
+
+    <div layout:fragment="content">
+        <div class="section" style="height: 40em; z-index: 15" id="top_section">
+            <div class="parallax-container main_parallax" >
+                <div class="parallax"><img src="/resources/images/parallax3.jpg" /> </div>
+            </div>
+            <div class="container">
+                <div class="row left-align">
+                    <h1 class="white-text unselectable top_header" >DeepThought</h1>
+                    <h4 class="white-text unselectable top_subheader">Развивайтесь вместе с нами</h4>
+                </div>
+                <div class="row">
+                    <a href="/login" class="col s12 m6 l6 xl3 center-align connect unselectable" style="padding-bottom: 15px;padding-top: 15px;">
+                        ПРИСОЕДИНИТЬСЯ
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="container" >
+            <div class="row left-align" style="padding-top: 20px;padding-bottom: 20px;">
+                <div class="col s12 l7 post_text">
+                    <h4 class="grey-text text-darken-3 section_header">Пишите интересные статьи</h4>
+                    <h5 class="grey-text text-darken-2 section_subheader">и делитесь со всеми</h5>
+                </div>
+                <img class="col s12 l5" src="/resources/images/article_writer.png"/>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row right-align" style="padding-top: 30px;padding-bottom: 20px;">
+                <img class="col s12 l5" src="/resources/images/society1.jpg" id="ask_text_prev"/>
+                <div class="col s12 l7 ask_text"  >
+                    <h4 class="grey-text text-darken-3 section_header">Задавайте любые вопросы</h4>
+                    <h5 class="grey-text text-darken-2 section_subheader">и находите ответ вместе</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block layout:fragment="js">
+        <script th:src="@{/resources/js/main_script.js}"/>
+    </th:block>
+</body>
+</html>

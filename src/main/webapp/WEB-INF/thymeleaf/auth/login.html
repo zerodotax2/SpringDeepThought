@@ -1,0 +1,62 @@
+ <!DOCTYPE html>
+<html layout:decorate="~{templates/simple_layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:charset="UTF-8">
+<head>
+    <title>Вход</title>
+    <link rel="stylesheet" th:href="@{/resources/css/login.css}"/>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col s12 offset-l3 l6 login_panel z-depth-5" >
+                <div class="row top_line center-align" style="padding: 20px;">
+                    <img src="/resources/images/top_user.png" style="width: 60px;height: 60px;margin: 10px;" />
+                    <h4 class="white-text" style="margin: 0;">Авторизация</h4>
+                </div>
+                <form  method="post" th:action="@{/auth}" class="container" style="padding-top: 15px;">
+                        <div class="row center-align">
+                            <span th:if="${not empty error}" th:text="${'Неправильный логин или пароль'}" class="red-text text-lighten-2" style="font-size: 12px;"></span>
+                        </div>
+                        <div class="row">
+                            <div class="input-field" style="margin-top: -10px;">
+                                <i class="prefix"><img th:src="/resources/images/user_login.png" alt="" style="width: 30px;height: 30px;"/></i>
+                                <input type="text" id="login_input" name="login" class="login_input" />
+                                <label for="login_input">Ваш логин</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field" style="margin-top: -10px;">
+                                <i class="prefix"><img th:src="/resources/images/user_password.png" alt="" style="width: 30px;height: 30px;"/></i>
+                                <input name="password" type="password" id="password_input" class="pass_input" />
+                                <label for="password_input">Пароль</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s12 center-align switch" style="margin-top: -10px;">
+                                <label>
+                                    <input type="checkbox" name="remember-me" class="" checked="checked" />
+                                    <span>Запомнить меня</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: -10px;">
+                            <input type="submit" class="btn red z-depth-2 col s10 offset-s1 offset-l2 l8" value="Войти"/>
+                        </div>
+                        <div class="row center-align" style="margin-top: -15px;">
+                            <a th:href="@{/register}" class="btn-flat" style="text-transform: none; font-size: 12px">Зарегистрироваться</a>
+                        </div>
+                </form>
+                <div class="divider"></div>
+                <div class="row center-align" style="margin-top: 15px">
+                    <a href="#" class="btn-flat cyan-text text-lighten-1" style="text-transform: none">Забыли пароль?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block layout:fragment="js">
+        <script th:src="@{/resources/js/login_script.js}"></script>
+    </th:block>
+</body>
+</html>

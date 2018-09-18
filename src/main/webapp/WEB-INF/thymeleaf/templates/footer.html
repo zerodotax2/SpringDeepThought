@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:charset="UTF-8">
+<head>
+    <title>Footer</title>
+</head>
+<body>
+
+<div class="page-footer bg-dark-blue" th:fragment="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 l3 left-align">
+                <h4 class="cyan-text text-lighten-4 unselectable">Основное</h4>
+                <ul class="left-align">
+                    <li style="margin-bottom: 10px" ><a class="cyan-text bottom_links text-lighten-4"  th:href="@{/articles}">Статьи</a></li>
+                    <li style="margin-bottom: 10px"><a class="cyan-text bottom_links text-lighten-4"  th:href="@{/questions}">Вопросы</a></li>
+                    <li style="margin-bottom: 10px"><a class="cyan-text bottom_links text-lighten-4"  th:href="@{/problems}">Задачи</a></li>
+                    <li style="margin-bottom: 10px"><a class="cyan-text bottom_links text-lighten-4"  th:href="@{/about}">О нас</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 l5"  style="margin-bottom: 30px">
+                <h5 class="cyan-text text-lighten-5 unselectable"> О проекте</h5>
+                <p class="cyan-text text-lighten-4 unselectable">Проект научного сайта, опирающийся на технологии Java EE
+                    и использующий фреймворки JSF, Materialize, написан разработчиком prog_ja.</p>
+            </div>
+            <div class="col s12 offset-l3 l4" style="margin-top: 40px">
+                <a class="bottom_links" href="https://fb.com"><img th:src="@{/resources/images/fb.png}" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
+                <a href="https://vk.com"> <img th:src="@{/resources/images/vk.png}" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
+                <a href="https://instagram.com"> <img th:src="@{/resources/images/instagram.png}" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
+                <a href="https://twitter.com"> <img th:src="@{/resources/images/twitter.png}" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <div class="container cyan-text center-align text-lighten-3" style="font-size: 12px">
+            © 2018 prog_ja - All rights reserved
+            <a class="right cyan-text text-lighten-3" th:href="@{/license}">License</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

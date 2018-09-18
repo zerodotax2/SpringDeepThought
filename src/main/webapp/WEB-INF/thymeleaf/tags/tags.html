@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html layout:decorate="~{templates/complex_layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:charset="UTF-8">
+<head>
+    <link rel="stylesheet" th:href="@{/resources/css/tags.css}"/>
+    <link rel="stylesheet" th:href="@{/resources/css/top-panel.css}"/>
+    <title>Теги</title>
+</head>
+<body>
+
+<th:block layout:fragment="top-panel">
+    <div class="header-describe">
+        <div class="container">
+            <div class="row">
+                <div class="left-side col s12 m6">
+                    <h3 class="title">Теги</h3>
+                    <h5 class="subtitle">Все ключевые слова форума</h5>
+                    <div class="row" style="margin-top: 20px;">
+                        <form th:method="get" th:action="@{/tags}" class="col s12 l8 top-form" style="display: flex;">
+                            <input type="text" class=" top-input" placeholder="Поиск..." name="q" style="color: white"/>
+                            <div class="top-input-image">
+                                <img th:src="@{/resources/images/search.svg}" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="right-side col s12 m6">
+                    <div class="create-tag">
+                        <a th:href="@{/tags/write}" class="flat-btn">Создать</a>
+                    </div>
+                    <div class="categories">
+                        <a th:href="@{(type=rating)}" class="cat">Популярное</a>
+                        <a th:href="@{(type=date)}" class="cat">Новые</a>
+                    </div>
+                    <div class="sort-type">
+                        <a th:href="@{(sort=0)}" class="sort"><img th:src="@{/resources/images/sort-up.png}"/></a>
+                        <a th:href="@{(sort=1)}" class="sort"><img th:src="@{/resources/images/sort-down.png}"/></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<div layout:fragment="content">
+    <div class="content col s12 l8" id="tags_container" style="padding: 0;">
+
+        <a th:each="tag : ${tags}" th:href="@{/tags/${tag.id}}" class="card tag-card hoverable col s12 l4">
+            <div th:text="${tag.name}" class="card-title" th:style="'background:'+${tag.color}+';'">
+
+            </div>
+            <div class="card-content" >
+                <p th:text="${tag.description}"></p>
+            </div>
+            <div class="card-action">
+                <div class="tag-num">
+                    <img th:src="@{/resources/images/pen3.svg}" />
+                    <span th:text="${tag.articles}"></span>
+                </div><div class="tag-num">
+                <img th:src="@{/resources/images/question-solid3.svg}"/>
+                <span th:text="${tag.questions}"></span>
+            </div><div class="tag-num">
+                <img th:src="@{/resources/images/puzzle3.svg}" />
+                <span th:text="${tag.problems}">112</span>
+            </div>
+            </div>
+        </a>
+
+    </div>
+</div>
+
+<th:block layout:fragment="js">
+    <script th:src="@{/resources/js/tags.js}"></script>
+</th:block>
+</body>
+</html>

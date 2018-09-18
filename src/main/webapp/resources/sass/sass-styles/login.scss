@@ -1,0 +1,23 @@
+@charset "UTF-8";
+//colors
+@import "materialize/color-variables";
+
+//variables
+@import "materialize/variables";
+
+
+*{
+    outline: none;
+}
+.login_panel{
+    background: rgba(255,255,255,1);
+}
+
+
+.top_line{
+    background: #0f313b;
+}
+body{
+    background: url("/resources/images/site-bg.jpg") no-repeat center / cover;
+    background-attachment: fixed;
+}

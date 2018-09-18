@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html layout:decorate="~{templates/simple_layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:charset="UTF-8">
+<head>
+    <title>Создание</title>
+    <link rel="stylesheet" th:href="@{/resources/css/editor.css}"/>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="content row">
+            <div class="card" style="box-shadow: 0 0 20px black;">
+                <div class="card-image">
+                    <img id="previewImage" th:src="${#{fileServerLocation}.concat(#{image.default})}"/>
+                </div>
+                <div class="card-content">
+                    <!--Image input-->
+                    <div class="file-field input-field">
+                        <div class="btn bg-dark-blue">
+                            <span>Image</span>
+                            <input type="file" id="upload" maxlength="2048000"/>
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input type="text" class="file-path validate" placeholder="Upload image"/>
+                        </div>
+                    </div>
+                    <!--Title input-->
+                    <form  class="row form_text" action="#" th:action="@{/post/create}" th:object="${createArticleDTO}">
+                            <input type="hidden" th:field="*{smallImagePath}" id="smallImagePath"/>
+                            <input type="hidden" th:field="*{middleImagePath}" id="middleImagePath"/>
+                            <input type="hidden" th:field="*{largeImagePath}" id="largeImagePath"/>
+                            <div class="row" style="margin-top: 50px;">
+                                <div class="input-field">
+                                    <img style="width: 30px" class="prefix" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAESSURBVGhD7ZjBCQIxEEW3Am1I79YheBY7sAI92YIXS/Aoakke9X9MQGKMSQxkRubBgyWQJY8lCexgGIY6RnAHr3DJAY2M4RneX9xAVTDiAl8j1MWkIrwqYhYwtvhQFTFrGFt86F/FrKAIuCcmz8c3cmK4n7rjN/YNzjgQ4VsM75muhKdTTQzvGb6nG5+O2JIYzhcZ4c2JER/hTcXMoYoIbyqmG6URXlExtRFexkxhV36NoJyvak/EtIgWWITTIlpgEU4REeEvm1ItogUW4bSIFliEs3sEOcDY4nIVEUFOMLbAHPklRUSQ2hBREaQmRFwEKQ0RGUFKQsRGkNwQ0REkJ0R8BNnCY8I9FB9hGIYhkWF4ADptAfbA0wiOAAAAAElFTkSuQmCC"/>
+                                    <input type="text" th:field="*{title}" id="title" data-length="100" length="100" class="validate title_input"/>
+                                    <label for="title">Название статьи</label>
+                                    <label th:errors="${title}" for="title" data-error="wrong" data-success="right" class="red-text helper-text text-lighten-2"></label>
+                                </div>
+                            </div>
+                            <!--Subtitle input-->
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="input-field">
+                                    <img style="width: 30px" class="prefix" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAESSURBVGhD7ZjBCQIxEEW3Am1I79YheBY7sAI92YIXS/Aoakke9X9MQGKMSQxkRubBgyWQJY8lCexgGIY6RnAHr3DJAY2M4RneX9xAVTDiAl8j1MWkIrwqYhYwtvhQFTFrGFt86F/FrKAIuCcmz8c3cmK4n7rjN/YNzjgQ4VsM75muhKdTTQzvGb6nG5+O2JIYzhcZ4c2JER/hTcXMoYoIbyqmG6URXlExtRFexkxhV36NoJyvak/EtIgWWITTIlpgEU4REeEvm1ItogUW4bSIFliEs3sEOcDY4nIVEUFOMLbAHPklRUSQ2hBREaQmRFwEKQ0RGUFKQsRGkNwQ0REkJ0R8BNnCY8I9FB9hGIYhkWF4ADptAfbA0wiOAAAAAElFTkSuQmCC"/>
+                                    <input  th:field="*{subtitle}" type="text" id="subtitle" data-length="100" length="100" class="validate subtitle_input" />
+                                    <label for="subtitle">Подзаголовок</label>
+                                    <label th:errors="${subtitle}" for="subtitle" data-error="wrong" data-success="right" class="red-text helper-text text-lighten-2" ></label>
+                                </div>
+                            </div>
+
+                            <div class="row" >
+                                <textarea th:field="*{htmlContent}" id="htmlContent">
+
+                                </textarea>
+                            </div>
+
+                            <input type="hidden" th:field="*{tagsSTR}" id="hidden_tags" class="hidden_tags"/>
+                            <div class="row tags" style="margin-top: 40px;">
+                                <h6 class="cyan-text text-darken-4">Ваши тэги</h6>
+                                <div class="chips">
+
+                                </div>
+                                <h6 class="grey-text text-lighten-2 tag_helper">
+                                    Введите название и нажмите enter
+                                </h6>
+                            </div>
+
+                            <div class="right-align">
+                                <div class="row bottom_card">
+                                    <a th:href="@{/feed}" class="btn-flat btn_back orange-text text-lighten-1" >Назад</a>
+                                    <div class="btn-large cyan darken-4" style="display: inline-flex;">
+                                        <input type="submit" class="white-text cyan darken-4" style="cursor: pointer"  value="Отправить"/>
+                                    </div>
+                                </div>
+                                <div class="row bottom_card">
+                                    <h6 style="font-size: 12px" class="red-text text-lighten-1 col s12">* Все посты с неподобающим содержанием не будут рассматриваться, а аккаунт получит штраф</h6>
+                                </div>
+                            </div>
+                        <input hidden th:field="*{userId}" type="hidden"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block layout:fragment="js">
+        <script th:src="@{/resources/js/editor.js}"></script>
+    </th:block>
+</body>
+</html>

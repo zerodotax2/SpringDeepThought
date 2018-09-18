@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--Content type-->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <!--Css-->
+    <!--<link rel="stylesheet" href="../../../resources/css/materialize.min.css"/>-->
+    <link rel="stylesheet" href="../../../resources/css/colors.min.css"/>
+    <link rel="stylesheet" href="../../../resources/css/normalize.min.css"/>
+    <link rel="stylesheet" href="../../../resources/css/global.css"/>
+    <link rel="stylesheet" href="../../../resources/css/footer.css"/>
+    <link rel="stylesheet" href="../../../resources/css/typography.css"/>
+    <link rel="stylesheet" href="../../../resources/css/header.css"/>
+    <link rel="stylesheet" href="../../../resources/css/right-panel.css"/>
+    <link rel="stylesheet" href="../../../resources/css/article.css"/>
+
+
+    <!--Top icon-->
+    <link rel="shortcut icon" href="../../../resources/images/icon2.ico" type="image/x-icon"/>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="background-color: white">
+
+    <div class="nav z-depth-2">
+        <div class="nav-wrapper bg-dark-blue">
+            <div class="container">
+                <!--Logo div-->
+                <a  href="/" class="brand-logo" style="display: flex;">
+                    <div class="valign-wrapper">
+                        <img src="../../../resources/images/science-logo.png" style="width: 40px; height: 40px"/>
+                        <h5 class="white-text">DeepThought</h5>
+                    </div>
+                </a>
+                <!--Menu icon for mobiles-->
+                <a href="#" data-target="mobile-demo" class="sidenav-trigger" style="font-weight: bold; transform: rotate(90deg)">|||</a>
+    
+                <!--Search div-->
+                <!-- Modal Trigger -->
+                <!--<a class="right modal-trigger" href="#search1" style="padding-top: 7px"><img src="../../../resources/images/search.svg" style="width: 25px; height:25px" /></a>-->
+                <!-- Modal Structure -->
+                <div id="search1" class="modal">
+                    <div class="modal-content">
+                        <form method="post" action="#">
+                            <div class="input-field cyan-text">
+                                <span class="prefix">
+                                    <img src="../../../resources/images/search2.svg" style="height: 30px; width: 30px;margin-top: 10px;"/>
+                                </span>
+                                <input name="search_value" type="text" style="border-bottom: 2px solid cornflowerblue" placeholder="Поиск..."/>
+                                <input class="find_button" style="display: none;" type="submit" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+    
+                <!--Menu div-->
+                <ul id="nav-mobile" class="right hide-on-med-and-down" style="display: flex;">
+                    <li id="feedElement"><a class="white-text" href="/articles">СТАТЬИ</a></li>
+                    <li id="questionElement"><a class="white-text" href="/questions">ВОПРОСЫ</a></li>
+                    <li id="problemsElement"><a class="white-text" href="/problems">ЗАДАЧИ</a></li>
+                    <li id="supportElement"><a class="white-text" href="/support">ПОМОЩЬ</a></li>
+                    <!--Dropdown button-->
+                    <!--<div>-->
+                        <!--<a class="dropdown-trigger options_trigger" href="/profile" data-target="dropdown-profile" style="display: flex;">-->
+                            <!--<img src="../../../resources/images/user.png" style="width: 40px; height: 40px; margin-top: 12px; margin-right: 10px"/>-->
+                            <!--<div>firstName</div>-->
+                        <!--</a>-->
+                        <!--&lt;!&ndash;Dropdown content&ndash;&gt;-->
+                        <!--<ul id="dropdown-profile" class="dropdown-content">-->
+                            <!--<li style="font-weight: 100"><a style="font-weight: 100" href="/profile">Аккаунт</a></li>-->
+                            <!--<li><a href="/settings">Редактировать</a></li>-->
+                            <!--<li><a href="/personalize">Персонализация</a></li>-->
+                            <!--<li class="divider"></li>-->
+                            <!--<li><a href="/logout">Выход</a></li>-->
+                        <!--</ul>-->
+                    <!--</div>-->
+                        <li class="valign-wrapper" >
+                            <a class="btn orange darken-2" id="log-btn" href="/login" >Вход</a>
+                        </li>
+                        <li class="valign-wrapper">
+                            <div class="left-divider"></div>
+                        </li>
+                        <li class="valign-wrapper" >
+                            <a class="btn-flat" href="/register" id="reg-btn">Регистрация</a>
+                        </li>
+                </ul>
+    
+                <!--Для мобилок-->
+                <ul id="mobile-demo" class="sidenav bg-dark-blue center-align">
+                    <!--<div if="${not empty sessionScope.user.firstName}">-->
+                        <img src="../../../resources/images/user.png" style="width: 100px; height: 100px; margin-top: 10px"/>
+                        <li><a class="white-text" href="/profile" >firstName</a></li>
+                    <!--</div>-->
+                    <li><a class="white-text" href="/login">Войти</a></li>
+                    <li><a class="cyan-text text-darken-4" href="/articles">СТАТЬИ</a></li>
+                    <li><a class="cyan-text text-darken-4" href="/questions">ВОПРОСЫ</a></li>
+                    <li><a class="cyan-text text-darken-4" href="/problems">ЗАДАЧИ</a></li>
+                    <li><a class="cyan-text text-darken-4" href="/about">О НАС</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="main" id="main">
+        <div class="container">
+
+            <div class="row">
+
+                <meta id="article_bg_image" content="../../../resources/images/site-bg.jpg"/>
+
+                <div class="card col s12 l10 offset-l1 z-depth-5" id="article">
+                    <div class="card-image">
+                        <img src="../../../resources/images/parallax3.jpg"/>
+                    </div>
+                    <div class="card-title" >
+                       <h3>Как стать full-stack developer'ом, изучая Spring и Angular</h3>
+                        <div class="article-tags">
+                            <a href="#" class="chip">Программирование</a>
+                            <a href="#" class="chip">Программирование</a>
+                            <a href="#" class="chip">Программирование</a>
+                            <a href="#" class="chip">Программирование</a>
+                            <a href="#" class="chip">Программирование</a>
+                        </div>
+                        <div class="stats">
+                            <div class="stat grey-text">
+                                <img src="../../../resources/images/date.svg"/>
+                                <span>15-11-2001</span>
+                            </div>
+                            <div class="stat grey-text">
+                                <img src="../../../resources/images/star.svg"/>
+                                <span>215</span>
+                            </div>
+                            <div class="stat grey-text">
+                                <img src="../../../resources/images/eye.svg"/>
+                                <span>534</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-content">
+                        <div id="article-content" class="grey-text text-darken-2">
+                            <h2 style="text-align: center">Большой заголовок</h2>
+                            <img style="width: 100%;" src="../../../resources/images/beatiful.jpg" />
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid animi architecto aut beatae debitis enim explicabo, fugiat illo ipsa iusto labore molestias nostrum officiis perspiciatis provident quae quia quod quos rem repudiandae sunt ullam velit vero. Alias aliquid amet debitis dignissimos eaque error hic ipsa magni, maiores, molestiae mollitia numquam odio placeat quibusdam quo reprehenderit saepe sint, tempore tenetur ullam unde vero voluptas voluptate. Esse hic necessitatibus possimus sapiente. Deleniti eaque nostrum quo quos repellat. Aperiam, architecto asperiores delectus deleniti dignissimos, distinctio dolore ducimus facere iste labore laudantium libero maiores maxime necessitatibus nisi nobis non perspiciatis, placeat porro provident quibusdam quis sapiente sed tenetur vel velit veritatis voluptatibus? Ad atque blanditiis dignissimos ducimus eos esse et eveniet ex hic in, inventore labore laudantium magni nam nemo nulla odio optio provident quisquam, quos reiciendis, saepe sed tempore tenetur veniam! Autem consectetur cum harum laborum magni, natus quibusdam quis sit suscipit velit? Autem exercitationem impedit molestias provident qui ratione repudiandae, tempora temporibus! Aliquid architecto beatae commodi cupiditate deserunt dolor dolores doloribus ducimus error et exercitationem expedita hic incidunt iste itaque mollitia nemo nulla optio, placeat quidem quod repellendus reprehenderit tempora totam vero voluptatem voluptates! Eligendi minima nulla voluptatibus? Alias animi aut autem culpa doloremque ex fugiat hic illum in laudantium quasi quis, reiciendis temporibus tenetur unde voluptate voluptatibus? Asperiores commodi error in sapiente voluptatibus. Beatae dicta illo itaque, laboriosam odio optio ratione reiciendis sed sequi unde? Accusamus aliquid animi at cumque deleniti dolore dolorum, ducimus ea excepturi exercitationem facilis ipsa laboriosam neque nesciunt nobis numquam porro possimus praesentium, qui quidem reiciendis sapiente temporibus totam vel voluptates! Fuga iusto modi obcaecati quis vero. Ad aliquam aspernatur at aut blanditiis commodi cum deserunt distinctio dolorem eius enim error esse fugiat hic, ipsa maiores maxime, molestias non nulla obcaecati porro quasi quisquam quos repellat tempora totam ullam, ut veniam voluptates voluptatum! Dignissimos doloremque earum excepturi expedita illum itaque, iusto laborum mollitia recusandae unde. Aspernatur dicta distinctio ex facilis laborum magnam nulla officiis quae recusandae reiciendis rerum, voluptate. Alias aliquid dignissimos nam obcaecati optio suscipit voluptates! A ad amet deleniti deserunt dolor eum perferendis provident qui quos reiciendis, sapiente veniam veritatis. Alias blanditiis dolor dolore dolorum earum ex ipsa minus necessitatibus odit possimus praesentium quae, quam ratione recusandae repellendus sapiente sed sunt ut vitae voluptatum. Accusamus consequuntur est et exercitationem explicabo laudantium libero modi nam natus, nisi obcaecati, quis, quisquam reiciendis sequi sit tempora vel vitae voluptate? Dolorum ipsum neque sed ut veritatis? Dolorum nemo quos repellendus. Accusamus aut eum excepturi, laborum, magni maxime nemo placeat praesentium totam veniam veritatis, vitae. Ea, impedit, optio? Asperiores, ducimus ex ipsa laudantium maiores maxime nobis nostrum quod reiciendis saepe tenetur unde voluptas. Deleniti dolor harum minus nobis officia quae quod ratione saepe sequi vel! Aperiam, atque earum. Amet debitis, dicta distinctio doloribus dolorum eos facilis fuga in ipsum, magni modi nemo non obcaecati officia perferendis, quam quasi qui reiciendis reprehenderit sunt vel velit vero voluptatum. Accusantium asperiores eos nulla saepe sunt? Asperiores blanditiis consequatur, dicta doloribus eaque et explicabo ipsa laborum nobis officia officiis, omnis porro provident quaerat, voluptatibus? Ex, iste perferendis! Architecto exercitationem fugit nam nisi officia. Ab accusantium adipisci aliquam aliquid asperiores consequuntur ea eius facilis ipsa ipsum iure labore magni minima nobis odio perspiciatis, praesentium quia quidem quod, quos ratione, rem repellat reprehenderit similique soluta voluptates voluptatibus. Libero mollitia nihil optio quo sint! Accusantium aliquam animi aperiam, debitis dignissimos et explicabo facilis fugit id, impedit ipsam laudantium nemo nostrum officia optio perferendis quas qui quisquam repellat saepe totam unde veritatis? Amet aspernatur doloremque eum ex excepturi in incidunt quis, tempora voluptatibus! Ad amet aperiam at aut beatae consequatur culpa debitis deleniti dicta dignissimos dolor dolore earum eum exercitationem facere fugiat hic illum in labore, laboriosam minima molestiae nam nesciunt nulla odio officiis placeat quaerat quasi qui quia quo rerum, sequi tempore unde veritatis voluptatem voluptates! Aliquid aperiam at dolorum, earum eligendi explicabo fuga id molestias, mollitia natus nemo officia perspiciatis, rem repellendus velit veniam vero! Aliquid culpa cupiditate debitis dignissimos ex, excepturi exercitationem facere in magni nesciunt nihil non, quas quidem repudiandae, sequi tempora temporibus vel velit vero vitae? Amet assumenda at atque beatae deleniti ducimus ea eaque eos esse eum ex fuga illum ipsum itaque labore laborum molestiae nesciunt nihil, optio porro qui quia reiciendis rem sunt vero. Alias amet architecto iure libero praesentium vitae, voluptatibus? Accusantium aliquam, aliquid animi architecto consectetur, dolorum ex exercitationem ipsam ipsum labore laborum, maiores modi odit optio sapiente totam ut vero. Ad amet aut delectus deserunt dignissimos dolor eos fugit harum iure minima, minus placeat possimus reiciendis rem repellat sint vero voluptate! Accusamus, quas, voluptatem! A asperiores impedit molestiae recusandae sequi. Aperiam asperiores doloremque magni maiores molestias rerum sint vel! Aliquid, corporis eum facere harum inventore laboriosam laudantium natus optio porro quod quos sed sit veritatis! Aliquam, dolor, dolores facere laudantium magnam nam, natus nesciunt optio quaerat rem sit voluptatibus. Ad, assumenda, consequuntur deserunt earum eius eligendi eos ex facere itaque iure iusto laudantium nostrum perferendis quaerat qui quia recusandae reiciendis, sunt totam voluptatibus? Exercitationem nisi quaerat temporibus? Dignissimos explicabo facere iste iure, magnam maiores officiis quia sit soluta voluptates. Ab ad amet culpa incidunt iusto modi porro possimus repellat totam voluptatibus. Expedita facere molestiae natus odit possimus quaerat quidem sequi totam voluptatum. Cumque debitis distinctio doloremque error molestiae nulla quaerat quia quibusdam reiciendis? A consequuntur culpa cum dolorem dolorum, est harum inventore laboriosam maxime mollitia non nostrum possimus soluta totam vel. Asperiores beatae corporis ex placeat saepe sequi sit tenetur velit. Accusantium ad consectetur esse expedita fugit ipsa, iusto magnam minima non nulla obcaecati officia totam voluptate? Aliquid assumenda consequuntur cum dignissimos dolores, ea earum mollitia odit officia provident quis quod reiciendis rerum saepe unde ut vel veritatis? Atque beatae exercitationem quos ullam voluptates! Accusamus accusantium aliquid animi aperiam, architecto at culpa dignissimos dolores eaque enim et eveniet explicabo facilis illo itaque iusto labore laudantium necessitatibus nihil officia omnis praesentium quam quibusdam quis, quisquam reprehenderit repudiandae saepe suscipit tempora voluptatum? Aperiam culpa delectus hic ipsa ipsum iusto quidem.</p>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <div class="user-row col s12 m6">
+                            <div class="user cyan darken-3">
+                                <img src="../../../resources/images/ava.jpg"/>
+                                <div class="user-info">
+                                    <span class="title" style="margin: 0;">zerodotax2</span>
+                                    <div class="rating">
+                                        <img src="../../../resources/images/star.svg"/>
+                                        <span>3214</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rate-row col s12 m6">
+                            <img src="../../../resources/images/rate-up.svg"/>
+                            <span>21</span>
+                            <img src="../../../resources/images/rate-down.svg"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row comments">
+                <div class="comments-title col s12 l10 offset-l1">
+                    <h4>Комментарии</h4>
+                    <span>216</span>
+                </div>
+                <div class="card col s12 l10 offset-l1">
+                    <div class="card-title">
+                        <span class="commenter-login">zerodotax2, 15-11-2018 в 12:06 </span>
+                        <div class="comment-rate"></div>
+                    </div>
+                    <div class="card-content">
+                        <div class="left-side" >
+                            <img src="../../../resources/images/user.png"/>
+                            <img style="width: 40px;height: 40px;" class="star1" src="../../../resources/images/rate-up2.svg"/>
+                            <span>4123</span>
+                            <img style="width: 40px;height: 40px;" class="star2" src="../../../resources/images/rate-down2.svg"/>
+                        </div>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab, aspernatur aut beatae commodi, corporis debitis, dicta dolore earum enim eveniet fuga itaque magnam maiores nobis officiis quidem quos repellendus tenetur totam veritatis. Delectus, deserunt dolorem expedita ipsam iusto maiores quos repudiandae rerum. Corporis, deserunt, itaque. Aliquam animi distinctio dolor doloremque esse ex excepturi expedita fuga ipsa ipsum laboriosam laudantium minus molestiae nihil nostrum obcaecati officiis provident quae quas repudiandae rerum, sit, soluta tempora tempore totam? Aliquam amet beatae consectetur esse ipsum mollitia odit reiciendis tempora ullam voluptatem. Aspernatur eos harum impedit iste, maxime necessitatibus pariatur possimus quaerat? Culpa doloremque, iste.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-footer bg-dark-blue">
+        <div class="container">
+            <div class="row">
+                <div class="col s12 l3 left-align">
+                    <h4 class="cyan-text text-lighten-4 unselectable">Аккаунт</h4>
+                    <ul class="left-align">
+                        <li style="margin-bottom: 10px" ><a class="cyan-text bottom_links text-lighten-4"  href="/login">Войти</a></li>
+                        <li style="margin-bottom: 10px"><a class="cyan-text bottom_links text-lighten-4"  href="/register">Зарегистрироваться</a></li>
+                    </ul>
+                </div>
+                <div class="col s12 l3 left-align">
+                    <h4 class="cyan-text text-lighten-4 unselectable">Основное</h4>
+                    <ul class="left-align">
+                        <li style="margin-bottom: 10px" ><a class="cyan-text bottom_links text-lighten-4"  href="/articles">Статьи</a></li>
+                        <li style="margin-bottom: 10px"><a class="cyan-text bottom_links text-lighten-4"  href="/questions">Вопросы</a></li>
+                        <li style="margin-bottom: 10px" ><a class="cyan-text bottom_links text-lighten-4"  href="/problems">Задачи</a></li>
+                        <li style="margin-bottom: 10px"><a class="cyan-text bottom_links text-lighten-4"  href="/support">О нас</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 l5"  style="margin-bottom: 30px">
+                    <h5 class="cyan-text text-lighten-5 unselectable"> О проекте</h5>
+                    <p class="cyan-text text-lighten-4 unselectable">Проект научного сайта, опирающийся на технологии Java EE
+                        и использующий фреймворки JSF, Materialize, написан разработчиком prog_ja.</p>
+                </div>
+                <div class="col s12 offset-l3 l4" style="margin-top: 40px">
+                    <a class="bottom_links" href="https://fb.com"><img src="../../../resources/images/fb.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
+                    <a href="https://vk.com"> <img src="../../../resources/images/vk.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
+                    <a href="https://instagram.com"> <img src="../../../resources/images/instagram.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
+                    <a href="https://twitter.com"> <img src="../../../resources/images/twitter.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container cyan-text center-align text-lighten-3" style="font-size: 12px">
+                © 2018 prog_ja - All rights reserved
+                <a class="right cyan-text text-lighten-3" href="/license">License</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../../resources/js/materialize.min.js"></script>
+    <script src="../../../resources/js/header_script.js"></script>
+    <script src="../../../resources/js/xhr.js"></script>
+    <script src="../../../resources/js/article.js"></script>
+</body>
+</html>

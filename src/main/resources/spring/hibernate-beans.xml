@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!--Hibernate transaction manager-->
+    <bean name="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <!--Jdbc one connection data source-->
+    <!--<bean name="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">-->
+        <!--<property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>-->
+        <!--<property name="url" value="jdbc:mysql:localhost:3306/deepThoughtDB"/>-->
+        <!--<property name="username" value="root"/>-->
+        <!--<property name="password" value="228322"/>-->
+    <!--</bean>-->
+
+    <bean name="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/deepThoughtDB"/>
+        <property name="username" value="root"/>
+        <property name="password" value="228322"/>
+        <property name="initialSize" value="10"/>
+        <property name="maxTotal" value="128"/>
+    </bean>
+
+    <!--JDBC pool connection datasource-->
+    <!--<bean name="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">-->
+        <!--<property name="jndiName" value="jdbc/deepThoughtDB"/>-->
+    <!--</bean>-->
+
+    <!--Hibernate session factory-->
+    <bean name="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="ru.projects.prog_ja.model.entity"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</prop>
+                <prop key="connection.autocommit">false</prop>
+                <prop key="hbm2ddl.auto">update</prop>
+                <!-- Делает возможным установление ленивой загрузки для примитивов-->
+                <prop key="hibernate.enhancer.enableLazyInitialization">true</prop>
+                <!-- Отправляем запросы пакетами для улучшения производительности -->
+                <prop key="hibernate.jdbc.batch_size">30</prop>
+                <!--Апдейт только необходимых свойств-->
+                <prop key="hibernate.order_updates">false</prop>
+            </props>
+        </property>
+    </bean>
+
+</beans>

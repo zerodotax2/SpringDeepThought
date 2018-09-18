@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:charset="UTF-8">
+<head>
+    <title>Navigation</title>
+</head>
+<body>
+
+    <div class="col s12 l4 nav-panel" th:fragment="navigation">
+        <!--Случайный факт-->
+        <div class="row">
+            <div class="card hoverable fact" style="margin-bottom: 15px">
+                <div class="card-content" id="fact">
+                    <h6 class="card-title grey-text text-lighten-1" style="font-size: 14px">Интересно знать</h6>
+                    <p id="factText" class="grey-text text-darken-2" th:text="${fact.text}"></p>
+                </div>
+                <div class="card-action">
+                   <a><div th:each="tag : ${fact.tags}" th:text="${tag.name}" th:style="'background:'+${tag.color}+';'"></div></a>
+                </div>
+            </div>
+        </div>
+        <!--Теги-->
+        <div class="row">
+            <div class="valign-wrapper" style="display: flex;">
+                <h5 class="grey-text text-darken-1">Теги</h5>
+                <img style="width: 30px;height: 30px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAVMSURBVHhe7ZxNbxtVFIYvFYVSxKeQUAUk8TiiiscG0dDSdkEiViBVRVDbk6oS3XXFhn5QvvsX6AYhsWGJ+iPYRIINEgsECGI7ohABJaUpiipKmzucY86YwT40djz3Y+7cR3qVSB3nnvu8uRM7tSI8Ho/H4/F4PB6Px2ZkVDoZR0GsMrIZrMM6X8tm6bysl2q0tEeH/P5AGRtQxAfy+ek7aYxiYkJ+OrD+p3GjcgeNUyxMy0+CJ4FGKg62yMfIKLgJt6QqjeY+NslPAqfgfRrPbWyUj4G5vqIR3UWn/H9uK6W/uH/jArP9QWO6iS75IL4Dax2K5+Zuj8+JbXFUnsfvbu7a/tCo7qFPfuknWX/0QVq2R3x8cscwJdDlbqFLPkY2gqO07ACyPjXHPSYdutQddMrHyGMTu2jpAfB2tNnPBLrUDXTL76YRTNDyA8QnZrfjrx/Yx1Ho0vxjRD4E1n2VRhhALkwd5h6TDl2ab+CYn+I2pylrsl6eplF6xEcffwjmajHX/yd0eX4xLL8bmOEqnkD4obtbRuXHZLP8Ctx6lrlr+0PbyCc2yB83tJX84YJ8DG0nX7giH9MKxTXId+1QfNiuiH20RXtxST6mXRW9tKpCwsePL+4Xd9F27cI1+Zh0Ab2E4rOVWbGTtm0HLsrHsAVA4DR8RFs3j6vyMZx8DBSw8f2MeIoUmMNl+RhOfi+hOE8azOC6fAwrngKn4BtSoZ8iyMdw4pPA09N10qGXosjHcOLTISX6KJJ8DCc9HdKih6LJx3DS0yE16jH1+3zT4aSnQ3rUIheCl2QUSG5A18NJT4cUqUMem74Xbj2/ccMVIZz0dEiTOmQ0dZobrAhZnb9vjZOeDmlSB9z7F7nhXM/q3ObyMaRJHVDAJW5AlwPyWdlcSJM6oIAb3JCuZhT5GNKkDtkMVrhBXcyo8jGkSR0w2IX+QV3MVuRjSJM64qjU4AZ2KVuVjyFN6ui+fzIKvuQGdyHjyMeQJrXgO8ughCvcBvKcceVjSJF6ZFQ+CK+Ir3IbyWOykI8hPXpwpYSs5GNIjT7yXkKW8jGkRS9YAmxmrX9ztidr+RhSop+8laBCPoZ0mCEvJaiSjyEV5rC9BJXyMaTBLJefe+DsRmOKFWAyq/Nq5WNIgTm+3S3uaYfi15V9O2KbStAhH0MazNGuiNeSYWwpQZd8yEnSYI5WVSymhzJdQqHkI3D7udQ/nKkSNMo/Rds3DwxzvW+4bnSXUEj5CJyAH5khu9FVgi75nVCcpm3bQysUF7hhk6zsVVuC6uf5SayUj8AJOMINnI6qEnTJh2+yM7Rd+4AnwrdBCV9wg6eTdQlefoqlipiGQX/nNpBOViV4+QxLVXEATsKm7yYbtwSN8l+nreWH5ZrYr7IEbfKr4ixtKX+MVEJ9yBKaIP9ZL39oOjPimWFKuLhne/zni4/w0ik3j0zGPx/YyT4+6zghP2HYEto1Ef9y8O54/YWH4xsvT+Df9ulKv3ZoV/cF1vIT2/jHZZ83aHR3wL8uMlQJ5vMmjeweOSjBXfkJUMBeS0twX36CdSWE4i0arTjAs4ynrSihiPITjJcQirdplOKCJcBL/SusIJXx8v9Fdwmw1ju0tCehVROzOkrw8m+B6hLgpL1LS3n+Dyph0/9PGDVe/ghkXQLIf4++tGdYlmpiTxYlePljMG4JIP8cfSnPVumWUBWXOcG3ipefIVgCvHAaeNsjFxAv4dT4p5pZ05kRkyD2c056EjwpcM0CPcSTNfi+o05FHAbZn4DsH+DjdTwZ8PkiiD+z/KS4ny71eDwej8fj8ViKEH8DKV7ZB0fL3+EAAAAASUVORK5CYII=">
+            </div>
+            <div class="divider" style="margin-bottom: 10px;"></div>
+            <a href="#"><div class="chip" th:each="tag : ${@navigationPanelController.getPopularTags()}" th:style="'background:'+${tag.color}+';'" th:text="${tag.name}" th:id="${tag.id}"></div></a>
+            <div class="more center-align" style="margin-top: 20px">
+                <div class="divider"></div>
+                <div class="center-align" style="margin-top: -13px"><a th:href="@{/tags}" class="more-button">Ещё<span class="grey-text" style="font-size: 16px;font-weight: bold;">+</span></a></div>
+            </div>
+        </div>
+        <div class="row">
+            <ul class="collection with-header hoverable z-depth-2 popularity" style="border: none">
+                <li class="collection-header center-align" ><h4 style="font-size: 25px" class="grey-text text-darken-1">Рейтинг</h4></li>
+                <li th:each="user: ${@navigationPanelController.getPopularUsers()}" class="collection-item avatar popular_item valign-wrapper" style="display: flex;border: none">
+                    <a th:href="@{/users/${user.id}}" class="valign-wrapper">
+                        <img th:src="${#{fileServerLocation}.concat(user.userImage)}" class="circle"/>
+                        <div class="text">
+                            <p class="grey-text text-darken-2 collection-text" th:text="${user.login)}"></p>
+                            <p class="collection-text green-text" style="font-weight: bold" th:text="${user.rating}"></p>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!--Популярное-->
+        <div class= "row">
+            <ul class="collection with-header hoverable z-depth-2 popularity" style="border: none">
+                <li class="collection-header center-align"><h4 class="grey-text text-darken-1"  style="font-size: 25px">Популярное</h4></li>
+                <li th:each="popularArticle: ${@navigationPanelController.getPopularArticles()}" class="collection-item popular_item valign-wrapper" style="display: flex;border: none">
+                    <a th:href="@{/articles/${popularArticle.id}}" class="valign-wrapper">
+                        <img th:src="${#{fileServerLocation}.concat(popularArticle.articleImage)}" style="width: 40px;height: 40px;"/>
+                        <p th:text="${popularArticle.title}" class="blue-grey-text text-darken-2 collection-text"></p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>

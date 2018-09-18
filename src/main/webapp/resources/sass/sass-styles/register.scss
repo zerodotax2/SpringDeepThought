@@ -1,0 +1,54 @@
+@charset "UTF-8";
+//colors
+@import "materialize/color-variables";
+
+//variables
+@import "materialize/variables";
+@import "materialize/datepicker";
+
+
+body{
+    background: url("/resources/images/site-bg.jpg") no-repeat center / cover;
+    background-attachment: fixed;
+}
+.reg_panel{
+    background: #fff;
+}
+.reg_form{
+    padding: 20px;
+}
+
+.top_logo{
+    background: url("/resources/images/log-bg2.jpg") no-repeat top / cover;
+    padding: 30px;
+}
+
+.header_reg{
+    font-size: 2.7vw;
+    margin: 0;
+}
+
+.header_reg2{
+    font-size: 1.3vw;
+    margin-top: 0;
+}
+
+.reg_img{
+    width: 4vw;
+    height: 4vw;
+    margin-top: -1vw;
+}
+
+@media screen and (max-device-width: 800px) and (min-device-width: 200px) {
+    .header_reg{
+        font-size: 6vw;
+    }
+    .header_reg2{
+        font-size: 4.5vw;
+        margin-top: 0.5vh;
+    }
+    .reg_img{
+        width: 15vw;
+        height: 15vw;
+    }
+}

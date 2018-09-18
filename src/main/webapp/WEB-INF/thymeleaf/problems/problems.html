@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html layout:decorate="~{templates/complex_layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:charset="UTF-8">
+<head>
+    <link rel="stylesheet" th:href="@{/resources/css/top-panel.css}"/>
+    <link rel="stylesheet" th:href="@{/resources/css/problems.css}"/>
+    <title>Задачи</title>
+</head>
+<body>
+
+<th:block layout:fragment="top-panel">
+    <div class="header-describe">
+        <div class="container">
+            <div class="row">
+                <div class="left-side col s12 m6">
+                    <h3 class="title">Задачи</h3>
+                    <h5 class="subtitle">Решайте интересные задачки</h5>
+                    <div class="row" style="margin-top: 20px;">
+                        <form method="get" th:action="@{/problems}" class="col s12 l8 top-form" style="display: flex;">
+                            <input type="text" class=" top-input" placeholder="Поиск..." style="color: white"/>
+                            <div class="top-input-image">
+                                <img th:src="@{/resources/images/search.svg}" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="right-side col s12 m6">
+                    <div class="create-tag">
+                        <a th:href="@{/problems/write}" class="flat-btn">Создать</a>
+                    </div>
+                    <div class="difficults">
+                        <div class="difficult-crutch">
+                            <a class="red darken-2"  th:href="@{(difficult=hell)}">Невозможные</a>
+                            <a class="red"  th:href="@{(difficult=hard)}">Сложные</a>
+                        </div>
+                        <div class="difficult-crutch">
+                            <a class="orange"  th:href="@{(difficult=normal)}">Средние</a>
+                            <a class="green"  th:href="@{(difficult=easy)}">Лёгкие</a>
+                        </div>
+                    </div>
+                    <div class="categories">
+                        <a th:href="@{(type=rating)}" class="cat">Популярное</a>
+                        <a th:href="@{(type=date)}" class="cat">Новые</a>
+                    </div>
+                    <div class="sort-type">
+                        <a th:href="@{(sort=0)}" class="sort"><img th:src="@{/resources/images/sort-up.png}"/></a>
+                        <a th:href="@{(sort=1)}" class="sort"><img th:src="@{/resources/images/sort-down.png}"/></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<div layout:fragment="content">
+    <div class="content col s12 l8" id="problem_container" style="padding: 0;">
+
+        <div th:if="${problemList.size==0}" class="col s12 l11 white" style="margin-top: 100px;text-align: center">
+            <h3 class="grey-text">Результатов не найдено</h3>
+            <img style="width: 20%;height: 20%;margin-top: 40px;" th:src="@{/resources/images/frown-regular.svg}"/>
+        </div>
+
+        <div th:each="problem : ${problemList}" class="problem-item card col s12 l11">
+            <div class="card-title grey-text text-darken-2" th:text="${problem.title}"></div>
+            <div class="card-content row">
+                <div class="col s4 grey-text" style="display: flex;"><img style="width: 20px;height: 20px;margin-right: 5px;" th:src="@{/resources/images/star-regular.svg}"/><span th:text="${problem.rating}"></span></div>
+                <div class="col s4 grey-text" style="display: flex;"><img style="width: 20px;height: 20px;margin-right: 5px;" th:src="@{/resources/images/user-regular.svg}"/><span th:text="${problem.decided}"></span> </div>
+                <div class="col s4 grey-text" style="display: flex;"><span style="padding: 2px 20px 2px 20px;" th:text="${problem.difficult}" th:class="${problem.difficult}+' difficult-element'"></span></div>
+            </div>
+            <div class="divider"></div>
+            <div class="card-action">
+                <a th:each="tag ${problem.tags}" th:href="@{/tags/${tag.id}}"></a><div class="chip" th:text="${tag.name}"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<th:block layout:fragment="js">
+    <script th:src="@{/resources/js/problems.js}"></script>
+</th:block>
+</body>
+</html>

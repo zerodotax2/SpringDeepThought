@@ -1,0 +1,33 @@
+@charset "UTF-8";
+//colors
+@import "materialize/color-variables";
+
+//variables
+@import "materialize/variables";
+
+.article_header{
+	font-size: 20px;
+	font-weight: bold;
+}
+.form_text{
+	padding: 20px;
+}
+
+.bottom_card{
+	padding: 0 20px 0 20px;
+}
+
+@media screen and (max-device-width: 800px) and (min-device-width: 200px) {
+	.form_text{
+		padding: 0px;
+	}
+
+	.bottom_card{
+		padding: 0 20px 0 20px;
+	}
+}
+
+body{
+	background: url("/resources/images/site-bg2.jpg") no-repeat center / cover;
+	background-attachment: fixed;
+}

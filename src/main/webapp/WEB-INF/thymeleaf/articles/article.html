@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html th:charset="UTF-8"
+      layout:decorate="~{templates/simple_layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title th:title="${fullArticleDTO.title}"></title>
+    <link rel="stylesheet" th:href="@{/resources/css/article.css}"/>
+</head>
+<body>
+
+    <div layout:fragment="content">
+        <div class="row">
+
+            <meta id="article_bg_image" th:content="@{fullArticleDTO.articleBg}"/>
+
+            <div class="card col s12 l10 offset-l1 z-depth-5" id="article">
+                <div class="card-image">
+                    <img th:src="${${fileServerLocation}.concat(fullArticleDTO.articleImage)}"/>
+                </div>
+                <div class="card-title" >
+                    <h3>Как стать full-stack developer'ом, изучая Spring и Angular</h3>
+                    <div class="article-tags">
+                        <a th:each="tag : ${fullArticleDTO.tags}" th:style="'background: '+${tag.color}+';'" th:href="@{/tags/${tag.id}}" th:text="${tag.name}" class="chip"></a>
+                    </div>
+                    <div class="stats">
+                        <div class="stat grey-text">
+                            <img th:src="@{/resources/images/date.svg}"/>
+                            <span th:text="${fullArticleDTO.createDate}"></span>
+                        </div>
+                        <div class="stat grey-text">
+                            <img th:src="@{/resources/images/star.svg}"/>
+                            <span th:text="${fullArticleDTO.rating}"></span>
+                        </div>
+                        <div class="stat grey-text">
+                            <img th:src="@{resources/images/eye.svg}"/>
+                            <span th:text="${fullArticleDTO.views}"></span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card-content">
+                    <div id="article-content" th:utext="${fullArticleDTO.content}" class="grey-text text-darken-2">
+
+                    </div>
+                </div>
+                <div class="card-action">
+                    <div class="user-row col s12 m6">
+                        <a th:href="@{/users/${fullArticleDTO.user.id}}" class="user cyan darken-3">
+                            <img th:src="@{#{fileServerLocation}.concat(fullArticleDTO.user.userImage)}"/>
+                            <div class="user-info">
+                                <span class="title" style="margin: 0;" th:text="${fullArticleDTO.user.login}"></span>
+                                <div class="rating">
+                                    <img th:src="@{/resources/images/star.svg}"/>
+                                    <span th:text="${fullArticleDTO.user.rating}"></span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="rate-row col s12 m6">
+                        <img th:src="@{/resources/images/rate-up.svg}"/>
+                        <span th:text="${fullArticleDTO.rating}"></span>
+                        <img th:src="@{/resources/images/rate-down.svg}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row comments">
+            <div class="comments-title col s12 l10 offset-l1">
+                <h4>Комментарии</h4>
+                <span th:text="${fullArticleDTO.comments}"></span>
+            </div>
+            <div th:each="comment : ${comments}" class="card col s12 l10 offset-l1">
+                <div class="card-title">
+                    <span class="commenter-login" th:text="''+${comment.user.login}+', '+${comment.createDate}"></span>
+                    <div class="comment-rate" th:text="${comment.rating}"></div>
+                </div>
+                <div class="card-content">
+                    <div class="left-side" >
+                        <img th:src="${#{fileServerLocation}.concat(comment.user.userImage)}"/>
+                        <img style="width: 40px;height: 40px;" class="star1" th:src="@{/resources/images/rate-up2.svg}"/>
+                        <span th:text="${comment.rating}"></span>
+                        <img style="width: 40px;height: 40px;" class="star2" th:src="@{/resources/images/rate-down2.svg}"/>
+                    </div>
+                    <p th:text="${comment.commnet}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block layout:fragment="js">
+        <script th:src="@{/resources/js/article.js}"></script>
+    </th:block>
+</body>
+</html>

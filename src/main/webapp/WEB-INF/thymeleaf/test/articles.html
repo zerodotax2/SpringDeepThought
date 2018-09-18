@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--Content type-->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <!--Css-->
+    <!--<link rel="stylesheet" href="../../../resources/css/materialize.min.css"/>-->
+    <link rel="stylesheet" href="../../../resources/css/colors.min.css"/>
+    <link rel="stylesheet" href="../../../resources/css/normalize.min.css"/>
+    <link rel="stylesheet" href="../../../resources/css/global.css"/>
+    <link rel="stylesheet" href="../../../resources/css/footer.css"/>
+    <link rel="stylesheet" href="../../../resources/css/typography.css"/>
+    <link rel="stylesheet" href="../../../resources/css/header.css"/>
+    <link rel="stylesheet" href="../../../resources/css/right-panel.css"/>
+    <link rel="stylesheet" href="../../../resources/css/top-panel.css"/>
+    <link rel="stylesheet" href="../../../resources/css/articles.css"/>
+
+
+    <!--Top icon-->
+    <link rel="shortcut icon" href="../../../resources/images/icon2.ico" type="image/x-icon"/>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="background-color: white">
+
+    <div class="nav z-depth-2">
+        <div class="nav-wrapper bg-dark-blue">
+            <div class="container">
+                <!--Logo div-->
+                <a  href="/" class="brand-logo" style="display: flex;">
+                    <div class="valign-wrapper">
+                        <img src="../../../resources/images/science-logo.png" style="width: 40px; height: 40px"/>
+                        <h5 class="white-text">DeepThought</h5>
+                    </div>
+                </a>
+                <!--Menu icon for mobiles-->
+                <a href="#" data-target="mobile-demo" class="sidenav-trigger" style="font-weight: bold; transform: rotate(90deg)">|||</a>
+    
+                <!--Search div-->
+                <!-- Modal Trigger -->
+                <!--<a class="right modal-trigger" href="#search1" style="padding-top: 7px"><img src="../../../resources/images/search.svg" style="width: 25px; height:25px" /></a>-->
+                <!-- Modal Structure -->
+                <div id="search1" class="modal">
+                    <div class="modal-content">
+                        <form method="post" action="#">
+                            <div class="input-field cyan-text">
+                                <span class="prefix">
+                                    <img src="../../../resources/images/search2.svg" style="height: 30px; width: 30px;margin-top: 10px;"/>
+                                </span>
+                                <input name="search_value" type="text" style="border-bottom: 2px solid cornflowerblue" placeholder="Поиск..."/>
+                                <input class="find_button" style="display: none;" type="submit" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+    
+                <!--Menu div-->
+                <ul id="nav-mobile" class="right hide-on-med-and-down" style="display: flex;">
+                    <li id="feedElement"><a class="white-text" href="/articles">СТАТЬИ</a></li>
+                    <li id="questionElement"><a class="white-text" href="/questions">ВОПРОСЫ</a></li>
+                    <li id="problemsElement"><a class="white-text" href="/problems">ЗАДАЧИ</a></li>
+                    <li id="supportElement"><a class="white-text" href="/support">ПОМОЩЬ</a></li>
+                    <!--Dropdown button-->
+                    <!--<div>-->
+                        <!--<a class="dropdown-trigger options_trigger" href="/profile" data-target="dropdown-profile" style="display: flex;">-->
+                            <!--<img src="../../../resources/images/user.png" style="width: 40px; height: 40px; margin-top: 12px; margin-right: 10px"/>-->
+                            <!--<div>firstName</div>-->
+                        <!--</a>-->
+                        <!--&lt;!&ndash;Dropdown content&ndash;&gt;-->
+                        <!--<ul id="dropdown-profile" class="dropdown-content">-->
+                            <!--<li style="font-weight: 100"><a style="font-weight: 100" href="/profile">Аккаунт</a></li>-->
+                            <!--<li><a href="/settings">Редактировать</a></li>-->
+                            <!--<li><a href="/personalize">Персонализация</a></li>-->
+                            <!--<li class="divider"></li>-->
+                            <!--<li><a href="/logout">Выход</a></li>-->
+                        <!--</ul>-->
+                    <!--</div>-->
+                        <li class="valign-wrapper" >
+                            <a class="btn orange darken-2" id="log-btn" href="/login" >Вход</a>
+                        </li>
+                        <li class="valign-wrapper">
+                            <div class="left-divider"></div>
+                        </li>
+                        <li class="valign-wrapper" >
+                            <a class="btn-flat" href="/register" id="reg-btn">Регистрация</a>
+                        </li>
+                </ul>
+    
+                <!--Для мобилок-->
+                <ul id="mobile-demo" class="sidenav bg-dark-blue center-align">
+                    <!--<div if="${not empty sessionScope.user.firstName}">-->
+                        <img src="../../../resources/images/user.png" style="width: 100px; height: 100px; margin-top: 10px"/>
+                        <li><a class="white-text" href="/profile" >firstName</a></li>
+                    <!--</div>-->
+                    <li><a class="white-text" href="/login">Войти</a></li>
+                    <li><a class="cyan-text text-darken-4" href="/articles">СТАТЬИ</a></li>
+                    <li><a class="cyan-text text-darken-4" href="/questions">ВОПРОСЫ</a></li>
+                    <li><a class="cyan-text text-darken-4" href="/problems">ЗАДАЧИ</a></li>
+                    <li><a class="cyan-text text-darken-4" href="/about">О НАС</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-describe">
+        <div class="container">
+            <div class="row">
+                <div class="left-side col s12 m6">
+                    <h3 class="title">Статьи</h3>
+                    <h5 class="subtitle">Читайте и пишите</h5>
+                    <div class="row" style="margin-top: 20px;">
+                        <form method="get" action="/articles" class="col s12 l8 top-form" style="display: flex;">
+                            <input type="text" class=" top-input" placeholder="Поиск..." style="color: white"/>
+                            <div class="top-input-image">
+                                <img src="../../../resources/images/search.svg"  style=""/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="right-side col s12 m6">
+                    <div class="create-tag">
+                        <a href="/articles/write" class="flat-btn">Создать</a>
+                    </div>
+                    <div class="categories">
+                        <a href="?type=rating" class="cat">Популярное</a>
+                        <a href="?type=date" class="cat">Новые</a>
+                    </div>
+                    <div class="sort-type">
+                        <a href="?sort=0" class="sort"><img src="../../../resources/images/sort-up.png"/></a>
+                        <a href="?sort=1" class="sort"><img src="../../../resources/images/sort-down.png"/></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main" id="main" style="margin-top: -100px;">
+        <div class="container">
+
+            <div class="row">
+                <div class="content col s12 l8" id="post_container" style="padding: 0;">
+
+                    <div class='card hoverable col z-depth-2 s12 l11' style='margin-bottom: 20px;'>
+                        <div class='card-image row' >
+                            <a href="/articles/1"><img class="articleImage" src="../../../resources/images/red_bg.jpg"/></a>
+                        </div>
+                        <div class='card-content' style='margin-top: -40px'>
+                            <h5 class='card-title grey-text text-darken-2' style="word-break: break-all">Post titletitletitletitletitletitletitletitletitletitletitletitletitletitletitle</h5>
+                            <div class="tags">
+                                <div class="chip" style="word-break: break-all">manyadasddsadadadsd</div>
+                            </div>
+                        </div>
+                        <div class="card-action" style="display: flex;padding: 15px 20px 15px 20px">
+                            <div class='views' style='display: flex'>
+                                <h6 class="grey-text" style="margin-left: 15px;" >0</h6>
+                                <img src="../../../resources/images/eye.svg"  style="width: 17px; height: 17px; margin: 13px;margin-left: 5px"/>
+                            </div>
+                            <div class='comments' style='display: flex'>
+                                <h6 class="grey-text" style="margin-left: 15px;">0</h6>
+                                <img src='../../../resources/images/comment.svg' style="width: 17px; height: 17px; margin: 13px;margin-left: 5px"/>
+                            </div>
+                            <a href='/articles/1' class='btn col s5 l3 red waves-effect waves-light'>Читать</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col s12 l4" style="padding-right: 2%">
+                    <!--Случайный факт-->
+                    <div class="row">
+                        <div class="card hoverable fact" style="margin-bottom: 15px">
+                            <div class="card-content" id="fact">
+                                <h6 class="card-title grey-text text-lighten-1" style="font-size: 14px">Интересно знать</h6>
+                                <p id="factText" class="grey-text text-darken-2" style="word-break: break-all">Random fatitletitletitletitletitletitletitletitletitletitletitletitletitletitletitlect text</p>
+                            </div>
+                            <div class="card-action">
+
+                                <div class="chip" style="word-break: break-all">many asdadsdad</div>
+                                <div class="chip">many asdadsdad</div>
+                                <div class="chip">many </div>
+                                <div class="chip">many asdaad</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="valign-wrapper" style="display: flex;">
+                            <img style="width: 20px;height: 20px;" src="../../../resources/images/bookmark-regular.svg"/>
+                            <h5 class="grey-text text-darken-1" style="margin: 0 0 5px 5px;">Теги</h5>
+                        </div>
+                        <div class="divider" style="margin-bottom: 10px;"></div>
+                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many asddadsdadsadsdad</div>
+                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many asdadsdad</div>
+                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many </div>
+                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many </div>
+                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many </div>
+                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many </div>
+                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many </div>
+                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many </div>
+                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many </div>
+                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many asdadsdad</div>
+                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many asdadsdad</div>
+                        <div class="more center-align" style="margin-top: 20px">
+                        <div class="divider"></div>
+                            <div class="center-align" style="margin-top: -13px"><a href="/tags" class="more-button">Ещё <span class="grey-text" style="font-size: 16px;font-weight: bold;">+</span></a></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <ul class="collection with-header hoverable z-depth-2 popularity" style="border: none">
+                            <li class="collection-header center-align" ><h4 style="font-size: 25px" class="grey-text text-darken-1">Рейтинг</h4></li>
+                            <li class="collection-item avatar popular_item valign-wrapper" style="display: flex;border: none">
+                                <a href="/users/1" class="valign-wrapper">
+                                <img src="../../../resources/images/user.png" class="circle">
+                                    <div class="text">
+                                       <p class="grey-text text-darken-2 collection-text">zerodotax2</p>
+                                        <p class="collection-text green-text" style="font-weight: bold">192 068</p>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--Популярное-->
+                    <div class="row">
+                        <ul class="collection with-header hoverable z-depth-2 popularity" style="border: none">
+                            <li class="collection-header center-align" ><h4 style="font-size: 25px" class="grey-text text-darken-1">Популярное</h4></li>
+                            <li class="collection-item avatar popular_item valign-wrapper" style="display: flex;border: none">
+                                <a href="/articles/1" class="valign-wrapper">
+                                <img src="../../../resources/images/beatiful.jpg"  class="circle"/>
+                                    <p class="blue-grey-text text-darken-2 collection-text">Зачем бекенд разработчику знать AngularJS?</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-footer bg-dark-blue">
+        <div class="container">
+            <div class="row">
+                <div class="col s12 l3 left-align">
+                    <h4 class="cyan-text text-lighten-4 unselectable">Аккаунт</h4>
+                    <ul class="left-align">
+                        <li style="margin-bottom: 10px" ><a class="cyan-text bottom_links text-lighten-4"  href="/login">Войти</a></li>
+                        <li style="margin-bottom: 10px"><a class="cyan-text bottom_links text-lighten-4"  href="/register">Зарегистрироваться</a></li>
+                    </ul>
+                </div>
+                <div class="col s12 l3 left-align">
+                    <h4 class="cyan-text text-lighten-4 unselectable">Основное</h4>
+                    <ul class="left-align">
+                        <li style="margin-bottom: 10px" ><a class="cyan-text bottom_links text-lighten-4"  href="/articles">Статьи</a></li>
+                        <li style="margin-bottom: 10px"><a class="cyan-text bottom_links text-lighten-4"  href="/questions">Вопросы</a></li>
+                        <li style="margin-bottom: 10px" ><a class="cyan-text bottom_links text-lighten-4"  href="/problems">Задачи</a></li>
+                        <li style="margin-bottom: 10px"><a class="cyan-text bottom_links text-lighten-4"  href="/support">О нас</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 l5"  style="margin-bottom: 30px">
+                    <h5 class="cyan-text text-lighten-5 unselectable"> О проекте</h5>
+                    <p class="cyan-text text-lighten-4 unselectable">Проект научного сайта, опирающийся на технологии Java EE
+                        и использующий фреймворки JSF, Materialize, написан разработчиком prog_ja.</p>
+                </div>
+                <div class="col s12 offset-l3 l4" style="margin-top: 40px">
+                    <a class="bottom_links" href="https://fb.com"><img src="../../../resources/images/fb.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
+                    <a href="https://vk.com"> <img src="../../../resources/images/vk.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
+                    <a href="https://instagram.com"> <img src="../../../resources/images/instagram.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
+                    <a href="https://twitter.com"> <img src="../../../resources/images/twitter.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container cyan-text center-align text-lighten-3" style="font-size: 12px">
+                © 2018 prog_ja - All rights reserved
+                <a class="right cyan-text text-lighten-3" href="/license">License</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../../resources/js/materialize.min.js"></script>
+    <script src="../../../resources/js/header_script.js"></script>
+    <script src="../../../resources/js/xhr.js"></script>
+    <!--<script src="../../../resources/js/articles.js"/>-->
+</body>
+</html>

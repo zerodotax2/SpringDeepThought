@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html layout:decorate="~{templates/complex_layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:charset="UTF-8">
+<head>
+    <title>Статьи</title>
+    <link rel="stylesheet" th:href="@{/resources/css/articles.css}"/>
+    <link rel="stylesheet" th:href="@{/resources/css/top-panel.css}"/>
+</head>
+<body>
+
+<div layout:fragment="top-panel">
+    <div class="header-describe">
+        <div class="container">
+            <div class="row">
+                <div class="left-side col s12 m6">
+                    <h3 class="title">Статьи</h3>
+                    <h5 class="subtitle">Читайте и пишите</h5>
+                    <div class="row" style="margin-top: 20px;">
+                        <form th:method="get" th:action="@{/articles}" class="col s12 l8 top-form" style="display: flex;">
+                            <input type="text" class=" top-input" placeholder="Поиск..." name="q" style="color: white"/>
+                            <div class="top-input-image">
+                                <img th:src="@{/resources/images/search.svg}" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="right-side col s12 m6">
+                    <div class="create-tag">
+                        <a th:href="@{/articles/write}" class="flat-btn">Создать</a>
+                    </div>
+                    <div class="categories">
+                        <a th:href="@{(type=rating)}" class="cat">Популярное</a>
+                        <a th:href="@{(type=date)}" class="cat">Новые</a>
+                    </div>
+                    <div class="sort-type">
+                        <a th:href="@{(sort=0)}" class="sort"><img th:src="@{/resources/images/sort-up.png}"/></a>
+                        <a th:href="@{(sort=1)}" class="sort"><img th:src="@{/resources/images/sort-down.png}"/></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div layout:fragment="content">
+                <div class="content col s12 l8" id="post_container">
+
+                    <div th:if="${articleList.size==0}" class="col s12 l11 white" style="margin-top: 100px;text-align: center">
+                        <h3 class="grey-text">Результатов не найдено</h3>
+                        <img style="width: 20%;height: 20%;margin-top: 40px;" th:src="@{/resources/images/frown-regular.svg}"/>
+                    </div>
+
+                    <div th:each="article : ${articleList}" class='card col z-depth-2 s12 l10' style='margin-bottom: 20px;'>
+                        <div class='card-image row' >
+                           <a th:href="@{/articles/${article.id}}"><img class="articleImage" th:src="${article.articleImage}"/></a>
+                        </div>
+                        <div class='card-content' style='margin-top: -40px'>
+                            <h5 class='card-title grey-text text-darken-2' th:text="${article.title}"></h5>
+                            <div class="tags">
+                               <a href="#"><div th:each="tag: ${article.tags}" th:text="${tag.name}" th:style="'background:'+${tag.color}+';'" class="chip"></div></a>
+                            </div>
+                        </div>
+                        <div class="card-action" style="display: flex;padding: 15px 20px 0 20px">
+                            <div class='views' style='display: flex'>
+                                <h6 class="grey-text" style="margin-left: 15px;" th:text="${article.views}"></h6>
+                                <img th:src="@{/resources/images/eye.svg}"  style="width: 17px; height: 17px; margin: 13px;margin-left: 5px"/>
+                            </div>
+                            <div class='comments' style='display: flex'>
+                                <h6 class="grey-text" style="margin-left: 15px;" th:text="${article.createDate}"></h6>
+                                <img th:src='@{/resources/images/date.svg}' style="width: 17px; height: 17px; margin: 13px;margin-left: 5px"/>
+                            </div>
+                            <a th:href='@{/articles/${article.id}}' class='btn col s5 l3 red waves-effect waves-light'>Читать</a>
+                        </div>
+                    </div>
+
+                </div>
+    </div>
+
+    <th:block layout:fragment="js">
+        <script th:src="@{/resources/js/articles.js}"></script>
+    </th:block>
+</body>
+</html>
