@@ -1,19 +1,13 @@
 package ru.projects.prog_ja.model.entity.questions;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-import ru.projects.prog_ja.model.entity.answer.Answer;
-
 import javax.persistence.*;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "QuestionContent")
 public class QuestionContent {
     private long questionId;
     private String htmlContent;
-    private Set<Answer> answers;
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_content_id")
@@ -55,15 +49,6 @@ public class QuestionContent {
         return Objects.hash(questionId);
     }
 
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany( cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "questionContent", orphanRemoval = true)
-    public Set<Answer> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(Set<Answer> answers) {
-        this.answers = answers;
-    }
 
 
 }

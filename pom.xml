@@ -13,7 +13,7 @@
     <properties>
         <maven.compile.source>1.8</maven.compile.source>
         <maveb.compile.target>1.8</maveb.compile.target>
-        <spring.version>5.0.8.RELEASE</spring.version>
+        <spring.version>5.1.2.RELEASE</spring.version>
         <hibernate.version>5.3.4.Final</hibernate.version>
         <mysql.version>8.0.12</mysql.version>
         <cglib.version>3.2.7</cglib.version>

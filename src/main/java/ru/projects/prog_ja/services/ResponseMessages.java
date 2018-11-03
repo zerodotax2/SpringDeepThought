@@ -72,6 +72,14 @@ public abstract class ResponseMessages {
     }
 
     /**
+     * Операция выполнена успешно
+     * */
+    protected <T> ResponseEntity<T> ok(){
+
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    /**
      * Объект не был найден
      * */
     protected ResponseEntity<ResponseMessageDTO> notFound(){

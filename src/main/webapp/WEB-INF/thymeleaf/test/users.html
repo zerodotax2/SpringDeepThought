@@ -14,10 +14,12 @@
     <link rel="stylesheet" href="../../../resources/css/typography.css"/>
     <link rel="stylesheet" href="../../../resources/css/header.css"/>
     <link rel="stylesheet" href="../../../resources/css/right-panel.css"/>
-    <link rel="stylesheet" href="../../../resources/css/top-panel.css"/>
+    <link rel="stylesheet" href="../../../resources/css/function_panel.css"/>
     <link rel="stylesheet" href="../../../resources/css/users.css"/>
 
-
+    <meta id="fileServerLocation" content="http://localhost:80"/>
+    <meta id="_csrf_header" content="csrf"/>
+    <meta id="_csrf" content="0"/>
     <!--Top icon-->
     <link rel="shortcut icon" href="../../../resources/images/icon2.ico" type="image/x-icon"/>
     <meta charset="UTF-8">
@@ -31,7 +33,7 @@
                 <!--Logo div-->
                 <a  href="/" class="brand-logo" style="display: flex;">
                     <div class="valign-wrapper">
-                        <img src="../../../resources/images/science-logo.png" style="width: 40px; height: 40px"/>
+                        <img src="../../../resources/images/logo.png" style="width: 40px; height: 40px"/>
                         <h5 class="white-text">DeepThought</h5>
                     </div>
                 </a>
@@ -106,92 +108,115 @@
         </div>
     </div>
 
-    <div class="top-panel center-align" style="padding: 0;">
-        <div class="mid" style="padding-top: 70px;">
-            <h2 class="grey-text text-lighten-3" style="margin: 0 0 20px 0;"> Пользователи </h2>
-            <h5 class="grey-text ">Найдите кого угодно</h5>
-            <div class="container" style="margin-top: 50px;">
-                <div class="row"  >
-                    <form method="post" action="/articles" class="col s12 l4 offset-l4" style="display: flex;">
-                        <input type="text" class="col s10 top-input" placeholder="Поиск..." style="color: white"/>
-                        <div class="col s2" style="height: 35px;border-radius: 0 20px 20px 0;background: gray;padding: 8px 0 0;">
-                            <img src="../../../resources/images/search.svg"  style="width: 18px;height: 18px;"/>
-                        </div>
-                    </form>
-                <div class="categories col s12">
-                    <a href="/users?type=rating">Рейтинг</a>
-                    <a href="/users?type=new">Новые пользователи</a>
-                    <a href="/users?type=moder">Модераторы</a><br class="arrow-show">
-                    <a href="?type=asc" class="sort-arrow"><img src="../../../resources/images/sort-up.png" style="width: 20px;height: 20px;margin-bottom: -5px;"/></a>
-                    <a href="?type=desc" class="sort-arrow"><img src="../../../resources/images/sort-down.png" style="width: 20px;height: 20px;margin-bottom: -5px;"/></a>
-                </div>
-                </div>
-            </div>
+    <div class="top-panel">
+        <div class="text-panel">
+            <h1>Пользователи</h1>
+            <h4 class="grey-text text-lighten-3">Найдите кого угодно</h4>
         </div>
     </div>
+
     <div class="main" id="main">
         <div class="container" style="margin-top: -90px;">
 
             <div class="row">
-                <div class="content col s12 l8" id="users_container" style="padding: 0;">
-                    <a href="/users/1" class="hoverable card col s12 l3" style="margin: 0 5% 3% 0;">
-                        <div class="card-image user-image row" style="margin-bottom: 0;max-height: 115%;max-width: 115%">
-                            <img src="../../../resources/images/ava.jpg"/>
+                <div class="content col s12 l8" id="users_container" style="padding: 0 10px;">
+
+                    <div class="function-panel">
+                        <div class="card">
+                            <div class="card-content" >
+                                <form action="" method="get" id="sort-form" onsubmit="removeEmptyFields()">
+                                    <div class="search-div">
+                                        <input class="search-input" name="q" type="text" placeholder="Поиск"/>
+                                    </div>
+                                    <div class="options">
+                                        <div class="category-element">
+                                            <div id="sort-btn" content="sort-content" class="category-btn btn-flat">
+                                                Сортировка<svg aria-hidden="true" data-prefix="fas" data-icon="caret-down" class="svg-inline--fa fa-caret-down fa-w-10" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path></svg>
+                                            </div>
+                                            <div id="sort-content" class="category-content z-depth-2">
+                                                <div datatype="sort" class="category-select" content="0">По возрастанию</div>
+                                                <div datatype="sort" class="category-select" content="1">По убыванию</div>
+                                                <input type="hidden" name="sort"/>
+                                            </div>
+                                        </div>
+                                        <div class="category-element">
+                                            <div id="type-btn" content="type-content" class="category-btn btn-flat">
+                                                Тип<svg aria-hidden="true" data-prefix="fas" data-icon="caret-down" class="svg-inline--fa fa-caret-down fa-w-10" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path></svg>
+                                            </div>
+                                            <div id="type-content" class="category-content z-depth-2">
+                                                <div datatype="type" class="category-select" content="rating">Рейтинг</div>
+                                                <div datatype="type" class="category-select" content="date">Новые</div>
+                                                <div datatype="type" class="category-select" content="moder">Модераторы</div>
+                                                <input type="hidden" name="type"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="small-helpers">
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-title user-title center grey-text text-darken-2" style="padding: 0;">zerodotax2</div>
-                        <div class="card-content center orange-text text-darken-2" style="padding: 0 0 10px 0;">
-                            196 251
-                        </div>
-                    </a>
+                    </div>
+
+                    <div class="users-container">
+                        <a href="/users/1" class="user">
+                            <div class="ava"><img src="../../../resources/images/ava.jpg" /></div>
+                            <div class="info">
+                                <div class="login">zerodotax2</div>
+                                <div class="rating">
+                                    <svg aria-hidden="true" data-prefix="fas" data-icon="star" class="svg-inline--fa fa-star fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#ffcb05" d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"></path></svg>
+                                    <span>192 600</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
                 </div>
-                <div class="col s12 l4" style="padding-right: 2%;">
+                <div class="col s12 l4 nav-panel">
                     <!--Случайный факт-->
                     <div class="row">
-                        <div class="card hoverable fact" style="margin-bottom: 15px">
+                        <div class="card hoverable fact" content="1">
                             <div class="card-content" id="fact">
                                 <h6 class="card-title grey-text text-lighten-1" style="font-size: 14px">Интересно знать</h6>
                                 <p id="factText" class="grey-text text-darken-2" style="word-break: break-all">Random fatitletitletitletitletitletitletitletitletitletitletitletitletitletitletitlect text</p>
                             </div>
                             <div class="card-action">
-
-                                <div class="chip" style="word-break: break-all">many asdadsdad</div>
-                                <div class="chip">many asdadsdad</div>
-                                <div class="chip">many </div>
-                                <div class="chip">many asdaad</div>
+                                <a href="/tags/1" class="chip" style="background: #F9690E">Программирование</a>
+                                <a href="/tags/1" class="chip" style="background: #F9690E">Химия</a>
+                                <a href="/tags/1" class="chip" style="background: #F9690E">Физика</a>
+                                <a href="/tags/1" class="chip" style="background: #F9690E">Информатика</a>
+                                <a href="/tags/1" class="chip" style="background: #F9690E">Дискретка</a>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="valign-wrapper" style="display: flex;">
-                            <img style="width: 20px;height: 20px;" src="../../../resources/images/bookmark-regular.svg"/>
-                            <h5 class="grey-text text-darken-1" style="margin: 0 0 5px 5px;">Теги</h5>
+                    <div class="row left-tags">
+                        <div class="valign-wrapper">
+                            <svg class="tag-img" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="#757575" d="M336 0H48C21.49 0 0 21.49 0 48v464l192-112 192 112V48c0-26.51-21.49-48-48-48zm0 428.43l-144-84-144 84V54a6 6 0 0 1 6-6h276c3.314 0 6 2.683 6 5.996V428.43z"></path></svg>
+                            <h5>Теги</h5>
                         </div>
                         <div class="divider" style="margin-bottom: 10px;"></div>
-                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many asddadsdadsadsdad</div>
-                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many asdadsdad</div>
-                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many </div>
-                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many </div>
-                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many </div>
-                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many </div>
-                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many </div>
-                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many </div>
-                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many </div>
-                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many asdadsdad</div>
-                        <div class="chip" style="word-break: break-all;overflow-x: hidden">many asdadsdad</div>
-                        <div class="more center-align" style="margin-top: 20px">
+                        <a href="/tags/1" class="chip" style="background: #F9690E">Программирование</a>
+                        <a href="/tags/1" class="chip" style="background: #F9690E">Химия</a>
+                        <a href="/tags/1" class="chip" style="background: #F9690E">Физика</a>
+                        <a href="/tags/1" class="chip" style="background: #F9690E">Информатика</a>
+                        <a href="/tags/1" class="chip" style="background: #F9690E">Дискретка</a>
+                        <div class="more center-align">
                             <div class="divider"></div>
-                            <div class="center-align" style="margin-top: -13px"><a href="/tags" class="more-button">Ещё <span class="grey-text" style="font-size: 16px;font-weight: bold;">+</span></a></div>
+                            <div class="tag-more"><a href="/tags" class="more-button">Ещё</a></div>
                         </div>
                     </div>
                     <div class="row">
-                        <ul class="collection with-header hoverable z-depth-2 popularity" style="border: none">
-                            <li class="collection-header center-align" ><h4 style="font-size: 25px" class="grey-text text-darken-1">Рейтинг</h4></li>
-                            <li class="collection-item avatar popular_item valign-wrapper" style="display: flex;border: none">
-                                <a href="/users/1" class="valign-wrapper">
-                                    <img src="../../../resources/images/user.png" class="circle">
+                        <ul class="collection with-header hoverable z-depth-2 popularity">
+                            <li class="collection-header"><h4>Рейтинг</h4></li>
+                            <li class="collection-item avatar popular_item">
+                                <a href="/users/1">
+                                    <img src="../../../resources/images/user.png" class="circle"/>
                                     <div class="text">
-                                        <p class="grey-text text-darken-2 collection-text">zerodotax2</p>
-                                        <p class="collection-text green-text" style="font-weight: bold">192 068</p>
+                                        <p class="collection-text login">zerodotax2</p>
+                                        <p class="collection-text rating">
+                                            <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#ffcb05" d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"></path></svg>
+                                            <span>192 000</span>
+                                        </p>
                                     </div>
                                 </a>
                             </li>
@@ -200,67 +225,52 @@
                     <!--Популярное-->
                     <div class="row">
                         <ul class="collection with-header hoverable z-depth-2 popularity" style="border: none">
-                            <li class="collection-header center-align" ><h4 style="font-size: 25px" class="grey-text text-darken-1">Популярное</h4></li>
-                            <li class="collection-item avatar popular_item valign-wrapper" style="display: flex;border: none">
-                                <a href="/articles/1" class="valign-wrapper">
+                            <li class="collection-header center-align" ><h4 >Популярное</h4></li>
+                            <li class="collection-item avatar popular_item">
+                                <a href="/articles/1">
                                     <img src="../../../resources/images/beatiful.jpg"  class="circle"/>
-                                    <p class="blue-grey-text text-darken-2 collection-text">Зачем бекенд разработчику знать AngularJS?</p>
+                                    <p class="collection-text">Зачем бекенд разработчику знать AngularJS?</p>
                                 </a>
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
-
+            </div>
         </div>
     </div>
 
-
-    <div class="page-footer bg-dark-blue">
+    <div class="footer">
         <div class="container">
             <div class="row">
-                <div class="col s12 l3 left-align">
-                    <h4 class="cyan-text text-lighten-4 unselectable">Аккаунт</h4>
-                    <ul class="left-align">
-                        <li style="margin-bottom: 10px" ><a class="cyan-text bottom_links text-lighten-4"  href="/login">Войти</a></li>
-                        <li style="margin-bottom: 10px"><a class="cyan-text bottom_links text-lighten-4"  href="/register">Зарегистрироваться</a></li>
-                    </ul>
+                <div class="col s12 footer-container">
+                    <div class="left">
+                        <div>Copyright © 2018 DeepThought |</div>
+                        <a href="/license">License</a>
+                    </div>
+                    <div class="right">
+                        <a href="https://vk.com/prog_ja">
+                            <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#ffffff" d="M545 117.7c3.7-12.5 0-21.7-17.8-21.7h-58.9c-15 0-21.9 7.9-25.6 16.7 0 0-30 73.1-72.4 120.5-13.7 13.7-20 18.1-27.5 18.1-3.7 0-9.4-4.4-9.4-16.9V117.7c0-15-4.2-21.7-16.6-21.7h-92.6c-9.4 0-15 7-15 13.5 0 14.2 21.2 17.5 23.4 57.5v86.8c0 19-3.4 22.5-10.9 22.5-20 0-68.6-73.4-97.4-157.4-5.8-16.3-11.5-22.9-26.6-22.9H38.8c-16.8 0-20.2 7.9-20.2 16.7 0 15.6 20 93.1 93.1 195.5C160.4 378.1 229 416 291.4 416c37.5 0 42.1-8.4 42.1-22.9 0-66.8-3.4-73.1 15.4-73.1 8.7 0 23.7 4.4 58.7 38.1 40 40 46.6 57.9 69 57.9h58.9c16.8 0 25.3-8.4 20.4-25-11.2-34.9-86.9-106.7-90.3-111.5-8.7-11.2-6.2-16.2 0-26.2.1-.1 72-101.3 79.4-135.6z"></path></svg>
+                        </a>
+                        <a href="https://github.com/zerodotax2">
+                            <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="#ffffff" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg>
+                        </a>
+                        <a href="https://www.facebook.com/zerodotax2">
+                            <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#ffffff" d="M448 56.7v398.5c0 13.7-11.1 24.7-24.7 24.7H309.1V306.5h58.2l8.7-67.6h-67v-43.2c0-19.6 5.4-32.9 33.5-32.9h35.8v-60.5c-6.2-.8-27.4-2.7-52.2-2.7-51.6 0-87 31.5-87 89.4v49.9h-58.4v67.6h58.4V480H24.7C11.1 480 0 468.9 0 455.3V56.7C0 43.1 11.1 32 24.7 32h398.5c13.7 0 24.8 11.1 24.8 24.7z"></path></svg>
+                        </a>
+                    </div>
                 </div>
-                <div class="col s12 l3 left-align">
-                    <h4 class="cyan-text text-lighten-4 unselectable">Основное</h4>
-                    <ul class="left-align">
-                        <li style="margin-bottom: 10px" ><a class="cyan-text bottom_links text-lighten-4"  href="/articles">Статьи</a></li>
-                        <li style="margin-bottom: 10px"><a class="cyan-text bottom_links text-lighten-4"  href="/questions">Вопросы</a></li>
-                        <li style="margin-bottom: 10px" ><a class="cyan-text bottom_links text-lighten-4"  href="/problems">Задачи</a></li>
-                        <li style="margin-bottom: 10px"><a class="cyan-text bottom_links text-lighten-4"  href="/support">О нас</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12 l5"  style="margin-bottom: 30px">
-                    <h5 class="cyan-text text-lighten-5 unselectable"> О проекте</h5>
-                    <p class="cyan-text text-lighten-4 unselectable">Проект научного сайта, опирающийся на технологии Java EE
-                        и использующий фреймворки JSF, Materialize, написан разработчиком prog_ja.</p>
-                </div>
-                <div class="col s12 offset-l3 l4" style="margin-top: 40px">
-                    <a class="bottom_links" href="https://fb.com"><img src="../../../resources/images/fb.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
-                    <a href="https://vk.com"> <img src="../../../resources/images/vk.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
-                    <a href="https://instagram.com"> <img src="../../../resources/images/instagram.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
-                    <a href="https://twitter.com"> <img src="../../../resources/images/twitter.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-copyright">
-            <div class="container cyan-text center-align text-lighten-3" style="font-size: 12px">
-                © 2018 prog_ja - All rights reserved
-                <a class="right cyan-text text-lighten-3" href="/license">License</a>
             </div>
         </div>
     </div>
     
     <script src="../../../resources/js/materialize.min.js"></script>
     <script src="../../../resources/js/header_script.js"></script>
+    <script src="../../../resources/js/generic.js"></script>
     <script src="../../../resources/js/xhr.js"></script>
-    <script src="../../../resources/js/users.js"/>
+    <script src="../../../resources/js/modal.js"></script>
+    <script src="../../../resources/js/function_panel.js"></script>
+    <script src="../../../resources/js/right_panel.js"></script>
+    <script src="../../../resources/js/users.js"></script>
 </body>
 </html>

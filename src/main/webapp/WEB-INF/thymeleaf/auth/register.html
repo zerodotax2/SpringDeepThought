@@ -10,67 +10,56 @@
 <body>
 
     <div layout:fragment="content">
-        <div class="row">
-            <div class="col s12 offset-l2 l8 reg_panel z-depth-5" >
-                <div class="row top_logo center-align">
-                    <img th:src="@{/resources/images/science-logo.png}" class="reg_img"/>
-                    <div class="center-align" style="padding: 10px;">
-                        <h4 class="white-text header_reg">Зарегистрируйтесь</h4>
-                        <h6 class="white-text header_reg2">и получите больше возможностей</h6>
+        <div class="row form-wrapper">
+            <form th:action="@{/register}" method="POST" th:object="${createUserDTO}" class="reg-form">
+                <div class="head">
+                    <img th:src="@{/resources/images/logo.png}"/>
+                    <span>DeepThought</span>
+                </div>
+                <div class="content">
+                    <div class="input-field">
+                        <svg class="prefix" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#adb5bd" d="M319.4 320.6L224 416l-95.4-95.4C57.1 323.7 0 382.2 0 454.4v9.6c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-9.6c0-72.2-57.1-130.7-128.6-133.8zM13.6 79.8l6.4 1.5v58.4c-7 4.2-12 11.5-12 20.3 0 8.4 4.6 15.4 11.1 19.7L3.5 242c-1.7 6.9 2.1 14 7.6 14h41.8c5.5 0 9.3-7.1 7.6-14l-15.6-62.3C51.4 175.4 56 168.4 56 160c0-8.8-5-16.1-12-20.3V87.1l66 15.9c-8.6 17.2-14 36.4-14 57 0 70.7 57.3 128 128 128s128-57.3 128-128c0-20.6-5.3-39.8-14-57l96.3-23.2c18.2-4.4 18.2-27.1 0-31.5l-190.4-46c-13-3.1-26.7-3.1-39.7 0L13.6 48.2c-18.1 4.4-18.1 27.2 0 31.6z"></path></svg>
+                        <label for="login">Логин</label>
+                        <input type="text" th:field="*{login}" id="login" name="login"/>
+                        <span style="display: none;" class="error red-text" id="login_error"></span>
+                        <span th:if="${#fields.hasErrors('login')}" th:errors="*{login}" class=".server-error error red-text" id="login_error"></span>
+                    </div>
+                    <div class="input-field">
+                        <svg class="prefix"  role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#adb5bd" d="M512 176.001C512 273.203 433.202 352 336 352c-11.22 0-22.19-1.062-32.827-3.069l-24.012 27.014A23.999 23.999 0 0 1 261.223 384H224v40c0 13.255-10.745 24-24 24h-40v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-78.059c0-6.365 2.529-12.47 7.029-16.971l161.802-161.802C163.108 213.814 160 195.271 160 176 160 78.798 238.797.001 335.999 0 433.488-.001 512 78.511 512 176.001zM336 128c0 26.51 21.49 48 48 48s48-21.49 48-48-21.49-48-48-48-48 21.49-48 48z"></path></svg>
+                        <label  for="password">Пароль</label>
+                        <input th:field="*{[]assword}" type="password" id="password" name="password"/>
+                        <span style="display: none;" class="error red-text" id="password_error"></span>
+                        <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class=".server-error error red-text" id="login_error"></span>
+                    </div>
+                    <div class="input-field">
+                        <svg class="prefix" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#b1b1b1" d="M500.333 0h-47.411c-6.853 0-12.314 5.729-11.986 12.574l3.966 82.759C399.416 41.899 331.672 8 256.001 8 119.34 8 7.899 119.526 8 256.187 8.101 393.068 119.096 504 256 504c63.926 0 122.202-24.187 166.178-63.908 5.113-4.618 5.354-12.561.482-17.433l-33.971-33.971c-4.466-4.466-11.64-4.717-16.38-.543C341.308 415.448 300.606 432 256 432c-97.267 0-176-78.716-176-176 0-97.267 78.716-176 176-176 60.892 0 114.506 30.858 146.099 77.8l-101.525-4.865c-6.845-.328-12.574 5.133-12.574 11.986v47.411c0 6.627 5.373 12 12 12h200.333c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12z"></path></svg>
+                        <label for="confirm-password">Повторите пароль</label>
+                        <input th:field="*{confirmPassword}" type="password" id="confirm-password" name="confirm-password"/>
+                        <span style="display: none;" class="error red-text" id="confirm_password_error"></span>
+                        <span th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"  class=".server-error error red-text" id="login_error"></span>
+                    </div>
+                    <div class="input-field">
+                        <svg class="prefix" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#adb5bd" d="M256 8C118.941 8 8 118.919 8 256c0 137.059 110.919 248 248 248 48.154 0 95.342-14.14 135.408-40.223 12.005-7.815 14.625-24.288 5.552-35.372l-10.177-12.433c-7.671-9.371-21.179-11.667-31.373-5.129C325.92 429.757 291.314 440 256 440c-101.458 0-184-82.542-184-184S154.542 72 256 72c100.139 0 184 57.619 184 160 0 38.786-21.093 79.742-58.17 83.693-17.349-.454-16.91-12.857-13.476-30.024l23.433-121.11C394.653 149.75 383.308 136 368.225 136h-44.981a13.518 13.518 0 0 0-13.432 11.993l-.01.092c-14.697-17.901-40.448-21.775-59.971-21.775-74.58 0-137.831 62.234-137.831 151.46 0 65.303 36.785 105.87 96 105.87 26.984 0 57.369-15.637 74.991-38.333 9.522 34.104 40.613 34.103 70.71 34.103C462.609 379.41 504 307.798 504 232 504 95.653 394.023 8 256 8zm-21.68 304.43c-22.249 0-36.07-15.623-36.07-40.771 0-44.993 30.779-72.729 58.63-72.729 22.292 0 35.601 15.241 35.601 40.77 0 45.061-33.875 72.73-58.161 72.73z"></path></svg>
+                        <label for="email">E-mail</label>
+                        <input th:field="*{email}" type="email" id="email" name="email"/>
+                        <span style="display: none;" class="error red-text" id="email_error"></span>
+                        <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class=".server-error error red-text" id="login_error"></span>
                     </div>
                 </div>
-                <form class="reg_form" method="post" action="#" th:action="@{/register}" th:object="${createUserDTO}">
-                        <div class="row center-align">
-                            <span th:if="${error!=null}" th:text="${'Не удалось зарегистрироваться'}" class="red-text text-lighten-2"></span>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <img class="prefix" th:src="@{/resources/images/user_login.png}" style="width: 30px;height: 30px; margin-top: 5px;"/>
-                                <input type="text" th:field="*{login}" id="login" class="login_input"/>
-                                <label for="login">Придумайте login</label>
-                                <span th:if="${#fields.hasErrors('login')}" th:errors="*{login}" id="login_temp" class="helper-text red-text text-lighten-2" ></span>
-                                <span data-success="" data-error="" class="helper-text login_text red-text text-lighten-2" ></span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12 l6">
-                                <img class="prefix" th:src="@{/resources/images/user_password.png}" style="width: 30px;height: 30px; margin-top: 5px;"/>
-                                <input th:field="*{password}" type="password" id="pass" class="p_input"/>
-                                <label for="pass">Пароль</label>
-                                <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" id="password_temp" class="helper-text red-text text-lighten-2" ></span>
-                                <span data-success="" data-error="" class="helper-text password_text red-text text-lighten-2" ></span>
-                            </div>
-                            <div class="input-field col s12 l6">
-                                <input th:field="*{confirmPassword}" type="password" id="cpass"  class="pc_input"/>
-                                <label for="cpass" >Подтвердите пароль</label>
-                                <span th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" id="cpassword_temp" class="helper-text red-text text-lighten-2" ></span>
-                                <span data-success="" data-error="" class="helper-text cpassword_text red-text text-lighten-2" ></span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12 l6">
-                                <img class="prefix" th:src="@{/resources/images/user_email.png}" style="width: 30px;height: 30px; margin-top: 5px;"/>
-                                <input th:field="*{email}" id="email_id" class="email_input"/>
-                                <label for="email_id">Email</label>
-                                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" id="email_temp" class="helper-text red-text text-lighten-2" ></span>
-                                <span data-success="" data-error="" class="helper-text email_text red-text text-lighten-2" ></span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <input type="submit" value="Зарегистрироваться" class="btn col s12 offset-l2 l6"/>
-                            <div class="col s12 l4 center-align switch" style="padding-top: 7px;">
-                                <label>
-                                    <input type="checkbox" th:field="*{createCookie}" name="remember" class="" checked="checked" />
-                                    <span>Запомнить меня</span>
-                                </label>
-                            </div>
-                        </div>
-                </form>
-            </div>
+                <div class="actions">
+                    <div class="send">
+                        <input type="button" value="Зарегистрироваться"/>
+                    </div>
+                    <div class="already-register">
+                        <span>Уже зарегистрированы?</span>
+                        <a th:href="@{/login}" class="blue-text">Войти</a>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
     <th:block layout:fragment="js">
-        <script th:src="@{/resources/js/register_script.js}"></script>
+        <script th:src="@{/resources/js/register.js}"></script>
     </th:block>
 </body>
 </html>

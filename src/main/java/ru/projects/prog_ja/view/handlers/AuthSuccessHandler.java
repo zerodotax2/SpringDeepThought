@@ -4,13 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-import ru.projects.prog_ja.dto.smalls.SmallUserTransfer;
-import ru.projects.prog_ja.logic.services.interfaces.TokenService;
-import ru.projects.prog_ja.logic.services.interfaces.UserService;
-import ru.projects.prog_ja.logic.util.CookieUtil;
+import ru.projects.prog_ja.dto.UserDTO;
+import ru.projects.prog_ja.logic.services.transactional.interfaces.UserReadService;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -21,11 +17,11 @@ import java.io.IOException;
 @Component
 public class AuthSuccessHandler implements AuthenticationSuccessHandler {
 
-    private UserService userService;
+    private UserReadService userReadService;
 
 
-    public AuthSuccessHandler(@Autowired UserService userService){
-        this.userService = userService;
+    public AuthSuccessHandler(@Autowired UserReadService userReadService){
+        this.userReadService = userReadService;
     }
 
     /**
@@ -33,23 +29,24 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
      * чтобы отображать их на странице
      * */
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
+                                        Authentication authentication) throws IOException {
 
         String login = authentication.getName();
 
-        SmallUserTransfer userTransfer = userService.getUserByLogin(login);
+        UserDTO userTransfer = userReadService.getUserByLogin(login);
         if(userTransfer == null){
             authentication.setAuthenticated(false);
-            httpServletResponse.sendRedirect("/login");
+            httpServletResponse.sendRedirect("/login?error=true");
             return;
         }
 
         /**
          * Также при авторизации добавляем к пользователю секретный токен
          * */
-        if(!userService.createUserToken(userTransfer.getId(), httpServletResponse)){
+        if(!userReadService.createUserToken(userTransfer.getId(), httpServletResponse)){
             authentication.setAuthenticated(false);
-            httpServletResponse.sendRedirect("/login");
+            httpServletResponse.sendRedirect("/login?error=true");
             return;
         }
 

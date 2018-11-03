@@ -1,6 +1,5 @@
 <component name="libraryTable">
-  <library name="org.thymeleaf.extras:thymeleaf-extras-java8time:Release" type="repository">
-    <properties maven-id="org.thymeleaf.extras:thymeleaf-extras-java8time:RELEASE" />
+  <library name="org.thymeleaf.extras:thymeleaf-extras-java8time:Release">
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/org/thymeleaf/extras/thymeleaf-extras-java8time/3.0.1.RELEASE/thymeleaf-extras-java8time-3.0.1.RELEASE.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/org/thymeleaf/thymeleaf/3.0.0.RELEASE/thymeleaf-3.0.0.RELEASE.jar!/" />

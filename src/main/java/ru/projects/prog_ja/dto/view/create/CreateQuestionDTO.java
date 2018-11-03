@@ -1,38 +1,30 @@
 package ru.projects.prog_ja.dto.view.create;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
+import java.util.List;
 
 public class CreateQuestionDTO {
 
     @NotNull
     @Min(value = 5, message = "Заголовок не может быть меньше 5 символов")
     @Max(value = 50, message = "Максимальная длина заголовка - 50 символов")
-    @Pattern(regexp = "^[A-z|1-9|\\-|А-я]+$", message = "Неверный формат названия")
+    @Pattern(regexp = "^[\\w|\\s]+$", message = "Неверный формат названия")
     private String title;
 
     @NotNull
     private String htmlContent;
 
     @NotNull
-    @Min(value = 17, message = "Должно быть не меньше 3-х тегов")
-    @Max(value = 29, message = "Максимальное кол-во тегов - 5")
-    private String tagsSTR;
-
-    @NotNull
-    @Pattern(regexp = "^\\d+$")
-    private long userId;
+    @Size(min = 3, max = 5)
+    private List<Long> tags;
 
     public CreateQuestionDTO() {
     }
 
-    public CreateQuestionDTO(String title, String htmlContent, String tagsSTR, long userId) {
+    public CreateQuestionDTO(String title, String htmlContent, List<Long> tags) {
         this.title = title;
         this.htmlContent = htmlContent;
-        this.tagsSTR = tagsSTR;
-        this.userId = userId;
+        this.tags = tags;
     }
 
     public String getTitle() {
@@ -51,19 +43,11 @@ public class CreateQuestionDTO {
         this.htmlContent = htmlContent;
     }
 
-    public String getTagsSTR() {
-        return tagsSTR;
+    public List<Long> getTags() {
+        return tags;
     }
 
-    public void setTagsSTR(String tagsSTR) {
-        this.tagsSTR = tagsSTR;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setTags(List<Long> tags) {
+        this.tags = tags;
     }
 }

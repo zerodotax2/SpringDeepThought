@@ -1,13 +1,3 @@
-/*!
- * Waves v0.6.0
- * http://fian.my.id/Waves
- *
- * Copyright 2014 Alfiana E. Sibuea and other contributors
- * Released under the MIT license
- * https://github.com/fians/Waves/blob/master/LICENSE
- */
-
-
 .waves-effect {
   position: relative;
   cursor: pointer;
@@ -86,18 +76,72 @@
 .waves-effect .waves-ripple {
   z-index: -1; }
 
-
-
-body {
-  background: url("/resources/images/bg_red2.jpg") no-repeat center/cover;
-  background-attachment: fixed;
+.top-panel{
+  min-height: 300px;
+  background: url("../images/blue-bg.jpg") no-repeat center / cover ;
+  display: flex;
+  align-items: center;
+  flex-flow: column;
+  justify-content: start;
 }
-
+.top-panel .text-panel{
+  color: white;
+  text-align: center;
+}
+.top-panel .text-panel h1{
+  margin: 20px 0 0 0;
+}
+.top-panel .create{
+  padding: 10px 40px;
+  margin-top: 15px;
+  border-radius: 20px;
+  transition-duration: 0.3s;
+  border: 2px solid white;
+  color: white;
+}
+.top-panel .create:hover{
+  background: white;
+  color: #006564;
+  box-shadow: 0 0 10px #014948;
+  transform: translateY(-5px);
+}
 .top-feed{
   border-radius: 10px;
   text-align: center;
   color: #B5B5B5;
 }
+#post_container .card{
+  margin-bottom: 20px;
+}
+#post_container .card .card-content{
+  margin-top: -40px;
+}
+#post_container .card .card-content .card-title{
+  word-break: break-all;
+}
+#post_container .card .card-action{
+  display: flex;
+  padding: 15px 20px 15px 20px;
+}
+#post_container .card .card-action .action-stat{
+  display: flex;
+}
+#post_container .card .card-action .action-stat h6{
+  margin-left: 15px;
+}
+#post_container .card .card-action .action-stat svg{
+  width: 17px;
+  height: 17px;
+  margin: 13px;
+  margin-left: 5px;
+}
+@media (max-device-width: 600px) {
+  .top-panel h1{
+    margin-top: 30px !important;
+    font-size: 50px;
+  }
+  .top-panel h4{
+    font-size: 20px;
+  }
+}
 
-
-/*# sourceMappingURL=articles.css.map */

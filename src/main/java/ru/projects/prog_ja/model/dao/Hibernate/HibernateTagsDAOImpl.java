@@ -13,6 +13,7 @@ import ru.projects.prog_ja.dto.smalls.SmallTagTransfer;
 import ru.projects.prog_ja.model.dao.TagsDAO;
 import ru.projects.prog_ja.model.entity.tags.TagCounter;
 import ru.projects.prog_ja.model.entity.tags.Tags;
+import ru.projects.prog_ja.model.entity.user.UserInbox;
 import ru.projects.prog_ja.model.entity.user.UserInfo;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -23,7 +24,6 @@ import java.util.List;
 
 @Repository
 @Scope(scopeName = "prototype")
-@Transactional(propagation = Propagation.REQUIRED)
 public class HibernateTagsDAOImpl extends GenericDAO implements TagsDAO {
 
 
@@ -32,12 +32,21 @@ public class HibernateTagsDAOImpl extends GenericDAO implements TagsDAO {
     }
 
     @Override
-    public void delete(long id) {
+    public boolean removeTag(long tagId, long userId) {
+        try{
+            Session session = session();
+            UserInfo user = session.load(UserInfo.class, userId);
+            if(user == null){
+                return false;
+            }
 
-        session().createNamedQuery(Tags.DELETE_TAG)
-                .setParameter("id", id)
-                .executeUpdate();
-
+            return session.createNamedQuery(Tags.DELETE_TAG)
+                    .setParameter("id", tagId)
+                    .setParameter("user", user)
+                    .executeUpdate() !=0;
+        }catch (Exception e){
+            return false;
+        }
     }
 
     /**
@@ -69,36 +78,46 @@ public class HibernateTagsDAOImpl extends GenericDAO implements TagsDAO {
     }
 
     @Override
-    public long createTag(String name, String description, String color, long userId) {
+    public CommonTagTransfer createTag(String name, String description, String color, long userId) {
 
-        Session session = session();
+        try {
+            Session session = session();
 
-        UserInfo user = session.load(UserInfo.class, userId);
-        if(user == null){
-            return 0;
+            UserInfo user = session.load(UserInfo.class, userId);
+            if(user == null){
+                return null;
+            }
+
+            Tags tags = new Tags(name, description, color, user);
+
+            return getCommonTag((long) session().save(tags));
+        }catch (Exception e){
+            return null;
         }
-
-        Tags tags = new Tags(name, description, color, user);
-
-       return (long) session().save(tags);
 
     }
 
+
     @Override
-    public void updateTag(String name, String description, String color, long id) {
+    public boolean updateTag(long tagId, String name, String description, String color, long userId) {
 
-        Tags tag = session().find(Tags.class, id);
-        if(tag == null)
-            return;
+        try{
+            Tags tag = session().find(Tags.class, tagId);
+            if(tag == null || tag.getCreator().getUserId() != userId)
+                return false;
 
-        if(!tag.isActivated())
-            return;
+            if(!tag.isActivated())
+                return false;
 
-        tag.setName(name);
-        tag.setDescription(description);
-        tag.setColor(color);
+            tag.setName(name);
+            tag.setDescription(description);
+            tag.setColor(color);
 
-        session().save(tag);
+            session().save(tag);
+        }catch (Exception e){
+            return false;
+        }
+        return true;
     }
 
     @Override

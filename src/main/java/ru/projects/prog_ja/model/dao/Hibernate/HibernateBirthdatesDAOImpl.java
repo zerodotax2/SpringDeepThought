@@ -16,7 +16,6 @@ import java.util.List;
 
 @Repository
 @Scope(scopeName = "prototype")
-@Transactional(propagation = Propagation.REQUIRED)
 public class HibernateBirthdatesDAOImpl extends GenericDAO implements BirthdatesDAO {
 
     public HibernateBirthdatesDAOImpl(@Autowired SessionFactory sessionFactory){
@@ -68,11 +67,16 @@ public class HibernateBirthdatesDAOImpl extends GenericDAO implements Birthdates
     }
 
     @Override
-    public void updateBirthdate(long userId, Date date) {
+    public boolean updateBirthdate(long userId, Date date) {
 
-        session().createSQLQuery("update UserInfo set birthDate = ? where user_id = '"+userId+"'")
-                .setParameter(1, date)
-                    .executeUpdate();
+        try {
+            return session().createSQLQuery("update UserInfo set birthDate = ? where user_id = '"+userId+"'")
+                    .setParameter(1, date)
+                    .executeUpdate() != 0;
+        }catch (Exception e){
+            return false;
+        }
+
 
     }
 }

@@ -1,4 +1,4 @@
-var tags = document.getElementsByClassName("tags")[0],
+let tags = document.getElementsByClassName("tags")[0],
     hidden_tags = document.getElementsByClassName("hidden_tags")[0],
     chips = document.getElementsByClassName("chips")[0],
     upload = document.getElementById("upload"),
@@ -7,13 +7,13 @@ var tags = document.getElementsByClassName("tags")[0],
 document.addEventListener("DOMContentLoaded", function () {
 
 
-    var title_input = document.getElementsByClassName("title_input")[0];
+    let title_input = document.getElementsByClassName("title_input")[0];
     title_input.addEventListener("input keyup", function () {
         if(title_input.value.length >= 100){
             title_input.value = title_input.value.substring(0, 100);
         }
     });
-    var subtitle_input = document.getElementsByClassName("subtitle_input_input")[0];
+    let subtitle_input = document.getElementsByClassName("subtitle_input_input")[0];
     subtitle_input.addEventListener("input keyup", function () {
         if(subtitle_input.value.length >= 100){
             subtitle_input.value = subtitle_input.value.substring(0, 100);
@@ -21,15 +21,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-    var chipsOptions = {
+    let chipsOptions = {
         secondaryPlaceholder: '+ Добавить',
         limit: 10,
         minLength: 3,
         onChipAdd: chipAdd(),
         onChipDelete: chipDelete()
     }
-    var elemsChips = document.querySelectorAll('.chips');
-    var instances = M.Chips.init(elemsChips,chipsOptions);
+    let elemsChips = document.querySelectorAll('.chips');
+    let instances = M.Chips.init(elemsChips,chipsOptions);
 
     upload.addEventListener("change", uploadFile);
 
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function chipDelete() {
 
-        var count = document.getElementsByClassName("chip").length;
+        let count = document.getElementsByClassName("chip").length;
 
         /*
        * Удаляем текст, который описывает вводимые тэги
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function chipAdd() {
         /*Получаем длину текущих тегов*/
-        var count = document.getElementsByClassName("chip").length;
+        let count = document.getElementsByClassName("chip").length;
         /*
         * Удаляем текст, который описывает вводимые тэги
         */
@@ -83,8 +83,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         //Исключаем слово close из тега
-        var smallChips = document.getElementsByClassName("chip");
-        var lastChip = smallChips[smallChips.length-1];
+        let smallChips = document.getElementsByClassName("chip");
+        let lastChip = smallChips[smallChips.length-1];
 
         lastChip.innerHTML = lastChip.innerHTML.substring(0, lastChip.innerHTML.indexOf("<i")) + "<span class='close' >x</span>";
         //Делаем для последнего тега рандомный цвет
@@ -96,23 +96,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
     //Функция, которая присваивае рандомный фон тегу из доступных в Materialize css
     function randomClass() {
-        var classes = ["cyan", "red", "pink", "purple", "blue", "indigo", "deep-purple", "teal", "light-blue",
+        let classes = ["cyan", "red", "pink", "purple", "blue", "indigo", "deep-purple", "teal", "light-blue",
                 "green", "lime", "light-green", "yellow", "amber", "orange", "deep-orange", "brown",
                 "grey", "black", "blue-grey"],
             styles = ["lighten-1", //"lighten-5", "lighten-4", "lighten-3", "lighten-2",
                 "darken-1", "darken-2", "darken-3", "darken-4",
                 "accent-1", "accent-2", "accent-3", "accent-4"];
-        var random1 = Math.ceil(Math.random() * classes.length);
-        var random2 = Math.ceil(Math.random() * styles.length);
-        var s = classes[random1] + " white-text " + styles[random2];
+        let random1 = Math.ceil(Math.random() * classes.length);
+        let random2 = Math.ceil(Math.random() * styles.length);
+        let s = classes[random1] + " white-text " + styles[random2];
 
         return s;
     }
 
     function uploadFile() {
 
-        var ajax = xhr.get();
-        var file = upload.files[0];
+        let ajax = xhr.get();
+        let file = upload.files[0];
 
         ajax.onreadystatechange = function (){
 

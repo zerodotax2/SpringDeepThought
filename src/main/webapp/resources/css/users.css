@@ -1,0 +1,57 @@
+.top-panel{
+    min-height: 300px;
+    background: url("../images/blue-bg.jpg") no-repeat center / cover ;
+    display: flex;
+    align-items: start;
+    justify-content: center;
+}
+
+.top-panel .text-panel{
+    color: white;
+    text-align: center;
+}
+.users-container {
+    display: flex;
+    flex-flow: wrap;
+}
+.users-container .user{
+    width: 30%;
+    margin: 10px 0;
+    padding: 0 1.666%;
+    display: flex;
+    align-items: center;
+    border-left: 1px solid lightgray;
+    justify-content: space-around;
+}
+
+.users-container .user .info {
+    margin-left: 10px;
+    color: #2f2f2f;
+}
+.users-container .user .ava img{
+    width: 60px;
+    height: 60px;
+    border-radius: 100%;
+}
+.users-container .user .info .rating{
+    display: flex;
+    align-items: center;
+    color: #8e8e8e;
+}
+.users-container .user .info .rating svg{
+    width: 15px;
+    height: 15px;
+    margin-right: 3px;
+}
+@media (max-device-width: 600px) {
+    .users-container .user{
+        width: 100%;
+        margin: 10px 0;
+    }
+}
+@media (min-device-width: 601px) and (max-device-width: 992px){
+    .users-container .user {
+        width: 48%;
+        margin: 10px 1%;
+    }
+}

@@ -13,11 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.projects.prog_ja.dto.smalls.SmallArticleTransfer;
 import ru.projects.prog_ja.dto.smalls.SmallTagTransfer;
 import ru.projects.prog_ja.dto.smalls.SmallUserTransfer;
-import ru.projects.prog_ja.logic.services.interfaces.ArticleService;
-import ru.projects.prog_ja.logic.services.interfaces.TagsService;
-import ru.projects.prog_ja.logic.services.interfaces.UserService;
+import ru.projects.prog_ja.logic.services.transactional.interfaces.ArticleReadService;
+import ru.projects.prog_ja.logic.services.transactional.interfaces.TagsReadService;
+import ru.projects.prog_ja.logic.services.transactional.interfaces.UserReadService;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +28,7 @@ import java.util.List;
  * рейтинг пользователей
  * */
 @RestController
+@RequestMapping(value = "/services/nav")
 @Scope("singleton")
 @EnableScheduling
 public class NavigationPanelController {
@@ -35,24 +37,25 @@ public class NavigationPanelController {
      * Сервисы необходимые для получения данных,
      * которые будут отображаться на странице
      * */
-    private final UserService userService;
-    private final TagsService tagsService;
-    private final ArticleService articleService;
+    private final UserReadService userReadService;
+    private final TagsReadService tagsReadService;
+    private final ArticleReadService articleReadService;
 
     /**
      * Списки, который будут отображаться во view,
      * навигационной панели
      * */
-    private List<SmallArticleTransfer> popularArticles;
-    private List<SmallTagTransfer> popularTags;
-    private List<SmallUserTransfer> popularUsers;
+    private List<SmallArticleTransfer> popularArticles = new ArrayList<>();
+    private List<SmallTagTransfer> popularTags = new ArrayList<>();
+    private List<SmallUserTransfer> popularUsers = new ArrayList<>();
 
-    public NavigationPanelController(@Autowired UserService userService,
-                                     @Autowired TagsService tagsService,
-                                     @Autowired ArticleService articleService) {
-        this.userService = userService;
-        this.tagsService = tagsService;
-        this.articleService = articleService;
+    @Autowired
+    public NavigationPanelController(UserReadService userReadService,
+                                     TagsReadService tagsReadService,
+                                      ArticleReadService articleReadService) {
+        this.userReadService = userReadService;
+        this.tagsReadService = tagsReadService;
+        this.articleReadService = articleReadService;
     }
 
     /**
@@ -61,9 +64,20 @@ public class NavigationPanelController {
     @PostConstruct
     public void init(){
 
-        this.popularArticles = articleService.getPopularArticles(0);
-        this.popularTags = tagsService.getPopularTags();
-        this.popularUsers = userService.getSmallUsers(0, "rating", 1);
+        List<SmallArticleTransfer> popularArticlesTemp = articleReadService.getPopularArticles(0);
+        if(popularArticlesTemp != null){
+            this.popularArticles = popularArticlesTemp;
+        }
+
+        List<SmallTagTransfer> popularTagsTemp = tagsReadService.getPopularTags();
+        if(popularTagsTemp != null){
+            this.popularTags = popularTagsTemp;
+        }
+
+        List<SmallUserTransfer> popularUsersTemp = userReadService.getSmallUsers(0, "rating", "1");
+        if(popularUsersTemp != null){
+            this.popularUsers = popularUsersTemp;
+        }
 
     }
 
@@ -80,8 +94,8 @@ public class NavigationPanelController {
      * Даём возможность получить те же списки из ajax запросов
      * */
 
-    @RequestMapping(value = "/nav/users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<SmallUserTransfer>> getPopularUsers(){
+    @RequestMapping(value = "/users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SmallUserTransfer>> getPopularUsersJson(){
 
         if(this.popularUsers == null){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -90,8 +104,8 @@ public class NavigationPanelController {
         return new ResponseEntity<>(this.popularUsers, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/nav/articles", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<SmallArticleTransfer>> getPopularArticles(){
+    @RequestMapping(value = "/articles", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SmallArticleTransfer>> getPopularArticlesJson(){
 
         if(this.popularArticles == null){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -100,8 +114,8 @@ public class NavigationPanelController {
         return new ResponseEntity<>(this.popularArticles, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/nav/tags", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<SmallTagTransfer>> getPopularTags(){
+    @RequestMapping(value = "/tags", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SmallTagTransfer>> getPopularTagsJson(){
 
         if(this.popularTags == null){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -110,5 +124,15 @@ public class NavigationPanelController {
         return new ResponseEntity<>(this.popularTags, HttpStatus.OK);
     }
 
+    public List<SmallArticleTransfer> getPopularArticles() {
+        return popularArticles;
+    }
 
+    public List<SmallTagTransfer> getPopularTags() {
+        return popularTags;
+    }
+
+    public List<SmallUserTransfer> getPopularUsers() {
+        return popularUsers;
+    }
 }

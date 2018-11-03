@@ -5,6 +5,7 @@ import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NamedQuery;
+import org.springframework.stereotype.Controller;
 import ru.projects.prog_ja.model.entity.user.UserInfo;
 
 import javax.persistence.*;
@@ -21,9 +22,15 @@ import java.util.Set;
                 " left join fetch t.tagId " +
                 " where f.factId = :id"),
         @NamedQuery(name = "getFacts", query = "select f from Facts f "),
+        @NamedQuery(name = "updateFactRate", query = "update Facts set rating = rating + :rate where factId = :id"),
         @NamedQuery(name = "getCommonFacts", query = "select new ru.projects.prog_ja.dto.commons.CommonFactTransfer(" +
                 " f.factId, f.text " +
                 "   ) from Facts f"),
+        @NamedQuery(name = "getFullFact", query = "select new ru.projects.prog_ja.dto.full.FullFactTransfer(" +
+                " f.factId, f.text, u.userId, u.login, u.smallImagePath, u.rating  " +
+                "   ) from Facts f " +
+                " left join f.creator u " +
+                " where f.factId = :id"),
         @NamedQuery(name = "countFacts", query = "select distinct count(f.factId) from Facts f"),
         @NamedQuery(name = "countByFactsTag", query = "select distinct count(f.factId) from FactsTags f where f.tagId = :tag "),
         @NamedQuery(name = "getFactByTag", query = "select f from Facts f " +
@@ -34,7 +41,9 @@ import java.util.Set;
 public class Facts {
 
     public static final String DELETE_FACT = "deleteFact";
+    public static final String UPDATE_FACT_RATE = "updateFactRate";
     public static final String GET_FACT = "getFact";
+    public static final String GET_FULL_FACT = "getFullFact";
     public static final String GET_FACTS = "getFacts";
     public static final String GET_COMMON_FACTS = "getCommonFacts";
     public static final String COUNT_FACTS = "countFacts";
@@ -45,6 +54,7 @@ public class Facts {
     private long factId;
     private Set<FactsTags> tags;
     private Date createDate;
+    private long rating;
 
     private UserInfo creator;
 
@@ -140,5 +150,15 @@ public class Facts {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    @Basic
+    @Column(name = "rating", nullable =false)
+    public long getRating() {
+        return rating;
+    }
+
+    public void setRating(long rating) {
+        this.rating = rating;
     }
 }

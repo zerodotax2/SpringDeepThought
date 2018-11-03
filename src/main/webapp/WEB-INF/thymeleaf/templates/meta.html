@@ -15,10 +15,10 @@
         <!--Css-->
         <link rel="stylesheet" th:href="@{/resources/css/colors.min.css}"/>
 	    <link rel="stylesheet" th:href="@{/resources/css/normalize.min.css}"/>
+        <link rel="stylesheet" th:href="@{/resources/css/typography.css}"/>
 	    <link rel="stylesheet" th:href="@{/resources/css/header.css}"/>
         <link rel="stylesheet" th:href="@{/resources/css/global.css}"/>
         <link rel="stylesheet" th:href="@{/resources/css/footer.css}"/>
-        <link rel="stylesheet" th:href="@{/resources/css/typography.css}"/>
 
         <!--Top icon-->
         <link rel="shortcut icon" th:href="@{/resources/images/icon2.ico}" type="image/x-icon"/>
@@ -27,17 +27,16 @@
         <meta th:content="${_csrf.token}" id="_csrf"/>
         <!-- default header name is X-CSRF-TOKEN -->
         <meta id="_csrf_header" th:content="${_csrf.headerName}"/>
-
         <!--file server location-->
-        <meta id="fileServerLocation" th:content="#{fileServerLocation}" />
+        <!--<meta id="fileServerLocation" th:content="#{fileServerLocation}" />-->
     </th:block>
 
     <th:block th:fragment="footerJS">
-
         <script th:src="@{/resources/js/materialize.min.js}"></script>
         <script th:src="@{/resources/js/header_script.js}"></script>
+        <script th:src="@{/resources/js/generic.js}"></script>
         <script th:src="@{/resources/js/xhr.js}"></script>
-
+        <script th:src="@{/resources/js/modal.js}"></script>
     </th:block>
 
 </body>

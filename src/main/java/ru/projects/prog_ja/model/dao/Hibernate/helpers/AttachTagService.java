@@ -16,6 +16,7 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Repository
 @Transactional(propagation = Propagation.REQUIRED)
@@ -36,9 +37,10 @@ public class AttachTagService<TT> extends GenericDAO {
         Root<Tags> root = query.from(Tags.class);
 
         Join<Tags, TT> entityJoin = root.join(entitiesName, JoinType.LEFT);
+        Set<Long> entitiesIDS = entities.keySet();
 
         query.multiselect(entityJoin.get(idColumn), root.get("tagId"), root.get("name"), root.get("color"));
-        query.where(entityJoin.get(idColumn).in(entities.keySet()));
+        query.where(entityJoin.get(idColumn).in(entitiesIDS));
         query.groupBy(entityJoin.get(idColumn), root.get("tagId"));
 
         List<Object[]> rows = session.createQuery(query).getResultList();

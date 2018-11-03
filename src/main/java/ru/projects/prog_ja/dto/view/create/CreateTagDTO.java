@@ -7,34 +7,27 @@ import javax.validation.constraints.Size;
 public class CreateTagDTO {
 
     @NotNull
-    private long user_id;
-
-    @NotNull
     @Size(min = 3, max = 32)
+    @Pattern(regexp = "^[А-я|\\s]+$")
     private String name;
 
     @NotNull
-    @Size(min = 3, max = 32)
+    @Size(min = 100, max = 1000)
+    @Pattern(regexp = "^[\\w|\\s]+$")
     private String description;
 
+    @NotNull
+    @Size(max = 7, min = 7)
+    @Pattern(regexp = "^#[a-f|A-F|0-9]+$")
     private String color;
 
     public CreateTagDTO() {
     }
 
     public CreateTagDTO(long user_id, String name, String description, String color) {
-        this.user_id = user_id;
         this.name = name;
         this.description = description;
         this.color = color;
-    }
-
-    public long getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(long user_id) {
-        this.user_id = user_id;
     }
 
     public String getName() {

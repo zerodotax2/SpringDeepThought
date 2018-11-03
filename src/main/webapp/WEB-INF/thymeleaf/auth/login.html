@@ -11,52 +11,50 @@
     <div layout:fragment="content">
         <div class="row">
             <div class="col s12 offset-l3 l6 login_panel z-depth-5" >
-                <div class="row top_line center-align" style="padding: 20px;">
-                    <img src="/resources/images/top_user.png" style="width: 60px;height: 60px;margin: 10px;" />
-                    <h4 class="white-text" style="margin: 0;">Авторизация</h4>
+                <div class="row top_line center-align">
+                    <img th:src="@{/resources/images/top_user.png}"/>
+                    <h4 class="white-text">Авторизация</h4>
                 </div>
-                <form  method="post" th:action="@{/auth}" class="container" style="padding-top: 15px;">
-                        <div class="row center-align">
-                            <span th:if="${not empty error}" th:text="${'Неправильный логин или пароль'}" class="red-text text-lighten-2" style="font-size: 12px;"></span>
+                <form  method="post" th:action="@{/auth}" class="container login_form">
+                    <div class="row">
+                        <div class="input-field">
+                            <i class="prefix"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#adb5bd" d="M319.4 320.6L224 416l-95.4-95.4C57.1 323.7 0 382.2 0 454.4v9.6c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-9.6c0-72.2-57.1-130.7-128.6-133.8zM13.6 79.8l6.4 1.5v58.4c-7 4.2-12 11.5-12 20.3 0 8.4 4.6 15.4 11.1 19.7L3.5 242c-1.7 6.9 2.1 14 7.6 14h41.8c5.5 0 9.3-7.1 7.6-14l-15.6-62.3C51.4 175.4 56 168.4 56 160c0-8.8-5-16.1-12-20.3V87.1l66 15.9c-8.6 17.2-14 36.4-14 57 0 70.7 57.3 128 128 128s128-57.3 128-128c0-20.6-5.3-39.8-14-57l96.3-23.2c18.2-4.4 18.2-27.1 0-31.5l-190.4-46c-13-3.1-26.7-3.1-39.7 0L13.6 48.2c-18.1 4.4-18.1 27.2 0 31.6z"></path></svg></i>
+                            <input type="text" id="login_input" name="login" class="login_input" />
+                            <label for="login_input">Ваш логин</label>
                         </div>
-                        <div class="row">
-                            <div class="input-field" style="margin-top: -10px;">
-                                <i class="prefix"><img th:src="/resources/images/user_login.png" alt="" style="width: 30px;height: 30px;"/></i>
-                                <input type="text" id="login_input" name="login" class="login_input" />
-                                <label for="login_input">Ваш логин</label>
-                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field">
+                            <i class="prefix"><svg class="prefix"  role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#adb5bd" d="M512 176.001C512 273.203 433.202 352 336 352c-11.22 0-22.19-1.062-32.827-3.069l-24.012 27.014A23.999 23.999 0 0 1 261.223 384H224v40c0 13.255-10.745 24-24 24h-40v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-78.059c0-6.365 2.529-12.47 7.029-16.971l161.802-161.802C163.108 213.814 160 195.271 160 176 160 78.798 238.797.001 335.999 0 433.488-.001 512 78.511 512 176.001zM336 128c0 26.51 21.49 48 48 48s48-21.49 48-48-21.49-48-48-48-48 21.49-48 48z"></path></svg></i>
+                            <input name="password" type="password" id="password_input" class="pass_input" />
+                            <label for="password_input">Пароль</label>
                         </div>
-                        <div class="row">
-                            <div class="input-field" style="margin-top: -10px;">
-                                <i class="prefix"><img th:src="/resources/images/user_password.png" alt="" style="width: 30px;height: 30px;"/></i>
-                                <input name="password" type="password" id="password_input" class="pass_input" />
-                                <label for="password_input">Пароль</label>
-                            </div>
+                    </div>
+                    <div class="row center-align">
+                        <span th:style="'display: '+${(param.error!=null)and(param.error[0]=='true')? 'block' : 'none'}+';'" class="red-text text-lighten-2 error">Неправильный логин или пароль</span>
+                    </div>
+                    <div class="row sign-div">
+                        <input type="button" class="btn red z-depth-2" value="Войти"/>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 center-align switch">
+                            <label>
+                                <input type="checkbox" name="remember-me" class="" checked="checked" />
+                                <span>Запомнить меня</span>
+                            </label>
                         </div>
-                        <div class="row">
-                            <div class="col s12 center-align switch" style="margin-top: -10px;">
-                                <label>
-                                    <input type="checkbox" name="remember-me" class="" checked="checked" />
-                                    <span>Запомнить меня</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-top: -10px;">
-                            <input type="submit" class="btn red z-depth-2 col s10 offset-s1 offset-l2 l8" value="Войти"/>
-                        </div>
-                        <div class="row center-align" style="margin-top: -15px;">
-                            <a th:href="@{/register}" class="btn-flat" style="text-transform: none; font-size: 12px">Зарегистрироваться</a>
-                        </div>
+                    </div>
                 </form>
                 <div class="divider"></div>
-                <div class="row center-align" style="margin-top: 15px">
-                    <a href="#" class="btn-flat cyan-text text-lighten-1" style="text-transform: none">Забыли пароль?</a>
+                <div class="row center-align actions">
+                    <a th:href="@{/restore}">Забыли пароль?</a>
+                    <a th:href="@{/register}">Зарегистрироваться</a>
                 </div>
             </div>
         </div>
     </div>
     <th:block layout:fragment="js">
-        <script th:src="@{/resources/js/login_script.js}"></script>
+        <script th:src="@{/resources/js/login.js}"></script>
     </th:block>
 </body>
 </html>

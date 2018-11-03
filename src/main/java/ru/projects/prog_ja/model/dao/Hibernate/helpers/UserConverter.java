@@ -2,14 +2,14 @@ package ru.projects.prog_ja.model.dao.Hibernate.helpers;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import ru.projects.prog_ja.dto.Role;
+import ru.projects.prog_ja.dto.UserDTO;
 import ru.projects.prog_ja.dto.full.FullUserTransfer;
+import ru.projects.prog_ja.dto.smalls.SmallNoticeTransfer;
 import ru.projects.prog_ja.dto.smalls.SmallTagTransfer;
 import ru.projects.prog_ja.dto.smalls.SmallUserTransfer;
 import ru.projects.prog_ja.model.entity.tags.Tags;
-import ru.projects.prog_ja.model.entity.user.UserCounter;
-import ru.projects.prog_ja.model.entity.user.UserExtended;
-import ru.projects.prog_ja.model.entity.user.UserInfo;
-import ru.projects.prog_ja.model.entity.user.UsersTags;
+import ru.projects.prog_ja.model.entity.user.*;
 
 import java.util.Set;
 
@@ -40,6 +40,24 @@ public class UserConverter {
     public SmallUserTransfer smallUser(UserInfo user){
 
         return new SmallUserTransfer(user.getUserId(), user.getLogin(), user.getSmallImagePath(), user.getRating());
+    }
+
+    public UserDTO forumUser(UserInfo user, Role role, Set<UsersTags> tags, Set<UserInbox> notices){
+
+        UserDTO userDTO = new UserDTO(
+                user.getUserId(), user.getLogin(), user.getSmallImagePath(), user.getRating(), role);
+        for (UsersTags usersTag : tags){
+            Tags tag = usersTag.getTagId();
+            userDTO.getPrefers().add(new SmallTagTransfer(tag.getTagId(), tag.getName(), tag.getColor()));
+        }
+
+        for(UserInbox notice : notices){
+            userDTO.getNotices().add(new SmallNoticeTransfer(
+                    notice.getUserInboxId(), notice.getMessage(), notice.getNoticeType(), notice.getCreateDate()
+            ));
+        }
+
+        return userDTO;
     }
 
 }

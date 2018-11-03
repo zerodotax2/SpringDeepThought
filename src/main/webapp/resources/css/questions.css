@@ -1,80 +1,135 @@
-
-
-.question-item{
-    width: 100%;
+.top-panel{
+    min-height: 300px;
+    background: url("../images/blue-bg.jpg") no-repeat center / cover ;
+    display: flex;
+    align-items: center;
+    flex-flow: column;
+    justify-content: start;
+}
+.top-panel .text-panel{
+    color: white;
+    text-align: center;
+}
+.top-panel .text-panel h1{
+    margin: 20px 0 0 0;
+}
+.top-panel .create{
+    padding: 10px 40px;
+    margin-top: 15px;
+    border-radius: 20px;
+    transition-duration: 0.3s;
+    border: 2px solid white;
+    color: white;
+}
+.top-panel .create:hover{
     background: white;
-    border-radius: 15px;
-    /*box-shadow: 0 0 10px 1px #797979;*/
-    margin-top: 7px;
-    margin-bottom: 10px;
+    color: #006564;
+    box-shadow: 0 0 10px #014948;
+    transform: translateY(-5px);
 }
-.question-item h6{
-    word-break: break-word;
-    margin: 0;
+.questions-container .question{
+    margin: 5px;
+    padding: 8px 0;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid lightgray;
+}
+.questions-container .question .right-side {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.questions-container .question .right-side .stat-elem{
+    display: flex;
+    flex-flow: column;
+    font-size: 11px;
+    align-items: center;
+    padding: 5px 5px;
+    margin: 0 5px;
+}
+.questions-container .question .right-side .stat-elem .num{
+    color: #2196F3;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 100;
+}
+.questions-container .question .right-side .stat-elem .name{
+    text-transform: uppercase;
+    font-weight: lighter;
+    font-size: 11px;
+}
+.questions-container .question .text{
+    padding: 10px 0;
+}
+.questions-container .question .text .title{
+    display: flex;
+    align-items: center;
+}
+.questions-container .question .text .title a{
+    color: #424242;
 }
 
-
-.question-content{
-    padding: 15px;
-    font-weight: 100 !important;
-}
-.chips-line {
-}
-
-.info-line {
-    margin-top: 10px;
-    margin-bottom: 0px;
-}
-.info-line h6{
-    font-size: 14px;
+.questions-container .question .text .info .is-right-img{
+    width: 20px;
+    height: 20px;
     margin-left: 5px;
 }
-
-.question-footer{
-    padding: 10px;
+.questions-container .question .text .info{
+    padding: 3px 2px;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 400;
+    color: #848484;
 }
-
-.info-line img{
-    width: 15px;height: 15px;margin-left: 10px;
+.questions-container .question .text .info span{
+    color: #848484;
+    margin: 0 2px;
 }
-
-.user-asker{
-    margin-left: -10px !important;
+.questions-container .question .text .info a{
+    margin: 0 2px;
 }
-.give-answer{
-    position: absolute;
-    right: 5px;
-    top:10px;
-    border-radius: 20px;
+.questions-container .question .left-side .action{
+    margin: 0 -5px;
 }
-
-
 @media (max-device-width: 600px) {
-
-    .top-panel h5{
-        font-size: 14px;
+    .top-panel h1{
+        margin-top: 30px !important;
+        font-size: 50px;
     }
-
-    .top-input{
-       width: 80% !important;
+    .top-panel h4{
+        font-size: 20px;
     }
-
-    .question-content{
-        padding: 10px 5px 5px 5px;
+    .questions-container .question{
+        margin: 0 -10px;
+        padding: 5px;
+        flex-wrap: wrap;
     }
-
-    .question-footer{
-        padding: 7px 0 5px 0;
+    .questions-container .question .left-side {
+        width: 100%;
     }
-
-    .date-create{
-        margin-top: 5px;
-        margin-left: -10px !important;
+    .questions-container .question .left-side .text .info{
+        flex-wrap: wrap;
     }
-
+    .questions-container .question .right-side {
+        width: 100%;
+    }
+    .questions-container .question .right-side .stat-elem{
+        padding: 5px;
+        margin: 0;
+    }
+    .function-panel .options{
+        flex-wrap: wrap;
+    }
+    .function-panel .card .card-content{
+        padding: 10px;
+    }
 }
-
-@media (max-device-width: 992px) and (min-device-width: 600px){
+@media (min-device-width: 601px) and (max-device-width: 992px){
+    .questions-container .question .right-side{
+        margin-right: -20px;
+    }
+    .questions-container .right-side .info-element{
+        margin: 0;
+    }
 }

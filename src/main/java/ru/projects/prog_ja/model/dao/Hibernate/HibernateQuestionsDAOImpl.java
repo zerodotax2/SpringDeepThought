@@ -5,16 +5,15 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ru.projects.prog_ja.dto.commons.CommonAnswerTransfer;
 import ru.projects.prog_ja.dto.commons.CommonQuestionTransfer;
 import ru.projects.prog_ja.dto.full.FullQuestionTransfer;
 import ru.projects.prog_ja.dto.smalls.SmallQuestionTransfer;
+import ru.projects.prog_ja.dto.view.ViewAnswerTransfer;
 import ru.projects.prog_ja.model.dao.Hibernate.helpers.AttachTagService;
 import ru.projects.prog_ja.model.dao.Hibernate.helpers.QuestionConverter;
 import ru.projects.prog_ja.model.dao.QuestionsDAO;
-import ru.projects.prog_ja.model.entity.answer.Answer;
+import ru.projects.prog_ja.model.entity.questions.Answer;
 import ru.projects.prog_ja.model.entity.questions.QuestionContent;
 import ru.projects.prog_ja.model.entity.questions.Questions;
 import ru.projects.prog_ja.model.entity.questions.QuestionsTags;
@@ -26,7 +25,6 @@ import java.util.*;
 
 @Repository
 @Scope(scopeName = "prototype")
-@Transactional(propagation = Propagation.REQUIRED)
 public class HibernateQuestionsDAOImpl extends GenericDAO implements QuestionsDAO {
 
     private final String ID_COLUMN = "questionId";
@@ -44,40 +42,66 @@ public class HibernateQuestionsDAOImpl extends GenericDAO implements QuestionsDA
     }
 
     @Override
-    public void createQuestion(String title, List<Long> tags, String htmlContent, long userId) {
+    public FullQuestionTransfer createQuestion(String title, List<Long> tags, String htmlContent, long userId) {
+        try {
 
-        Session session = session();
+            Session session = session();
 
-        UserInfo user = session.load(UserInfo.class, userId);
-        if(user == null)
-            return;
+            UserInfo user = session.load(UserInfo.class, userId);
+            if(user == null)
+                return null;
 
-        Questions questions = new Questions(title);
+            Questions questions = new Questions(title);
 
-        /*Создаём обычный вопрос и ставим юзера, который его создал*/
-        Set<QuestionsTags> questionsTags = new HashSet<>();
-        session.byMultipleIds(Tags.class).multiLoad(tags).forEach((tag) -> {
-           questionsTags.add(new QuestionsTags(questions, tag));
-        });
-        if(questionsTags.size() < 3){
-            return;
+            /*Создаём обычный вопрос и ставим юзера, который его создал*/
+            Set<QuestionsTags> questionsTags = new HashSet<>();
+            session.byMultipleIds(Tags.class).multiLoad(tags).forEach((tag) -> {
+                questionsTags.add(new QuestionsTags(questions, tag));
+            });
+            if(questionsTags.size() < 3){
+                return null;
+            }
+            questions.setTags(questionsTags);
+
+            questions.setUserInfo(user);
+
+            /*Создаём контент для вопроса и заполняем его изображениями если они есть*/
+            QuestionContent questionContent = new QuestionContent(htmlContent);
+            questions.setQuestionContent(questionContent);
+
+          return getFullQuestion((long)session.save(questions));
+
+        }catch (Exception e){
+            return null;
         }
-        questions.setTags(questionsTags);
-
-        questions.setUserInfo(user);
-
-        /*Создаём контент для вопроса и заполняем его изображениями если они есть*/
-        QuestionContent questionContent = new QuestionContent(htmlContent);
-        questions.setQuestionContent(questionContent);
-
-        session().save(questions);
     }
 
     @Override
-    public void deleteQuestion(long id) {
+    public boolean deleteQuestion(long id, long userId) {
 
-        session().createNamedQuery(Questions.DELETE_QUESTION).setParameter("id", id).executeUpdate();
+        try {
+            Session session = session();
+            return session.createNamedQuery(Questions.DELETE_QUESTION)
+                    .setParameter("id", id)
+                    .setParameter("user", session.load(UserInfo.class, userId))
+                    .executeUpdate() != 0;
 
+        }catch (Exception e){
+            return false;
+        }
+
+    }
+
+    @Override
+    public boolean updateQuestionRate(long questionId, int rate, long userId) {
+        try{
+            return session().createNamedQuery(Questions.UPDATE_QUESTION_RATE)
+                    .setParameter("id", questionId)
+                    .setParameter("rate", rate)
+                    .executeUpdate() != 0;
+        }catch (Exception e){
+            return false;
+        }
     }
 
     @Override
@@ -91,7 +115,8 @@ public class HibernateQuestionsDAOImpl extends GenericDAO implements QuestionsDA
 
         Join<Questions, UserInfo> user = question.join("userInfo", JoinType.LEFT);
 
-        query.select(cb.construct(SmallQuestionTransfer.class, question.get("questionId"), question.get("title"), question.get("createDate"), question.get("rating"),
+        query.select(cb.construct(SmallQuestionTransfer.class, question.get("questionId"), question.get("title"),
+                question.get("createDate"), question.get("rating"), question.get("views"),
                 user.get("userId"), user.get("smallImagePath"), user.get("login"), user.get("rating")));
 
         query.where(cb.like(question.get("title"), "%"+query+"%"));
@@ -117,7 +142,8 @@ public class HibernateQuestionsDAOImpl extends GenericDAO implements QuestionsDA
         Join<Questions, UserInfo> user = question.join("userInfo", JoinType.LEFT);
         Join<Questions, QuestionContent> content = question.join("questionContent", JoinType.LEFT);
 
-        query.select(cb.construct(CommonQuestionTransfer.class, question.get("questionId"), question.get("title"), question.get("createDate"), question.get("rating"),
+        query.select(cb.construct(CommonQuestionTransfer.class, question.get("questionId"), question.get("title"),
+                question.get("createDate"), question.get("rating"), question.get("views"),
                 user.get("userId"), user.get("smallImagePath"), user.get("login"), user.get("rating"), cb.substring(content.get("htmlContent"), 0, 256)));
 
         query.where(cb.like(question.get("title"), "%"+query+"%"));
@@ -143,7 +169,7 @@ public class HibernateQuestionsDAOImpl extends GenericDAO implements QuestionsDA
             return null;
         }
 
-        return questionConverter.fullQuestion(question, question.getQuestionContent(), question.getQuestionContent().getAnswers(),
+        return questionConverter.fullQuestion(question, question.getQuestionContent(), question.getAnswers(),
                 question.getTags(), question.getUserInfo());
     }
 
@@ -158,7 +184,8 @@ public class HibernateQuestionsDAOImpl extends GenericDAO implements QuestionsDA
         Join<Questions, UserInfo> user = question.join("userInfo", JoinType.LEFT);
         Join<Questions, QuestionContent> content = question.join("questionContent", JoinType.LEFT);
 
-        query.select(cb.construct(CommonQuestionTransfer.class, question.get("questionId"), question.get("title"), question.get("createDate"), question.get("rating"),
+        query.select(cb.construct(CommonQuestionTransfer.class, question.get("questionId"), question.get("title"),
+                question.get("createDate"), question.get("rating"), question.get("views"),
                 user.get("userId"), user.get("smallImagePath"), user.get("login"), user.get("rating"), cb.substring(content.get("htmlContent"), 0, 256)));
 
         if(sort == 0){
@@ -181,7 +208,8 @@ public class HibernateQuestionsDAOImpl extends GenericDAO implements QuestionsDA
 
         Join<Questions, UserInfo> user = question.join("userInfo", JoinType.LEFT);
 
-        query.select(cb.construct(SmallQuestionTransfer.class, question.get("questionId"), question.get("title"), question.get("createDate"), question.get("rating"),
+        query.select(cb.construct(SmallQuestionTransfer.class, question.get("questionId"), question.get("title"),
+                question.get("createDate"), question.get("rating"), question.get("views"),
                 user.get("userId"), user.get("smallImagePath"), user.get("login"), user.get("rating")));
 
 
@@ -207,7 +235,8 @@ public class HibernateQuestionsDAOImpl extends GenericDAO implements QuestionsDA
         Join<Questions, QuestionContent> content = question.join("questionContent", JoinType.LEFT);
         Join<Questions, QuestionsTags> tags = question.join("tags");
 
-        query.select(cb.construct(CommonQuestionTransfer.class, question.get("questionId"), question.get("title"), question.get("createDate"), question.get("rating"),
+        query.select(cb.construct(CommonQuestionTransfer.class, question.get("questionId"), question.get("title"),
+                question.get("createDate"), question.get("rating"), question.get("views"),
                 user.get("userId"), user.get("smallImagePath"), user.get("login"), user.get("rating"), cb.substring(content.get("htmlContent"), 0, 256)));
         query.where(cb.equal(tags.get("tagId"), tagID));
 
@@ -231,7 +260,8 @@ public class HibernateQuestionsDAOImpl extends GenericDAO implements QuestionsDA
 
         Join<Questions, UserInfo> user = question.join("userInfo", JoinType.LEFT);
 
-        query.select(cb.construct(SmallQuestionTransfer.class, question.get("questionId"), question.get("title"), question.get("createDate"), question.get("rating"),
+        query.select(cb.construct(SmallQuestionTransfer.class, question.get("questionId"), question.get("title"),
+                question.get("createDate"), question.get("rating"), question.get("views"),
                 user.get("userId"), user.get("smallImagePath"), user.get("login"), user.get("rating")));
         query.where(cb.equal(user.get("userId"), userId));
 
@@ -256,9 +286,10 @@ public class HibernateQuestionsDAOImpl extends GenericDAO implements QuestionsDA
         Join<Questions, UserInfo> user = question.join("userInfo", JoinType.LEFT);
         Join<Questions, QuestionsTags> tags = question.join("tags");
 
-        query.select(cb.construct(SmallQuestionTransfer.class, question.get("questionId"), question.get("title"), question.get("createDate"), question.get("rating"),
+        query.select(cb.construct(SmallQuestionTransfer.class, question.get("questionId"), question.get("title"),
+                question.get("createDate"), question.get("rating"), question.get("views"),
                 user.get("userId"), user.get("smallImagePath"), user.get("login"), user.get("rating")));
-        query.where(cb.equal(tags.get("tagid"), tagID));
+        query.where(cb.equal(tags.get("tagId"), tagID));
 
         if(sort == 0){
             query.orderBy(cb.asc(question.get(orderField)));
@@ -271,72 +302,138 @@ public class HibernateQuestionsDAOImpl extends GenericDAO implements QuestionsDA
     }
 
     @Override
-    public void updateQuestion(long id, String title, List<Long> tags, String htmlContent) {
-        /*Создаём обычный вопрос и ставим юзера, который его создал*/
-        Session session = session();
+    public boolean updateQuestion(long id, String title, List<Long> tags, String htmlContent, long userId){
 
-        Questions questions = session.createNamedQuery(Questions.GET_FULL_QUESTION, Questions.class)
-                .setParameter("id", id)
-                .getResultList().stream().findFirst().orElse(null);
-        if(questions == null)
-            return;
+        try{
+            /*Создаём обычный вопрос и ставим юзера, который его создал*/
+            Session session = session();
 
-        questions.setTitle(title);
+            Questions questions = session.createNamedQuery(Questions.GET_FULL_QUESTION, Questions.class)
+                    .setParameter("id", id)
+                    .getResultList().stream().findFirst().orElse(null);
+            if(questions == null || questions.getUserInfo().getUserId() != userId)
+                return false;
 
-        Set<QuestionsTags> questionsTags = new HashSet<>();
-        session().byMultipleIds(Tags.class).multiLoad(tags).forEach((tag)->{
-            questionsTags.add(new QuestionsTags(questions, tag));
-        });
-        if(questionsTags.size() < 3){
-            return;
+            questions.setTitle(title);
+
+            Set<QuestionsTags> questionsTags = new HashSet<>();
+            session.byMultipleIds(Tags.class).multiLoad(tags).forEach((tag)->{
+                questionsTags.add(new QuestionsTags(questions, tag));
+            });
+            if(questionsTags.size() < 3){
+                return false;
+            }
+            questions.setTags(questionsTags);
+
+            /*Создаём контент для вопроса и заполняем его изображениями если они есть*/
+            QuestionContent questionContent = questions.getQuestionContent();
+            questionContent.setHtmlContent(htmlContent);
+
+            session.saveOrUpdate(questions);
+        }catch (Exception e){
+            return false;
         }
-        questions.setTags(questionsTags);
 
-        /*Создаём контент для вопроса и заполняем его изображениями если они есть*/
-        QuestionContent questionContent = questions.getQuestionContent();
-        questionContent.setHtmlContent(htmlContent);
-
-        session().save(questions);
+        return true;
     }
 
     @Override
-    public long addAnswer(String htmlContent, long questionContentId, long userId) {
+    public CommonAnswerTransfer addAnswer(String htmlContent, long questionId, long userId) {
+
+        try {
+            Session session = session();
+
+            /*Ищем контент к которому добавляем ответ, если его нет возвращаемся*/
+            Questions question = session.load(Questions.class, questionId);
+            if(question==null)
+                return null;
+
+            UserInfo user = session.load(UserInfo.class, userId);
+            if(user == null)
+                return null;
+
+            /*Создаем новый ответ и устанавливаем юзера, который его написал, и контент, к которому он принадлежит*/
+            Answer answer = new Answer(htmlContent);
+            answer.setUserInfo(user);
+            answer.setQuestion(question);
+
+            return getAnswer((long)session.save(answer));
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    @Override
+    public boolean updateAnswer(long id, String htmlContent, long userId) {
+        try{
+            Session session = session();
+            Answer answer = session.createNamedQuery(Answer.GET_FULL_ANSWER, Answer.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+            if(answer == null || answer.getUserInfo().getUserId() != userId)
+                return false;
+
+            answer.setHtmlContent(htmlContent);
+
+            session.saveOrUpdate(answer);
+       }catch (Exception e){
+           return false;
+       }
+       return true;
+    }
+
+    @Override
+    public List<ViewAnswerTransfer> getSmallAnswersByUser(int start, int size, long userId, String type, int sort){
 
         Session session = session();
 
-        /*Ищем контент к которому добавляем ответ, если его нет возвращаемся*/
-        QuestionContent content = session.load(QuestionContent.class, questionContentId);
-        if(content==null)
-            return 0;
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<ViewAnswerTransfer> query = cb.createQuery(ViewAnswerTransfer.class);
+        Root<Questions> answerRoot = query.from(Questions.class);
 
-        UserInfo user = session.load(UserInfo.class, userId);
-        if(user == null)
-            return 0;
+        Join<Questions, Answer> qeustionAnswersJoin = answerRoot.join("answers", JoinType.LEFT);
 
-        /*Создаем новый ответ и устанавливаем юзера, который его написал, и контент, к которому он принадлежит*/
-        Answer answer = new Answer(htmlContent);
-        answer.setUserInfo(user);
-        answer.setQuestionContent(content);
 
-        return (long) session().save(answer);
+        query.select(cb.construct(ViewAnswerTransfer.class,
+                qeustionAnswersJoin.get("answerId"), answerRoot.get("questionId"), answerRoot.get("title"),
+                qeustionAnswersJoin.get("createDate"), qeustionAnswersJoin.get("rating"), qeustionAnswersJoin.get("right")));
+        query.where(cb.equal(qeustionAnswersJoin.get("userInfo"), session.load(UserInfo.class, userId)));
+
+        if(sort == 0){
+            query.orderBy(cb.asc(qeustionAnswersJoin.get(type)));
+        }else{
+            query.orderBy(cb.desc(qeustionAnswersJoin.get(type)));
+        }
+
+        return session.createQuery(query).setFirstResult(start).setMaxResults(size).getResultList();
     }
 
     @Override
-    public void updateAnswer(long id, String htmlContent) {
-        Answer answer = session().createNamedQuery(Answer.GET_FULL_ANSWER, Answer.class)
-                .setParameter("id", id)
-                .getSingleResult();
-        if(answer == null)
-            return;
+    public boolean deleteAnswer(long id, long userId) {
+        try{
 
-        answer.setHtmlContent(htmlContent);
+            Session session = session();
 
-        session().save(answer);
+            return  session.createNamedQuery(Answer.DELETE_ANSWER)
+                    .setParameter("id", id)
+                    .setParameter("user", session.load(UserInfo.class, userId))
+                    .executeUpdate() != 0;
+
+        }catch (Exception e){
+            return false;
+        }
     }
 
     @Override
-    public void deleteAnswer(long id) {
-        session().createNamedQuery(Answer.DELETE_ANSWER).setParameter("id", id).executeUpdate();
+    public boolean updateAnswerRate(long answerId, int rate, long userId) {
+        try{
+           return session().createNamedQuery(Answer.UPDATE_ANSWER_RATE)
+                    .setParameter("id", answerId)
+                    .setParameter("rate", rate)
+                    .executeUpdate() != 0;
+        }catch (Exception e){
+            return  false;
+        }
     }
 
     @Override
@@ -345,6 +442,18 @@ public class HibernateQuestionsDAOImpl extends GenericDAO implements QuestionsDA
                 .setMaxResults(1)
                 .setParameter("id", id)
                 .getResultList().stream().findFirst().orElse(null);
+    }
+
+    @Override
+    public boolean setRightAnswer(long answerId, long userId) {
+        try{
+            return session().createNamedQuery(Questions.UPDATE_RIGHT_ANSWER)
+                    .setParameter("right", answerId)
+                    .setParameter("id", answerId)
+                    .executeUpdate() != 0;
+        }catch (Exception e){
+            return false;
+        }
     }
 
     @Override

@@ -1,19 +1,21 @@
 package ru.projects.prog_ja.view.controllers;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import ru.projects.prog_ja.dto.Role;
+import ru.projects.prog_ja.dto.UserDTO;
 import ru.projects.prog_ja.dto.full.FullQuestionTransfer;
 import ru.projects.prog_ja.dto.smalls.SmallQuestionTransfer;
 import ru.projects.prog_ja.dto.smalls.SmallUserTransfer;
-import ru.projects.prog_ja.logic.services.interfaces.FactsService;
-import ru.projects.prog_ja.logic.services.interfaces.QuestionService;
+import ru.projects.prog_ja.exceptions.*;
+import ru.projects.prog_ja.logic.services.transactional.interfaces.FactsReadService;
+import ru.projects.prog_ja.logic.services.transactional.interfaces.QuestionReadService;
 import ru.projects.prog_ja.dto.view.create.CreateQuestionDTO;
-import ru.projects.prog_ja.view.exceptions.BadRequestException;
-import ru.projects.prog_ja.view.exceptions.NotFoundException;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -24,15 +26,13 @@ import java.util.List;
 public class QuestionController {
 
     public static final String CREATE_QUESTION_DTO_NAME = "createQuestionDTO";
-    public static final String QUESTIONS_LIST_NAME = "questionsList";
+    public static final String QUESTIONS_LIST_NAME = "questions";
+    public static final String QUESTION_EDIT_NAME = "questionEdit";
 
-    private final QuestionService questionService;
-    private final FactsService factsService;
+    private final QuestionReadService questionReadService;
 
-    public QuestionController(@Autowired QuestionService questionService,
-                              @Autowired FactsService factsService){
-        this.questionService = questionService;
-        this.factsService = factsService;
+    public QuestionController(@Autowired QuestionReadService questionReadService){
+        this.questionReadService = questionReadService;
     }
 
     /*
@@ -41,33 +41,21 @@ public class QuestionController {
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView getQuestions(@RequestParam(name = "q", required = false) String query,
                                      @RequestParam(name = "type", required = false, defaultValue = "rating") String type,
-                                     @RequestParam(name = "sort", required = false, defaultValue = "desc") int sort){
+                                     @RequestParam(name = "sort", required = false, defaultValue = "1") String sort) throws InternalServerException {
 
-        ModelAndView model = new ModelAndView();
-
-        List<SmallQuestionTransfer> questions;
-        if(!StringUtils.isEmpty(query)){
-            questions = questionService.findSmallQuestions(0, query, type, sort);
-        }else {
-            questions = questionService.getSmallQuestions(0, type, sort);
+        List<SmallQuestionTransfer> questions = questionReadService.getSmallQuestions(0, query, type, sort);
+        if(questions == null){
+            throw new InternalServerException();
         }
 
-        model.addObject(QUESTIONS_LIST_NAME, questions);
-        model.addObject(MainController.FACT_NAME, factsService.getRandomFact());
-        model.setViewName("questions/questions");
-
-        return model;
+        return new ModelAndView("questions/questions", QUESTIONS_LIST_NAME, questions);
     }
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ModelAndView getQuestion(@PathVariable("id") String strID) throws BadRequestException, NotFoundException{
+    public ModelAndView getQuestion(@PathVariable("id") long id) throws BadRequestException, NotFoundException{
 
-        if(!strID.matches("^\\d+$") || strID.equals("")){
-            throw new BadRequestException();
-        }
-
-        FullQuestionTransfer questionTransfer = questionService.getOneQuestion(Long.parseLong(strID));
+        FullQuestionTransfer questionTransfer = questionReadService.getOneQuestion(id);
         if(questionTransfer == null){
             throw  new NotFoundException();
         }
@@ -75,10 +63,32 @@ public class QuestionController {
         return new ModelAndView("questions/question", "question", questionTransfer);
     }
 
-    @RequestMapping(value = "/write", method = RequestMethod.GET)
-    public ModelAndView writeQuestion(){
+    @RequestMapping(value = "/ask", method = RequestMethod.GET)
+    public ModelAndView askQuestion(){
 
-        return new ModelAndView("questions/write",CREATE_QUESTION_DTO_NAME, new CreateQuestionDTO());
+        return new ModelAndView("questions/ask");
+    }
+
+    @RequestMapping(value = "/{id}/edit")
+    public ModelAndView editQuestion(@PathVariable("id") long id,
+                                     @SessionAttribute("user") UserDTO userDTO) throws AccessDeniedException, NotFoundException, NonAuthorizedException {
+
+        if(userDTO == null || userDTO.getId() == -1){
+            throw new NonAuthorizedException();
+        }
+
+        FullQuestionTransfer fullQuestionTransfer = questionReadService.getOneQuestion(id);
+        if(fullQuestionTransfer == null){
+            throw new NotFoundException();
+        }
+
+        if(userDTO.getRole() == Role.ROLE_ADMIN || userDTO.getRole() == Role.ROLE_MODER
+                || userDTO.getId() == fullQuestionTransfer.getUser().getId()){
+            return new ModelAndView("questions/questionEdit", QUESTION_EDIT_NAME, fullQuestionTransfer);
+        }else{
+
+            throw new AccessDeniedException();
+        }
     }
 
     @Deprecated
@@ -103,7 +113,7 @@ public class QuestionController {
             tagsIDs.add(Long.parseLong(tag));
         }
 
-        questionService.createQuestion(createQuestionDTO.getTitle(), tagsIDs, createQuestionDTO.getHtmlContent(), user.getId());
+//        questionReadService.createQuestion(createQuestionDTO.getTitle(), tagsIDs, createQuestionDTO.getHtmlContent(), user.getId());
 
         return new ModelAndView("redirect:/questions");
     }

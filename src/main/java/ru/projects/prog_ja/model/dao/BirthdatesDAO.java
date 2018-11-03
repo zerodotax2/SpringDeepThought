@@ -35,5 +35,5 @@ public interface BirthdatesDAO {
      * update birthdate
      * */
 
-    void updateBirthdate(long userId, Date date);
+    boolean updateBirthdate(long userId, Date date);
 }

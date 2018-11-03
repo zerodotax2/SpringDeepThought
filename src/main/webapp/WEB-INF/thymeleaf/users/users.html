@@ -5,61 +5,76 @@
       th:charset="UTF-8">
 <head>
     <title>Пользователи</title>
+    <link rel="stylesheet" th:href="@{/resources/css/function_panel.css}"/>
     <link rel="stylesheet" th:href="@{/resources/css/users.css}"/>
-    <link rel="stylesheet" th:href="@{/resources/css/top-panel.css}"/>
 </head>
 <body>
 
 <div layout:fragment="top-panel">
-    <div class="header-describe">
-        <div class="container">
-            <div class="row">
-                <div class="left-side col s12 m6">
-                    <h3 class="title">Пользователи</h3>
-                    <h5 class="subtitle">Найдите кого угодно</h5>
-                    <div class="row" style="margin-top: 20px;">
-                        <form th:method="get" th:action="@{/users}" class="col s12 l8 top-form" style="display: flex;">
-                            <input type="text" class=" top-input" placeholder="Поиск..." name="q" style="color: white"/>
-                            <div class="top-input-image">
-                                <img th:src="@{/resources/images/search.svg}" />
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="right-side col s12 m6">
-                    <div class="categories">
-                        <a th:href="@{(type=rating)}" class="cat">Рейтинг</a>
-                        <a th:href="@{(type=date)}" class="cat">Новые</a>
-                        <a th:href="@{(type=moder)}" class="cat">Модераторы</a>
-                    </div>
-                    <div class="sort-type">
-                        <a th:href="@{(sort=0)}" class="sort"><img th:src="@{/resources/images/sort-up.png}"/></a>
-                        <a th:href="@{(sort=1)}" class="sort"><img th:src="@{/resources/images/sort-down.png}"/></a>
-                    </div>
-                </div>
-            </div>
+    <div class="top-panel">
+        <div class="text-panel">
+            <h1>Пользователи</h1>
+            <h4 class="grey-text text-lighten-3">Найдите кого угодно</h4>
         </div>
     </div>
 </div>
 
 <div layout:fragment="content">
-    <div class="content col s12 l8" id="users_container" style="padding: 0;">
-        <div th:if="${userList.size==0}" class="col s12 l11 white" style="margin-top: 100px;text-align: center">
-            <h3 class="grey-text">Результатов не найдено</h3>
-            <img style="width: 20%;height: 20%;margin-top: 40px;" th:src="@{/resources/images/frown-regular.svg}"/>
+    <div class="content col s12 l8" id="users_container" style="padding: 0 10px;">
+        <div class="function-panel">
+            <div class="card">
+                <div class="card-content" >
+                    <form action="" method="get" id="sort-form" onsubmit="removeEmptyFields()">
+                        <div class="search-div">
+                            <input class="search-input" name="q" type="text" placeholder="Поиск"/>
+                        </div>
+                        <div class="options">
+                            <div class="category-element">
+                                <div id="sort-btn" content="sort-content" class="category-btn btn-flat">
+                                    Сортировка<img th:src="@{/resources/images/rate-down2.svg}"/>
+                                </div>
+                                <div id="sort-content" class="category-content z-depth-2">
+                                    <div datatype="sort" class="category-select" content="0">По возрастанию</div>
+                                    <div datatype="sort" class="category-select" content="1">По убыванию</div>
+                                    <input type="hidden" name="sort"/>
+                                </div>
+                            </div>
+                            <div class="category-element">
+                                <div id="type-btn" content="type-content" class="category-btn btn-flat">
+                                    Тип<img th:src="@{/resources/images/rate-down2.svg}"/>
+                                </div>
+                                <div id="type-content" class="category-content z-depth-2">
+                                    <div datatype="type" class="category-select" content="rating">Рейтинг</div>
+                                    <div datatype="type" class="category-select" content="date">Новые</div>
+                                    <div datatype="type" class="category-select" content="moder">Модераторы</div>
+                                    <input type="hidden" name="type"/>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="small-helpers">
+                    </div>
+                </div>
+            </div>
         </div>
-        <a th:each="user : ${userList}" th:href="@{/users/${user.id}}" class="hoverable card col s12 l3" style="margin: 0 5% 3% 0;">
-            <div class="card-image user-image row" style="margin-bottom: 0;max-height: 115%;max-width: 115%">
-                <img th:src="${${fileServerLocation}.concat(user.userImage)}"/>
+
+        <div class="users-container">
+            <div th:each="user : ${users}" class="user">
+                <div class="ava"><img th:src="${#{fileServerLocation}.concat(user.userImage)}" /></div>
+                <div class="info">
+                    <div class="login" th:text="${user.login}"></div>
+                    <div class="rating">
+                        <img th:src="@{/resources/images/star.svg}" />
+                        <span th:text="${user.rating}"></span>
+                    </div>
+                </div>
             </div>
-            <div class="card-title user-title center grey-text text-darken-2" style="padding: 0;" th:text="${user.login}"></div>
-            <div class="card-content center orange-text text-darken-2" th:text="${user.rating}" style="padding: 0 0 10px 0;">
-            </div>
-        </a>
+        </div>
     </div>
 </div>
 
 <th:block layout:fragment="js">
+    <script th:src="@{/resources/js/function_panel.js}"></script>
     <script th:src="@{/resources/js/users.js}"></script>
 </th:block>
 </body>

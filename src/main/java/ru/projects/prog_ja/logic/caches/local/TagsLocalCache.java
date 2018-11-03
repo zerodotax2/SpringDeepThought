@@ -55,7 +55,11 @@ public class TagsLocalCache implements TagsCache {
         tags = tagsTemp;
 
         /*Инициализируем самые популярные теги*/
-        popularTags = tagsDAO.getSmallPopularTags(0, smallTagsSize);
+
+        List<SmallTagTransfer> popularTagsTemp = tagsDAO.getSmallPopularTags(0, smallTagsSize);
+        if(popularTagsTemp != null){
+            popularTags = popularTagsTemp;
+        }
 
     }
 

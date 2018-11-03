@@ -3027,7 +3027,24 @@ button.btn-floating {
 
 .sidenav {
   width: 80%; }
-
+.sidenav-trigger{
+  font-weight: bold;
+  transform: rotate(90deg);
+}
+.brand-logo img {
+  margin-right: 10px;
+  margin-top: 5px;
+  width: 40px;
+  height: 40px;
+}
+#mobile-demo img{
+  width: 100px;
+  height: 100px;
+  margin-top: 10px;
+}
+#mobile-demo li a{
+  color: #ffffff;
+}
 .dropdown-content {
   margin-top: 30px;
   width: 180px; }
@@ -3060,64 +3077,71 @@ button.btn-floating {
 }
 
 #log-btn{
-  border: 3px #f57c00 solid;
-  line-height: 30px;
+  line-height: 35px;
+  transition-duration: 0.5s;
 }
 #log-btn:hover{
-  background-color: rgba(255, 255, 255, 0) !important;
+  background: #ff8300 !important;
 }
-
-.dropdown-wrapper{
+.user-account{
+  margin-left: 10px;
+  cursor: pointer;
   position: relative;
 }
-
-
-.dropdown-window{
-  animation-duration: 0.5s;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 120%;
-  width: 200px;
-  background: white;
-  border-radius: 10px;
-  list-style: none;
+.user-account .user{
+  padding: 0 10px !important;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
-.dropdown-window li a{
-  width: 200px;
-  color: #888888;
+.user-account .user:hover{
+  background: #091f28;
+}
+.user-account .ava{
+  display: flex;
+  align-items: center;
+}
+.user-account .ava img{
+  width: 40px;
   height: 40px;
-  border-top: 1px #cbcbcb solid;
-  line-height: 40px;
-  transition: background-color 0s !important;
+  border-radius: 10%;
 }
-
-.dropdown-window li a:active{
-  background-color: white;
+.user-account .info{
+  display: flex;
+  flex-flow: column;
+  margin-right: 10px;
 }
-
-.dropdown-window li a:hover{
-  background-color: white;
-  border-radius: 10px;
-}
-
-.dropdown-window li:first-of-type a{
-  border: none;
-}
-
-
-
-.dropdown-window:after{
-  content: "";
-  width: 0;
-  height: 0;
+.user-account .menu{
   position: absolute;
-  bottom: 100%;
-  left: 40px;
-  border-width: 0 6px 6px 6px;
-  border-style: solid;
-  border-color: white transparent;
+  border-radius: 10px;
+  top: 70px;
+  width: 100%;
+  z-index: 100;
+  background: white;
+  box-shadow: 0 0 10px #a2a2a2;
 }
-
-/*# sourceMappingURL=header.css.map */
+.user-account .menu:after{
+  content: '';
+  position: absolute;
+  left: 20px; top: -10px;
+  border: 5px solid transparent;
+  border-bottom: 5px solid #0C2834;
+}
+.user-account .menu .menu-element{
+  border-bottom: 1px solid lightgray;
+  font-weight: 100;
+  color: #0C2834;
+  line-height: 20px;
+  padding: 10px !important;
+}
+.user-account .menu .menu-element:hover{
+  background: #0C2834;
+  color: white;
+}
+.user-account .menu .menu-element:first-of-type{
+  border-radius: 10px 10px 0 0;
+}
+.user-account .menu .menu-element:last-of-type{
+  border-radius: 0 0 10px 10px;
+}

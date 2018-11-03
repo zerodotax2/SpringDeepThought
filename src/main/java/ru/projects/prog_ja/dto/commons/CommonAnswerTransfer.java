@@ -9,24 +9,21 @@ public class CommonAnswerTransfer  implements Comparable<CommonAnswerTransfer>{
     private long id;
     private String htmlContent;
     private long rating;
-    private boolean right;
     private Date createDate;
     private SmallUserTransfer user;
 
-    public CommonAnswerTransfer(long id, String htmlContent, long rating, boolean right, Date createDate, SmallUserTransfer user) {
+    public CommonAnswerTransfer(long id, String htmlContent, long rating, Date createDate, SmallUserTransfer user) {
         this.id = id;
         this.htmlContent = htmlContent;
         this.rating = rating;
-        this.right = right;
         this.createDate = createDate;
         this.user = user;
     }
 
-    public CommonAnswerTransfer(long id, String htmlContent, long rating, boolean right, Date createDate, long userId, String login, String userImage, long userRating) {
+    public CommonAnswerTransfer(long id, String htmlContent, long rating, Date createDate, long userId, String login, String userImage, long userRating) {
         this.id = id;
         this.htmlContent = htmlContent;
         this.rating = rating;
-        this.right = right;
         this.createDate = createDate;
         this.user = new SmallUserTransfer(userId, login, userImage, userRating);
     }
@@ -59,14 +56,6 @@ public class CommonAnswerTransfer  implements Comparable<CommonAnswerTransfer>{
 
     public void setRating(long rating) {
         this.rating = rating;
-    }
-
-    public boolean isRight() {
-        return right;
-    }
-
-    public void setRight(boolean right) {
-        this.right = right;
     }
 
     public SmallUserTransfer getUser() {

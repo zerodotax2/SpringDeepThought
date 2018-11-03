@@ -15,7 +15,7 @@
     <bean name="templateResolver"
           class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
         <property name="prefix" value="/WEB-INF/thymeleaf/"/>
-        <property name="suffix" value   =".html"/>
+        <property name="suffix" value=".html"/>
         <property name="templateMode" value="HTML5"/>
         <property name="cacheable" value="true"/>
     </bean>

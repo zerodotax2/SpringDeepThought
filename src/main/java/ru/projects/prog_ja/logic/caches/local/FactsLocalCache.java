@@ -51,8 +51,12 @@ public class FactsLocalCache implements FactsCache {
         Map<Long, CommonFactTransfer> factsTemp = new ConcurrentHashMap<>();
         Map<Long, List<Long>> indexesTemp = new ConcurrentHashMap<>();
 
-        factsDAO.getAllFacts()
-                .forEach((fact) -> {
+        List<CommonFactTransfer> factsTempList = factsDAO.getAllFacts();
+        if(factsTempList == null){
+            return;
+        }
+
+        factsTempList.forEach((fact) -> {
 
                     /*
                     * Получаем теги факта и итерируемся по ним

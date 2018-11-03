@@ -27,8 +27,8 @@ import java.util.*;
 
 @Repository
 @Scope(scopeName = "prototype")
-@Transactional(propagation = Propagation.REQUIRED)
 public class HibernateArticleDAOImpl extends GenericDAO implements ArticleDAO {
+
 
     private final static String  ENTITIES_NAME = "articles";
     private final static String ID_COLUMN = "articleId";
@@ -58,7 +58,6 @@ public class HibernateArticleDAOImpl extends GenericDAO implements ArticleDAO {
         CriteriaQuery<CommonArticleTransfer> query = cb.createQuery(CommonArticleTransfer.class);
         Root<ArticleInfo> article = query.from(ArticleInfo.class);
 
-        Join<ArticleInfo, ArticleContent> content = article.join("articleContent", JoinType.LEFT);
 
         query.select(cb.construct(CommonArticleTransfer.class,
                 article.get("articleId"), article.get("title"), article.get("smallImagePath"), article.get("createDate"),
@@ -199,8 +198,25 @@ public class HibernateArticleDAOImpl extends GenericDAO implements ArticleDAO {
                 article.getTags(), article.getUserInfo());
     }
 
+    @Override
+    public boolean changeRate(long articleId, int rate, long userId) {
+        try{
+            Session session = session();
+            return session.createNamedQuery(ArticleInfo.CHANGE_ARTICLE_RATE)
+                    .setParameter("rate", rate)
+                    .executeUpdate() != 0;
+        }catch (Exception e){
+            return  false;
+        }
+    }
+
     public Set<CommonCommentTransfer> getCommentsByPost(long id){
         Session session = session();
+
+        ArticleInfo articleProxy = session.load(ArticleInfo.class, id);
+        if(articleProxy == null){
+            return null;
+        }
 
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<CommonCommentTransfer> query = cb.createQuery(CommonCommentTransfer.class);
@@ -211,6 +227,7 @@ public class HibernateArticleDAOImpl extends GenericDAO implements ArticleDAO {
         query.select(cb.construct(CommonCommentTransfer.class,
                 comments.get("postCommentId"), comments.get("comment"), comments.get("rating"), comments.get("createDate"),
                 user.get("userId"), user.get("login"), user.get("smallImagePath"), user.get("rating")));
+        query.where(cb.equal(comments.get("articleInfo"), articleProxy));
 
         return new TreeSet<>(session.createQuery(query).getResultList());
     }
@@ -220,77 +237,88 @@ public class HibernateArticleDAOImpl extends GenericDAO implements ArticleDAO {
      * articleImage(image)
      * */
     @Override
-    public long createArticle(List<String> mainImages ,String title, String subtitle, String htmlContent, List<Long> tags, long userId) {
+    public FullArticleTransfer createArticle(String smallImg, String middleImg, String largeImg,
+                              String title, String subtitle, String htmlContent, List<Long> tags, long userId) {
 
-        Session session = session();
+        try{
+            Session session = session();
 
-        ArticleInfo articleInfo = new ArticleInfo(title, mainImages.get(0), mainImages.get(1), mainImages.get(2));
+            ArticleInfo articleInfo = new ArticleInfo(title, smallImg, middleImg, largeImg);
 
-        /*Устанавливаем для поста все его ссылочные переменные*/
-        Set<ArticlesTags> articlesTags = new HashSet<>();
-        session.byMultipleIds(Tags.class).multiLoad(tags).forEach((tag) -> {
-            articlesTags.add(new ArticlesTags(articleInfo, tag));
-        });
-        if(articlesTags.size() < 3){
-            return 0;
+            /*Устанавливаем для поста все его ссылочные переменные*/
+            Set<ArticlesTags> articlesTags = new HashSet<>();
+            session.byMultipleIds(Tags.class).multiLoad(tags).forEach((tag) -> {
+                articlesTags.add(new ArticlesTags(articleInfo, tag));
+            });
+            if(articlesTags.size() < 3){
+                return null;
+            }
+            articleInfo.setTags(articlesTags);
+
+            ArticleContent articleContent = new ArticleContent(subtitle, htmlContent);
+            articleInfo.setArticleContent(articleContent);
+
+            /*Создаём изображение для поста*/
+
+            UserInfo user = session.load(UserInfo.class, userId);
+            if(user == null)
+                return null;
+
+            articleInfo.setUserInfo(user);
+
+            /*Сохраняем пост со всем его контентом*/
+
+            return getArticleByID ((long) session.save(articleInfo));
+        }catch (Exception e){
+            return null;
         }
-        articleInfo.setTags(articlesTags);
-
-        ArticleContent articleContent = new ArticleContent(subtitle, htmlContent);
-        articleInfo.setArticleContent(articleContent);
-
-        /*Создаём изображение для поста*/
-
-        UserInfo user = session.load(UserInfo.class, userId);
-        if(user == null)
-            return 0;
-
-        articleInfo.setUserInfo(user);
-
-        /*Сохраняем пост со всем его контентом*/
-
-        return (long) session.save(articleInfo);
     }
 
     /**
      * update post with this params
      * */
     @Override
-    public boolean updateArticle(long id, List<String> mainImages,String title, String subtitle, String htmlContent, List<Long> tags) {
+    public boolean updateArticle(long id, String smallImg, String middleImg, String largeImg,
+                                 String title, String subtitle, String htmlContent, List<Long> tags, long userId) {
         /* ищем по id пост, который хотим изменить, если его нет то делаем return*/
-        Session session = session();
+        try {
 
-        ArticleInfo articleInfo = session().createNamedQuery(ArticleInfo.GET_FULL_ARTICLE, ArticleInfo.class)
-                .setParameter("id", id)
-                .getResultList().stream().findFirst().orElse(null);
-        if(articleInfo == null)
-            return false;
+            Session session = session();
 
-        /*Достаём из поста контент и заполняем его*/
-        ArticleContent articleContent = articleInfo.getArticleContent();
+            ArticleInfo articleInfo = session().createNamedQuery(ArticleInfo.GET_FULL_ARTICLE, ArticleInfo.class)
+                    .setParameter("id", id)
+                    .getResultList().stream().findFirst().orElse(null);
+            if (articleInfo == null || articleInfo.getUserInfo().getUserId() != userId)
+                return false;
 
-        articleContent.setSubtitle(subtitle);
-        articleContent.setHtmlContent(htmlContent);
+            /*Достаём из поста контент и заполняем его*/
+            ArticleContent articleContent = articleInfo.getArticleContent();
 
-        /*Изменяем изображение поста*/
-        articleInfo.setSmallImagePath(mainImages.get(0));
-        articleInfo.setMiddleImagePath(mainImages.get(1));
-        articleInfo.setLargeImagePath(mainImages.get(2));
+            articleContent.setSubtitle(subtitle);
+            articleContent.setHtmlContent(htmlContent);
 
-        /*Изменяем инфу в самом посте*/
-        articleInfo.setTitle(title);
+            /*Изменяем изображение поста*/
+            articleInfo.setSmallImagePath(smallImg);
+            articleInfo.setMiddleImagePath(middleImg);
+            articleInfo.setLargeImagePath(largeImg);
 
-        /*Загружаем все теги*/
-        Set<ArticlesTags> articlesTags = new HashSet<>();
-        session.byMultipleIds(Tags.class).multiLoad(tags).forEach((tag) -> {
-            articlesTags.add(new ArticlesTags(articleInfo, tag));
-        });
-        if(articlesTags.size() < 3){
+            /*Изменяем инфу в самом посте*/
+            articleInfo.setTitle(title);
+
+            /*Загружаем все теги*/
+            Set<ArticlesTags> articlesTags = new HashSet<>();
+            session.byMultipleIds(Tags.class).multiLoad(tags).forEach((tag) -> {
+                articlesTags.add(new ArticlesTags(articleInfo, tag));
+            });
+            if (articlesTags.size() < 3) {
+                return false;
+            }
+            articleInfo.setTags(articlesTags);
+
+            session.saveOrUpdate(articleInfo);
+        }catch (Exception e){
             return false;
         }
-        articleInfo.setTags(articlesTags);
-
-        session.save(articleInfo);
 
         return true;
     }
@@ -301,13 +329,21 @@ public class HibernateArticleDAOImpl extends GenericDAO implements ArticleDAO {
      * @param id
      * */
     @Override
-    public boolean deleteArticle(long id) {
+    public boolean deleteArticle(long articleId, long userId) {
 
-        session().createNamedQuery(ArticleInfo.DELETE_ARTICLE)
-                .setParameter("id", id)
-                .executeUpdate();
-
-        return true;
+        try{
+            Session session = session();
+            UserInfo user = session.load(UserInfo.class, userId);
+            if(user == null){
+                return false;
+            }
+            return session.createNamedQuery(ArticleInfo.DELETE_ARTICLE)
+                    .setParameter("id", articleId)
+                    .setParameter("user", user)
+                    .executeUpdate() != 0;
+        }catch (Exception e){
+            return false;
+        }
     }
 
     /**
@@ -318,28 +354,64 @@ public class HibernateArticleDAOImpl extends GenericDAO implements ArticleDAO {
      * @param articleId
      * */
     @Override
-    public boolean addComment(long articleId, String comment, long userId) {
-        ArticleInfo post = session().load(ArticleInfo.class, articleId);
-        if(post == null)
-            return false;
+    public CommonCommentTransfer addComment(long articleId, String comment, long userId) {
+        try {
+            Session session = session();
+            ArticleInfo post = session.load(ArticleInfo.class, articleId);
+            if(post == null)
+                return null;
 
-        UserInfo user = session().load(UserInfo.class, userId);
-        if(user == null)
-            return false;
+            UserInfo user = session.load(UserInfo.class, userId);
+            if(user == null)
+                return null;
 
-        ArticleComments articleComments = new ArticleComments(comment, user, post);
+            ArticleComments articleComments = new ArticleComments(comment, user, post);
 
-        session().save(articleComments);
-
-        return true;
+            return session.createNamedQuery(ArticleInfo.GET_ARTICLE_COMMENT, CommonCommentTransfer.class)
+                    .setParameter("id", session.save(articleComments))
+                    .getResultList().stream().findFirst().orElse(null);
+        }catch (Exception e){
+            return null;
+        }
     }
 
     @Override
-    public void updateComment(long commentId, String comment) {
-        session().createNamedQuery(ArticleInfo.UPDATE_ARTICLE_COMMENT)
-                .setParameter("comment", comment)
-                .setParameter("id", commentId)
-                .executeUpdate();
+    public boolean updateComment(long commentId, String comment, long userId) {
+        try {
+            Session session = session();
+            return session.createNamedQuery(ArticleInfo.UPDATE_ARTICLE_COMMENT)
+                    .setParameter("comment", comment)
+                    .setParameter("id", commentId)
+                    .setParameter("user",session.load(UserInfo.class, userId))
+                    .executeUpdate() != 0;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    @Override
+    public boolean changeCommentRate(long commentId, int rate, long userId) {
+        try {
+            Session session = session();
+            return session.createNamedQuery(ArticleInfo.UPDATE_ARTICLE_COMMENT_RATE)
+                    .setParameter("rate", rate)
+                    .executeUpdate() != 0;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    @Override
+    public boolean removeComment(long commentId, long userId){
+        try {
+            Session session = session();
+            return session.createNamedQuery(ArticleInfo.DELETE_ARTICLE_COMMENT)
+                    .setParameter("id", commentId)
+                    .setParameter("user", session.load(UserInfo.class, userId))
+                    .executeUpdate() != 0;
+        }catch (Exception e){
+            return false;
+        }
     }
 
     @Override
@@ -356,7 +428,6 @@ public class HibernateArticleDAOImpl extends GenericDAO implements ArticleDAO {
         CriteriaQuery<CommonArticleTransfer> query = cb.createQuery(CommonArticleTransfer.class);
         Root<ArticleInfo> article = query.from(ArticleInfo.class);
 
-        Join<ArticleInfo, ArticleContent> content = article.join("articleContent", JoinType.LEFT);
         Join<ArticleInfo, ArticlesTags> tags = article.join("tags");
 
         query.select(cb.construct(CommonArticleTransfer.class,

@@ -1,6 +1,5 @@
 <component name="libraryTable">
-  <library name="org.thymeleaf:thymeleaf-spring4:Release" type="repository">
-    <properties maven-id="org.thymeleaf:thymeleaf-spring4:RELEASE" />
+  <library name="org.thymeleaf:thymeleaf-spring4:Release">
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/org/thymeleaf/thymeleaf-spring4/3.0.9.RELEASE/thymeleaf-spring4-3.0.9.RELEASE.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/org/thymeleaf/thymeleaf/3.0.9.RELEASE/thymeleaf-3.0.9.RELEASE.jar!/" />

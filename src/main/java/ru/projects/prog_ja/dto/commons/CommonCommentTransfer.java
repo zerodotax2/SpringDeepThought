@@ -6,24 +6,24 @@ import java.util.Date;
 
 public class CommonCommentTransfer implements Comparable<CommonCommentTransfer>{
 
-    private long postsCommentId;
-    private String comment;
+    private long id;
+    private String text;
     private SmallUserTransfer user;
     private Date createDate;
     private long rating;
 
-    public CommonCommentTransfer(long postsCommentId, String comment, long rating, Date createDate, SmallUserTransfer user) {
-        this.postsCommentId = postsCommentId;
-        this.comment = comment;
+    public CommonCommentTransfer(long id, String text, long rating, Date createDate, SmallUserTransfer user) {
+        this.id = id;
+        this.text = text;
         this.user = user;
         this.createDate = createDate;
         this.rating = rating;
     }
 
-    public CommonCommentTransfer(long postsCommentId, String comment, long rating, Date createDate,
+    public CommonCommentTransfer(long id, String text, long rating, Date createDate,
                                  long userId, String userLogin, String userImagePath, long userRating) {
-        this.postsCommentId = postsCommentId;
-        this.comment = comment;
+        this.id = id;
+        this.text = text;
         this.user = new SmallUserTransfer(userId, userLogin, userImagePath, userRating);
         this.createDate = createDate;
         this.rating = rating;
@@ -34,20 +34,20 @@ public class CommonCommentTransfer implements Comparable<CommonCommentTransfer>{
        return  createDate.after(commonCommentTransfer.getCreateDate()) ? 1 : -1;
     }
 
-    public long getPostsCommentId() {
-        return postsCommentId;
+    public long getId() {
+        return id;
     }
 
-    public void setPostsCommentId(long postsCommentId) {
-        this.postsCommentId = postsCommentId;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getComment() {
-        return comment;
+        return text;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setComment(String text) {
+        this.text = text;
     }
 
     public SmallUserTransfer getUser() {

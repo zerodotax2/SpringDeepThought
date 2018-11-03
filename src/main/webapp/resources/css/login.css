@@ -1,14 +1,62 @@
-* {
-  outline: none; }
-
-.login_panel {
-  background: white; }
-
-.top_line {
-  background: #0f313b; }
-
 body {
-  background: url("/resources/images/site-bg.jpg") no-repeat center/cover;
-  background-attachment: fixed; }
-
-/*# sourceMappingURL=login.css.map */
+  background: url('../images/site-bg.jpg') no-repeat center/cover;
+}
+.top_line {
+  background: #0f313b;
+}
+.login_panel {
+  background: white;
+}
+.login_panel .top_line{
+  padding: 20px;
+}
+.login_panel .top_line img{
+  width: 60px;
+  height: 60px;
+  margin: 10px;
+}
+.login_panel .top_line h4{
+  margin: 0;
+}
+.login_panel form{
+  padding-top: 15px;
+}
+.login_panel form .input-field{
+  margin-top: -10px;
+}
+.login_panel form .input-field .prefix svg{
+  width: 25px;
+  height: 25px;
+}
+.login_panel .switch{
+  margin-top: -5px;
+}
+.login_panel .switch label span{
+  font-size: 13px;
+}
+.login_panel .sign-div{
+  display: flex;
+  justify-content: center;
+}
+.login_panel .sign-div input{
+  padding: 0 80px;
+}
+.actions{
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.actions a{
+  padding: 5px 15px;
+  font-size: 12px;
+  color: #757575;
+  transition-duration: 0.3s;
+}
+.actions a:hover{
+  background: dodgerblue;
+  color: white;
+}
+.actions a:first-of-type{
+  border-right: 1px solid lightgray;
+}

@@ -3,6 +3,7 @@ package ru.projects.prog_ja.model.dao;
 
 
 import ru.projects.prog_ja.dto.commons.CommonArticleTransfer;
+import ru.projects.prog_ja.dto.commons.CommonCommentTransfer;
 import ru.projects.prog_ja.dto.full.FullArticleTransfer;
 import ru.projects.prog_ja.dto.smalls.SmallArticleTransfer;
 
@@ -15,25 +16,26 @@ import java.util.List;
 public interface ArticleDAO {
 
     /**
-    * @return post list start with
-     * @param postStart
+    * @return post list start with sort by
+     * @param orderField and
+     * @param sort
     */
 
-    List<CommonArticleTransfer> getArticles(int start, int size, String type, int sort);
+    List<CommonArticleTransfer> getArticles(int start, int size, String orderField, int sort);
 
 
-    List<SmallArticleTransfer> getSmallArticles(int start, int size, String type, int sort);
+    List<SmallArticleTransfer> getSmallArticles(int start, int size, String orderField, int sort);
 
-    List<SmallArticleTransfer> getSmallArticlesByUser(int start, int size,long userId, String type, int sort);
+    List<SmallArticleTransfer> getSmallArticlesByUser(int start, int size, long userId, String orderField, int sort);
     /**
      * @return common articles by search string
      */
-    List<CommonArticleTransfer> findArticles(int start,  int size, String search, String type, int sort);
+    List<CommonArticleTransfer> findArticles(int start,  int size, String search, String orderField, int sort);
 
     /**
      * @return small articles by search string
      */
-    List<SmallArticleTransfer> findSmallArticles(int start, int size, String search, String type, int sort);
+    List<SmallArticleTransfer> findSmallArticles(int start, int size, String search, String orderField, int sort);
 
     List<SmallArticleTransfer> getSmallArticlesByTag(int start, int size, long tagID, String orderField, int sort);
 
@@ -43,27 +45,34 @@ public interface ArticleDAO {
      */
     FullArticleTransfer getArticleByID(long id);
 
+    boolean changeRate(long articleId, int rate, long userId);
     /**
      * added post to database
      */
-    long createArticle(List<String> mainImages, String title, String subtitle, String htmlContent, List<Long> tags, long userId);
+    FullArticleTransfer createArticle(String smallImg, String middleImg, String largeImg,
+             String title, String subtitle, String htmlContent, List<Long> tags, long userId);
 
     /**
      * change post with this params
      * */
-    boolean updateArticle(long id, List<String> mainImages, String title, String subtitle, String htmlContent, List<Long> tags);
+    boolean updateArticle(long id, String smallImg, String middleImg, String largeImg,
+             String title, String subtitle, String htmlContent, List<Long> tags, long userId);
 
     /**
      * delete post with this id
      */
-    boolean deleteArticle(long id);
+    boolean deleteArticle(long articleId, long userId);
 
     /**
      * add comment to post
      * */
-    boolean addComment(long articleId, String comment, long userId);
+    CommonCommentTransfer addComment(long articleId, String comment, long userId);
 
-    void updateComment(long commentId, String comment);
+    boolean removeComment(long commentId, long userId);
+
+    boolean updateComment(long commentId, String comment, long userId);
+
+    boolean changeCommentRate(long commentId, int rate, long userId);
 
     long getArticlesNum();
 }

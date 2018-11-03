@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ru.projects.prog_ja.dto.full.FullUserTransfer;
 import ru.projects.prog_ja.dto.smalls.SmallUserTransfer;
-import ru.projects.prog_ja.logic.services.interfaces.FactsService;
-import ru.projects.prog_ja.logic.services.interfaces.UserService;
-import ru.projects.prog_ja.view.exceptions.BadRequestException;
-import ru.projects.prog_ja.view.exceptions.NotFoundException;
+import ru.projects.prog_ja.logic.services.transactional.interfaces.FactsReadService;
+import ru.projects.prog_ja.logic.services.transactional.interfaces.UserReadService;
+import ru.projects.prog_ja.exceptions.InternalServerException;
+import ru.projects.prog_ja.exceptions.NotFoundException;
 
 import java.util.List;
 
@@ -22,25 +22,20 @@ import java.util.List;
 public class UserController {
 
     public static final String FULL_USER_NAME="user";
-    public static final String USER_LIST_NAME="userList";
+    public static final String USER_LIST_NAME="users";
 
-    private final UserService userService;
-    private final FactsService factsService;
+    private final UserReadService userReadService;
 
-    public UserController(@Autowired UserService userService,
-                          @Autowired FactsService factsService){
-        this.userService = userService;
-        this.factsService = factsService;
+    @Autowired
+    public UserController( UserReadService userReadService){
+        this.userReadService = userReadService;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ModelAndView user(@PathVariable("id") String strID) throws BadRequestException, NotFoundException {
+    public ModelAndView user(@PathVariable("id") Long id) throws NotFoundException {
 
-        if(strID.matches("^\\d+$") || strID.length() > 64){
-            throw new BadRequestException();
-        }
 
-        FullUserTransfer fullUserTransfer = userService.getFullUser(Long.parseLong(strID));
+        FullUserTransfer fullUserTransfer = userReadService.getFullUser(id);
         if(fullUserTransfer == null){
             throw new NotFoundException();
         }
@@ -51,24 +46,14 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView users(@RequestParam(name = "q", required = false) String query,
                               @RequestParam(name = "type", required = false, defaultValue = "rating") String type,
-                              @RequestParam(name = "sort", required = false, defaultValue = "desc") int sort){
+                              @RequestParam(name = "sort", required = false, defaultValue = "1") String sort) throws InternalServerException {
 
-        ModelAndView model = new ModelAndView();
+        List<SmallUserTransfer> users = userReadService.getUsers(0, query, type, sort);
+        if(users == null)
+            throw new InternalServerException();
 
-        List<SmallUserTransfer> users;
-        if(!StringUtils.isEmpty(query)){
 
-           users = userService.findSmallUsers(0,query, type, sort);
-        }else{
-
-            users = userService.getSmallUsers(0, type, sort);
-        }
-
-        model.addObject(USER_LIST_NAME, users);
-        model.addObject(MainController.FACT_NAME, factsService.getRandomFact());
-        model.setViewName("users/users");
-
-        return model;
+        return new ModelAndView("users/users", USER_LIST_NAME, users);
     }
 }
 

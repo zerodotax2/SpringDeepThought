@@ -4,86 +4,131 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <title th:title="${fullArticleDTO.title}"></title>
+    <title th:title="'Статья | '+${fullArticleDTO.title}"></title>
     <link rel="stylesheet" th:href="@{/resources/css/article.css}"/>
+    <meta id="article_id" content="-1"/>
+    <meta id="user_id" th:content="${fullArticleDTO.user.id}"/>
 </head>
 <body>
 
     <div layout:fragment="content">
         <div class="row">
-
-            <meta id="article_bg_image" th:content="@{fullArticleDTO.articleBg}"/>
-
-            <div class="card col s12 l10 offset-l1 z-depth-5" id="article">
-                <div class="card-image">
-                    <img th:src="${${fileServerLocation}.concat(fullArticleDTO.articleImage)}"/>
-                </div>
-                <div class="card-title" >
-                    <h3>Как стать full-stack developer'ом, изучая Spring и Angular</h3>
-                    <div class="article-tags">
-                        <a th:each="tag : ${fullArticleDTO.tags}" th:style="'background: '+${tag.color}+';'" th:href="@{/tags/${tag.id}}" th:text="${tag.name}" class="chip"></a>
-                    </div>
-                    <div class="stats">
-                        <div class="stat grey-text">
-                            <img th:src="@{/resources/images/date.svg}"/>
-                            <span th:text="${fullArticleDTO.createDate}"></span>
-                        </div>
-                        <div class="stat grey-text">
-                            <img th:src="@{/resources/images/star.svg}"/>
-                            <span th:text="${fullArticleDTO.rating}"></span>
-                        </div>
-                        <div class="stat grey-text">
-                            <img th:src="@{resources/images/eye.svg}"/>
-                            <span th:text="${fullArticleDTO.views}"></span>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="card-content">
-                    <div id="article-content" th:utext="${fullArticleDTO.content}" class="grey-text text-darken-2">
-
-                    </div>
-                </div>
-                <div class="card-action">
-                    <div class="user-row col s12 m6">
-                        <a th:href="@{/users/${fullArticleDTO.user.id}}" class="user cyan darken-3">
-                            <img th:src="@{#{fileServerLocation}.concat(fullArticleDTO.user.userImage)}"/>
-                            <div class="user-info">
-                                <span class="title" style="margin: 0;" th:text="${fullArticleDTO.user.login}"></span>
+            <div class="head col s12">
+                <div class="top">
+                    <div class="right">
+                        <a th:href="@{/users/${fullArticleDTO.user.id}}" class="user">
+                            <img th:src="@{${fullArticleDTO.user.userImage}}"/>
+                            <div class="info">
+                                <div class="login" th:text="${fullArticleDTO.user.login}"></div>
                                 <div class="rating">
-                                    <img th:src="@{/resources/images/star.svg}"/>
-                                    <span th:text="${fullArticleDTO.user.rating}"></span>
+                                    <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#ffcb05" d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"></path></svg>
+                                    <span th:text="${#numbers.formatDecimal(fullArticleDTO.user.rating, 1, 3, 'WHITESPACE')}"></span>
                                 </div>
                             </div>
                         </a>
+                        <a th:if="${user!=null && user.id == fullArticleDTO.user.id}" class="edit-article" th:href="@{/articles/${fullArticleDTO.id}/edit}">
+                            <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M290.74 93.24l128.02 128.02-277.99 277.99-114.14 12.6C11.35 513.54-1.56 500.62.14 485.34l12.7-114.22 277.9-277.88zm207.2-19.06l-60.11-60.11c-18.75-18.75-49.16-18.75-67.91 0l-56.55 56.55 128.02 128.02 56.55-56.55c18.75-18.76 18.75-49.16 0-67.91z"></path></svg>
+                        </a>
                     </div>
-                    <div class="rate-row col s12 m6">
-                        <img th:src="@{/resources/images/rate-up.svg}"/>
-                        <span th:text="${fullArticleDTO.rating}"></span>
-                        <img th:src="@{/resources/images/rate-down.svg}"/>
+                    <div class="left">
+                        <div class="num-element">
+                            <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#adb5bd" d="M569.354 231.631C512.97 135.949 407.81 72 288 72 168.14 72 63.004 135.994 6.646 231.631a47.999 47.999 0 0 0 0 48.739C63.031 376.051 168.19 440 288 440c119.86 0 224.996-63.994 281.354-159.631a47.997 47.997 0 0 0 0-48.738zM288 392c-102.556 0-192.091-54.701-240-136 44.157-74.933 123.677-127.27 216.162-135.007C273.958 131.078 280 144.83 280 160c0 30.928-25.072 56-56 56s-56-25.072-56-56l.001-.042C157.794 179.043 152 200.844 152 224c0 75.111 60.889 136 136 136s136-60.889 136-136c0-31.031-10.4-59.629-27.895-82.515C451.704 164.638 498.009 205.106 528 256c-47.908 81.299-137.444 136-240 136z"></path></svg>
+                            <span th:text="${fullArticleDTO.views}"></span>
+                        </div>
+                        <div class="num-element">
+                            <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#adb5bd" d="M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z"></path></svg>
+                            <span th:text="${fullArticleDTO.comments.size}"></span>
+                        </div>
+                        <div class="num-element">
+                            <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#adb5bd" d="M148 288h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm108-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96-260v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h48V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h128V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h48c26.5 0 48 21.5 48 48zm-48 346V160H48v298c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z"></path></svg>
+                            <span th:text="${#dates.format(fullArticleDTO.createDate, 'dd-MM-yyyy в HH:mm')}"></span>
+                        </div>
                     </div>
+                </div>
+                <div class="title">
+                    <h4 class="grey-text text-darken-2" th:text="${fullArticleDTO.title}"></h4>
+                    <div class="divider"></div>
+                    <h6 class="grey-text" th:text="${fullArticleDTO.subtitle}"></h6>
                 </div>
             </div>
         </div>
-
-        <div class="row comments">
-            <div class="comments-title col s12 l10 offset-l1">
-                <h4>Комментарии</h4>
-                <span th:text="${fullArticleDTO.comments}"></span>
+        <div class="row">
+            <div class="image col s12">
+                <img th:src="@{${fullArticleDTO.articleImage}}"/>
             </div>
-            <div th:each="comment : ${comments}" class="card col s12 l10 offset-l1">
-                <div class="card-title">
-                    <span class="commenter-login" th:text="''+${comment.user.login}+', '+${comment.createDate}"></span>
-                    <div class="comment-rate" th:text="${comment.rating}"></div>
+        </div>
+        <div class="row">
+            <div class="content" th:utext="${fullArticleDTO.htmlContent}">
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="divider"></div>
+            <div class="article-footer">
+                <div class="tags">
+                    <a th:each="tag : ${fullArticleDTO.tags}" th:href="@{/tags/${tag.id}}" class="chip" th:text="${tag.name}"></a>
                 </div>
-                <div class="card-content">
-                    <div class="left-side" >
-                        <img th:src="${#{fileServerLocation}.concat(comment.user.userImage)}"/>
-                        <img style="width: 40px;height: 40px;" class="star1" th:src="@{/resources/images/rate-up2.svg}"/>
-                        <span th:text="${comment.rating}"></span>
-                        <img style="width: 40px;height: 40px;" class="star2" th:src="@{/resources/images/rate-down2.svg}"/>
+                <div class="article-rating">
+                    <svg  role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M288.662 352H31.338c-17.818 0-26.741-21.543-14.142-34.142l128.662-128.662c7.81-7.81 20.474-7.81 28.284 0l128.662 128.662c12.6 12.599 3.676 34.142-14.142 34.142z"></path></svg>
+                    <span th:text="${fullArticleDTO.rating}"></span>
+                    <svg  role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path></svg>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="comments">
+                <div class="comment-header">
+                    Комментарии <span class="blue" th:text="${fullArticleDTO.comments.size}"></span>
+                </div>
+                <div th:if="${user!=null}" class="add-comment">
+                    <div class="left-side">
+                        <a  th:href="@{/users/${user.userImage}}">
+                            <img th:src="@{${user.userImage}}"/>
+                            <span th:text="${user.login}"></span>
+                        </a>
                     </div>
-                    <p th:text="${comment.commnet}"></p>
+                    <div class="right-side writer">
+                        <div class="write">
+                            <textarea placeholder="Напишите комментарий"></textarea>
+                        </div>
+                        <div class="action">
+                            <div class="counter">
+                                <p>Осталось символов:</p>
+                                <span>1000</span>
+                            </div>
+                            <div class="post-comment">Отправить</div>
+                        </div>
+                    </div>
+                    <svg style="display: none;" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#F44336" d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"></path></svg>
+                </div>
+                <div th:each="comment : ${fullArticleDTO.comments}" class="comment" th:user="${comment.user.id}" th:id="'comment-'+${comment.id}">
+                    <div class="left-side">
+                        <a th:href="@{/users/${comment.user.id}}"><img class="ava" th:src="@{${comment.user.userImage}}"/></a>
+                        <div class="rating">
+                            <svg class="rate-comment" th:content="${comment.id}+':1'" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M288.662 352H31.338c-17.818 0-26.741-21.543-14.142-34.142l128.662-128.662c7.81-7.81 20.474-7.81 28.284 0l128.662 128.662c12.6 12.599 3.676 34.142-14.142 34.142z"></path></svg>
+                            <span class="rate" th:text="${comment.rating}"></span>
+                            <svg class="rate-comment" th:content="${comment.id}+':-1'" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path></svg>
+                        </div>
+                    </div>
+                    <div class="right-side">
+                        <div class="top-info">
+                            <div class="left">
+                                <div class="user-info">
+                                    <div class="login" th:text="${comment.user.login}"></div>
+                                    <div class="user-rating">
+                                        <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#ffcb05" d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"></path></svg>
+                                        <span th:text="${#numbers.formatDecimal(comment.user.rating, 1, 3, 'WHITESPACE')}"></span>
+                                    </div>
+                                </div>
+                                <div class="date">
+                                    <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#adb5bd" d="M148 288h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm108-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96-260v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h48V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h128V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h48c26.5 0 48 21.5 48 48zm-48 346V160H48v298c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z"></path></svg>
+                                    <span th:text="${#dates.format(comment.createDate, 'dd-MM-yyyy в HH:mm')}"></span></div>
+                            </div>
+                            <div class="right">
+                            </div>
+                        </div>
+                        <div class="comment-text" th:text="${comment.text}"></div>
+                    </div>
                 </div>
             </div>
         </div>

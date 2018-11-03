@@ -1,28 +1,29 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+    initMaterialize();
+    initUserMenu();
+
+});
+
+function initUserMenu() {
+    const userButton = document.querySelector('.user-account .user'),
+        menu = document.querySelector('.user-account .menu');
+    if(userButton !== null && menu !== null){
+        userButton.addEventListener('click', function (e) {
+            menu.style.display = 'block';
+        });
+        document.addEventListener('click', function (e) {
+            menu.style.display = 'none';
+        }, true)
+    }
+}
+
+function initMaterialize() {
     //Materialize initialize
-    var sidenavOptions = {
+    let sidenavOptions = {
 
     }
-    var elemsSidenav = document.querySelectorAll('.sidenav');
-    var instancesSidenav = M.Sidenav.init(elemsSidenav, sidenavOptions);
+    let elemsSidenav = document.querySelectorAll('.sidenav');
+    let instancesSidenav = M.Sidenav.init(elemsSidenav, sidenavOptions);
 
-    var dropdownOptions = {
-        constrainWidth: false,
-        inDuration: 300,
-        outDuration: 300,
-        coverTrigger: false,
-        hover: true,
-        alignment: 'left'
-    }
-    var elemsDropdown = document.querySelectorAll('.dropdown-trigger');
-    var instancesDropdown = M.Dropdown.init(elemsDropdown, dropdownOptions);
-
-    var modalOptions = {
-        endingTop: "5%"
-    };
-    var elemsModal = document.querySelectorAll('.modal');
-    var instancesModal = M.Modal.init(elemsModal, modalOptions);
-
-
-})
+}

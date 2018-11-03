@@ -1,21 +1,19 @@
 package ru.projects.prog_ja.dto.smalls;
 
-import ru.projects.prog_ja.model.entity.user.NoticeType;
+import ru.projects.prog_ja.dto.NoticeType;
 
 import java.util.Date;
 
-public class SmallNoticeTransfer {
+public class SmallNoticeTransfer implements Comparable<SmallNoticeTransfer>{
 
     protected long id;
 
-    protected String title;
     protected String message;
     protected NoticeType type;
     protected Date createDate;
 
-    public SmallNoticeTransfer(long id, String title, String message, NoticeType type, Date createDate) {
+    public SmallNoticeTransfer(long id, String message, NoticeType type, Date createDate) {
         this.id = id;
-        this.title = title;
         this.message = message;
         this.type = type;
         this.createDate = createDate;
@@ -27,14 +25,6 @@ public class SmallNoticeTransfer {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getMessage() {
@@ -59,5 +49,10 @@ public class SmallNoticeTransfer {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    @Override
+    public int compareTo(SmallNoticeTransfer o) {
+        return this.createDate.after(o.createDate) ? 1 : -1;
     }
 }

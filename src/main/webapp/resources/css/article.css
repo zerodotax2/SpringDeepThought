@@ -1,238 +1,349 @@
-
-#article{
-  padding: 0;
-}
-
-#article .card-title{
-  padding: 20px 20px 10px 20px;
-}
-
-#article .card-title h3{
-  font-weight: 500;
-  color: #414141;
-  font-size: 35px;
-  margin: 0;
-}
-
-#article .card-title .article-tags{
-  line-height: 26px !important;
-  margin-top: 10px;
-}
-
-#article .card-title .stats{
+.head .top{
   display: flex;
-  margin: 20px 0;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
-
-#article .card-title .stats .stat{
+.head .top .right{
   display: flex;
-  margin: 0 10px;
+  align-items: center;
 }
-
-#article .card-title .stats .stat img{
-  width: 20px;
-  height: 20px;
-}
-
-#article .card-title .stats .stat span{
-  line-height: 20px;
-  margin-left: 10px;
-}
-
-
-#article .card-content {
-  padding: 10px 20px;
-}
-
-
-#article .user-row{
+.head .top .user{
   display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+  align-items: center;
 }
-
-#article .user{
-  display: flex;
-  padding: 10px 20px;
-  border-radius: 10px;
-}
-
-#article .user img{
+.head .top .user img{
   width: 60px;
   height: 60px;
   border-radius: 100%;
 }
-
-#article .user .user-info{
+.head .top .user .info{
   margin-left: 10px;
+  color: #6b6b6b;
 }
-
-#article .user .title{
-  font-size: 20px;
-  font-weight: 500;
-  color: white;
-}
-
-#article .user .rating{
+.head .top .user .rating{
   display: flex;
+  align-items: center;
 }
-
-#article .user .rating img{
+.head .top .user .rating svg{
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+}
+.head .edit-article{
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+}
+.head .edit-article svg{
   width: 20px;
   height: 20px;
+  margin-left: 10px;
+  fill: #727577;
 }
-
-#article .user .rating span{
-  font-size: 16px;
-  line-height: 25px;
-  margin-left: 5px;
-  color: white;
+.head .top .left{
+  display: flex;
 }
-
-#article .card-action {
-  padding: 20px !important;
+.head .top .num-element{
+  display: flex;
+  align-items: center;
+  color: #ADB5BD;
+  margin: 0 10px;
+}
+.head .top .num-element svg{
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+}
+.head .title{
+  text-align:  left !important;
+}
+.head .title h6{
+  font-weight: 300;
+}
+.image {
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.image img{
+  width: 800px;
+}
+.content{
+  font-weight: 300;
+}
+.article-footer{
+  margin: 20px 0;
+  display: flex;
+  justify-content: space-between;
+}
+.article-footer .tags{
+  display: flex;
+  flex-wrap: wrap;
+}
+.article-footer .tags .chip{
+  background: white;
+  color: dimgray;
+  font-size: 12px !important;
+  border-radius: 0;
+  transition-duration: 0.3s;
+}
+ .article-footer .tags .chip:hover{
+   color: whitesmoke;
+   background: dimgrey;
+ }
+ .article-footer .article-rating{
+   display: flex;
+   align-items: center;
+   color: darkgrey;
+   font-size: 16px;
+ }
+ .article-footer .article-rating svg{
+   width: 40px;
+   height: 40px;
+   margin: -5px 10px;
+   cursor: pointer;
+ }
+ .comment-header{
+   color: #A9A9A9;
+   font-size: 20px;
+ }
+ .comment-header span{
+   margin: 0 5px;
+   padding: 2px 10px;
+   border-radius: 10px;
+   color: white;
+ }
+.comments .add-comment{
+  width: 100%;
+  margin: 20px 0 30px 0;
+  display: flex;
+}
+.add-comment .left-side{
+  display: flex;
+  align-items: center;
+  margin: 0 3% 0 1%;
+}
+.add-comment .left-side a{
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  color: #969696;
+}
+.add-comment .left-side img{
+  width: 60px;
+  height: 60px;
+  margin-bottom: 10px;
+  border-radius: 100%;
+}
+.writer{
+  width: 100%;
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  box-shadow: 0 0 10px lightgray;
+}
+.writer .write{
+  padding: 15px;
+}
+.writer .write textarea{
+  resize: none;
   border: none;
+  min-height: 70px;
 }
-
-#article .rate-row{
+.writer .action{
+  border-top: 1px solid lightgray;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.writer .action .counter{
+  display: flex;
+  align-items: center;
+  font-weight: 100;
+  color: #919191;
+  padding: 0 10px;
+}
+.writer .action .counter span{
+  margin-left: 5px;
+  color: rgba(33, 150, 243, 0.64);
+}
+.writer .action .post-comment{
+  padding: 7px 15px;
+  cursor: pointer;
+  color: #2196F3;
+  border-left: 1px solid lightgray;
+  border-radius: 0 0 10px 0;
+}
+.writer .action .post-comment:hover{
+  background: whitesmoke;
+}
+.add-comment-error{
+  width: 15px;
+  height: 15px;
+  margin: 5px;
+}
+.comments .comment{
+  display: flex;
+  margin: 10px 5px;
+  font-weight: 300;
+}
+.comments .comment .left-side {
+  /*width: 15%;*/
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
-  margin-top: 15px;
+  align-items: center;
 }
-
-#article .rate-row span{
-  margin: 0 20px;
-  font-weight: bold;
-  color : darkgrey;
-  font-size: 30px;
+.comments .comment .left-side img{
+  width: 70px;
+  height: 70px;
+  border-radius: 100%;
 }
-
-#article .rate-row img{
+.comments .comment .left-side .rating {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  margin-left: 5px;
+}
+.comments .comment .left-side .rating svg{
   width: 40px;
   height: 40px;
   cursor: pointer;
 }
-
-.comments .comments-title {
-  display: flex;
-}
-
-.comments .comments-title h4{
-  color: white;
-  text-shadow: 0 2px 2px black;
-  font-size: 35px;
-  margin: 0;
-}
-
-.comments .comments-title span{
-  line-height: 35px;
-  font-size: 20px;
+.comments .comment .left-side .rating .rate{
+  font-size: 14px;
   color: dimgrey;
-  margin: 3px 10px;
-  border-radius: 20px;
-  padding: 2px 10px;
-  background: white;
 }
-
-.comments .card{
-  border-radius: 10px;
-}
-
-.comments .card .card-title {
-  padding: 10px 15px 0 15px;
-  color: #838383;
-  display: flex;
-}
-
-.comments .card .card-title .commenter-login{
-  font-size: 14px;
-}
-
-.comments .card-title .comment-rate{
-
-}
-
-.comments .card-content {
-  display: flex;
-  justify-content: center;
-  padding: 10px 15px;
-}
-.comments .card-content img{
-  width: 40px;
-  height: 40px;
-  margin-right: 10px;
-  margin-bottom: -10px;
-}
-
-.comments .card-content p{
-  font-size: 14px;
-  font-weight: 400;
-  color: #3e3e3e;
-}
-.comments .card-content .left-side{
-}
-.comments .card-content .left-side span{
-  font-size: 14px;
+.comments .comment .right-side{
   width: 100%;
-  margin: -15px 0 -15px 5px !important;
+  margin-left: 10px;
 }
-.comments .card-content .left-side .star1{
-  margin-bottom: -13px;
-}.comments .card-content .left-side .star2{
-  margin-top: -10px;
+.comment .right-side .top-info{
+  display: flex;
+  justify-content: space-between;
+  color: #a8a8a8;
 }
-
-
+.comment .right-side .top-info .user-info{
+  display: flex;
+}
+.comment .right-side .top-info .left{
+  display: flex;
+}
+.comment .right-side .top-info svg{
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+}
+.comment .right-side .top-info .user-rating{
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
+}
+.comment .right-side .top-info .date{
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+}
+.comment .right-side .top-info .right{
+  display: flex;
+}
+.comment .right-side .top-info .right i{
+  cursor: pointer;
+  margin: 0 2px;
+}
+.comment .right-side .top-info .right svg{
+  width: 15px;
+  height: 15px;
+}
+.comment .right-side .comment-text{
+  color: #484848;
+}
+.comment-change{
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  margin-top: 5px;
+  width: 100%;
+}
+.comment-change textarea{
+  border: none;
+  resize: none;
+  padding: 10px;
+  min-height: 80px;
+  -moz-appearance: none;
+  font-size: 14px;
+}
+.comment-change .actions{
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid lightgray;
+}
+.comment-change .counter{
+  font-weight: 100;
+  color: dimgrey;
+  padding: 5px 10px;
+}
+.comment-change .counter span{
+  color: #82CAFA;
+}
+.comment-change .actions .save{
+  padding: 5px 10px;
+  border-left: 1px solid lightgray;
+  color: #219BF3;
+  font-weight: normal;
+  cursor: pointer;
+}
+.comment-change .actions .save:hover{
+  background-color: whitesmoke;
+}
 @media (max-device-width: 600px) {
-  #article .card-title h3{
-    font-size: 20px;
+  .head .top .left{
+    margin-top: 10px;
   }
-  #article .card-title .article-tags .chip{
-    margin: 0 !important;
+  .head .title h4{
+    font-size: 25px;
   }
-
-  #article .card-title .stats .stat{
-    display: flex;
-    margin: 0 10px;
+  .article-footer .tags .chip{
+    margin-top: 5px !important;
   }
-
-  #article .card-title .stats .stat img{
-    width: 13px;
-    height: 13px;
+  .article-footer{
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
   }
-
-  #article .card-title .stats .stat span{
-    line-height: 13px;
-    margin-left: 5px;
-    font-size: 15px;
+  .article-footer .article-rating{
+    margin: 10px 0;
   }
-
-  .comments .comments-title h4{
-    font-size: 30px !important;
+  .comments .comment .left-side {
+    flex-flow: column;
+    /*width: 25%;*/
   }
-
-  .comments .comments-title span{
-    padding: 2px 5px;
-    line-height: 30px;
+  .comments .comment .left-side img{
+    width: 40px;
+    height: 40px;
   }
-
-}
-
-@media (max-device-width: 992px ) and (min-device-width: 600px){
-
-  #article .card-title h3{
-    font-size: 30px;
+  .comments .comment .left-side .rating{
+    margin: 0;
   }
-
-}
-
-@media (min-device-width: 992px ){
-
-  #article .card-title .article-tags .chip{
-    height: 30px !important;
-    line-height: 30px !important;
-    font-size: 14px !important;
+  .comments .comment .left-side .rating svg{
+    width: 30px;
+    height: 30px;
   }
-
+  .comments .comment .right-side{
+    /*width: 75%;*/
+  }
+  .comments .comment {
+    margin: 0 -10px;
+  }
+  .comments .comment .top-info .left{
+    flex-wrap: wrap;
+  }
+  .comments .add-comment .left-side{
+    display: none;
+  }
+  .comments .add-comment .counter{
+    font-size: 12px;
+  }
+  .comment-change .actions .counter{
+    font-size: 12px;
+  }
 }

@@ -10,47 +10,54 @@ import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.Table;
 import java.sql.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "Questions")
 @org.hibernate.annotations.NamedQueries({
-        @org.hibernate.annotations.NamedQuery(name = "deleteQuestion", query = "delete from Questions q where q.questionId = :id"),
+        @org.hibernate.annotations.NamedQuery(name = "deleteQuestion", query = "delete from Questions q where q.questionId = :id and q.userInfo = :user"),
         @org.hibernate.annotations.NamedQuery(name = "findSmallQuestions", query = "select new ru.projects.prog_ja.dto.smalls.SmallQuestionTransfer( " +
-                " q.questionId,  q.title, q.createDate, q.rating, u.userId, u.smallImagePath, u.login, u.rating " +
+                " q.questionId,  q.title, q.createDate, q.rating, q.views, u.userId, u.smallImagePath, u.login, u.rating " +
                 " ) " +
                 " from Questions q " +
                 " left join q.userInfo as u" +
                 " where lower(q.title) like lower(:search) "),
         @org.hibernate.annotations.NamedQuery(name = "findQuestions", query = "select new ru.projects.prog_ja.dto.commons.CommonQuestionTransfer( " +
-                " q.questionId, q.title, q.createDate,  q.rating, u.userId, u.smallImagePath, u.login, u.rating, substring(q.questionContent.htmlContent, 0, 256) " +
+                " q.questionId, q.title, q.createDate,  q.rating, q.views, u.userId, u.smallImagePath, u.login, u.rating, substring(q.questionContent.htmlContent, 0, 256) " +
                 " ) " +
                 " from Questions q " +
                 " left join q.userInfo as u" +
                 " where lower(q.title) like lower(:search) "),
         @org.hibernate.annotations.NamedQuery(name = "getQuestions", query = "select new ru.projects.prog_ja.dto.commons.CommonQuestionTransfer( " +
-                " q.questionId, q.title, q.createDate,  q.rating, u.userId, u.smallImagePath, u.login, u.rating, substring(q.questionContent.htmlContent, 0, 256) " +
+                " q.questionId, q.title, q.createDate,  q.rating, q.views, u.userId, u.smallImagePath, u.login, u.rating, substring(q.questionContent.htmlContent, 0, 256) " +
                 " ) " +
                 " from Questions q " +
                 " left join q.userInfo as u"),
         @org.hibernate.annotations.NamedQuery(name = "getFullQuestion", query = "select q from Questions q " +
                 " left join fetch q.questionContent as c" +
-                " left join fetch c.answers " +
+                " left join fetch q.answers " +
                 " left join fetch q.userInfo as u" +
                 " left join fetch q.tags as t " +
                 " left join fetch t.tagId " +
                 " where q.questionId = :id "),
         @NamedQuery(name = "getSmallQuestions", query = "select new ru.projects.prog_ja.dto.smalls.SmallQuestionTransfer( " +
-                " q.questionId, q.title, q.createDate, q.rating, u.userId, u.smallImagePath, u.login, u.rating " +
+                " q.questionId, q.title, q.createDate, q.rating, q.views, u.userId, u.smallImagePath, u.login, u.rating " +
                 " ) " +
                 " from Questions q" +
                 " left join q.userInfo as u "),
-        @NamedQuery(name = "countQuestions", query = "select distinct count(q.questionId) from Questions q")
+        @NamedQuery(name = "countQuestions", query = "select distinct count(q.questionId) from Questions q"),
+        @NamedQuery(name = "updateQuestionRate", query = "update Questions set rating = rating + :rate where questionId = :id"),
+        @NamedQuery(name = "updateRightAnswer", query = "update Questions set rightId = :right where questionId in " +
+                " (select question from Answer where answerId = :id) " +
+                " and userInfo = :user")
 })
 public class Questions {
 
     public static final String DELETE_QUESTION = "deleteQuestion";
+    public static final String UPDATE_QUESTION_RATE = "updateQuestionRate";
+    public static final String UPDATE_RIGHT_ANSWER = "updateQuestionRate";
     public static final String FIND_SMALL_QUESTIONS = "findSmallQuestions";
     public static final String FIND_QUESTIONS = "findQuestions";
     public static final String GET_QUESTIONS = "getQuestions";
@@ -62,10 +69,13 @@ public class Questions {
     private String title;
     private Date createDate;
     private long rating;
+    private long views;
     private QuestionContent questionContent;
     private UserInfo userInfo;
     private Set<QuestionsTags> tags;
+    private List<Answer> answers;
     private boolean activated = true;
+    private long rightId;
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id", nullable = false, unique = true)
@@ -101,7 +111,6 @@ public class Questions {
 
     public Questions(String title) {
         this.title = title;
-        this.tags = tags;
         this.createDate = new Date(new java.util.Date().getTime());
         rating = 0;
     }
@@ -172,5 +181,32 @@ public class Questions {
 
     public void setRating(long rating) {
         this.rating = rating;
+    }
+
+    @Column(name = "right_id", nullable = true)
+    public long getRightId() {
+        return rightId;
+    }
+
+    public void setRightId(long rightId) {
+        this.rightId = rightId;
+    }
+
+    @OneToMany(mappedBy = "question", orphanRemoval = true, fetch = FetchType.LAZY)
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
+
+    @Column(name = "views", nullable = false)
+    public long getViews() {
+        return views;
+    }
+
+    public void setViews(long views) {
+        this.views = views;
     }
 }

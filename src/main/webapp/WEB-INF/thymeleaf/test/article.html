@@ -13,14 +13,17 @@
     <link rel="stylesheet" href="../../../resources/css/footer.css"/>
     <link rel="stylesheet" href="../../../resources/css/typography.css"/>
     <link rel="stylesheet" href="../../../resources/css/header.css"/>
-    <link rel="stylesheet" href="../../../resources/css/right-panel.css"/>
     <link rel="stylesheet" href="../../../resources/css/article.css"/>
 
+    <meta id="fileServerLocation" content="http://localhost:80"/>
+    <meta id="_csrf_header" content="csrf"/>
+    <meta id="_csrf" content="0"/>
+    <meta id="user_id" content="1"/>
 
     <!--Top icon-->
     <link rel="shortcut icon" href="../../../resources/images/icon2.ico" type="image/x-icon"/>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Article | Lorem ipsum</title>
 </head>
 <body style="background-color: white">
 
@@ -30,30 +33,12 @@
                 <!--Logo div-->
                 <a  href="/" class="brand-logo" style="display: flex;">
                     <div class="valign-wrapper">
-                        <img src="../../../resources/images/science-logo.png" style="width: 40px; height: 40px"/>
+                        <img src="../../../resources/images/logo.png" style="width: 40px; height: 40px"/>
                         <h5 class="white-text">DeepThought</h5>
                     </div>
                 </a>
                 <!--Menu icon for mobiles-->
                 <a href="#" data-target="mobile-demo" class="sidenav-trigger" style="font-weight: bold; transform: rotate(90deg)">|||</a>
-    
-                <!--Search div-->
-                <!-- Modal Trigger -->
-                <!--<a class="right modal-trigger" href="#search1" style="padding-top: 7px"><img src="../../../resources/images/search.svg" style="width: 25px; height:25px" /></a>-->
-                <!-- Modal Structure -->
-                <div id="search1" class="modal">
-                    <div class="modal-content">
-                        <form method="post" action="#">
-                            <div class="input-field cyan-text">
-                                <span class="prefix">
-                                    <img src="../../../resources/images/search2.svg" style="height: 30px; width: 30px;margin-top: 10px;"/>
-                                </span>
-                                <input name="search_value" type="text" style="border-bottom: 2px solid cornflowerblue" placeholder="Поиск..."/>
-                                <input class="find_button" style="display: none;" type="submit" />
-                            </div>
-                        </form>
-                    </div>
-                </div>
     
                 <!--Menu div-->
                 <ul id="nav-mobile" class="right hide-on-med-and-down" style="display: flex;">
@@ -61,21 +46,24 @@
                     <li id="questionElement"><a class="white-text" href="/questions">ВОПРОСЫ</a></li>
                     <li id="problemsElement"><a class="white-text" href="/problems">ЗАДАЧИ</a></li>
                     <li id="supportElement"><a class="white-text" href="/support">ПОМОЩЬ</a></li>
-                    <!--Dropdown button-->
-                    <!--<div>-->
-                        <!--<a class="dropdown-trigger options_trigger" href="/profile" data-target="dropdown-profile" style="display: flex;">-->
-                            <!--<img src="../../../resources/images/user.png" style="width: 40px; height: 40px; margin-top: 12px; margin-right: 10px"/>-->
-                            <!--<div>firstName</div>-->
-                        <!--</a>-->
-                        <!--&lt;!&ndash;Dropdown content&ndash;&gt;-->
-                        <!--<ul id="dropdown-profile" class="dropdown-content">-->
-                            <!--<li style="font-weight: 100"><a style="font-weight: 100" href="/profile">Аккаунт</a></li>-->
-                            <!--<li><a href="/settings">Редактировать</a></li>-->
-                            <!--<li><a href="/personalize">Персонализация</a></li>-->
-                            <!--<li class="divider"></li>-->
-                            <!--<li><a href="/logout">Выход</a></li>-->
-                        <!--</ul>-->
-                    <!--</div>-->
+                    <!--<li class="user-account">-->
+                        <!--<div class="user">-->
+                            <!--<div class="info">-->
+                                <!--<span class="login">zerodotax2</span>-->
+                                <!--<span class="rating"></span>-->
+                            <!--</div>-->
+                            <!--<div class="ava"><img src="../../../resources/images/ava.jpg"/> </div>-->
+                            <!--<svg fill="#ffffff" height="24" viewBox="0 0 24 18" width="24" xmlns="http://www.w3.org/2000/svg">-->
+                                <!--<path d="M7.41 7.84L12 12.42l4.59-4.58L18 9.25l-6 6-6-6z"/>-->
+                                <!--<path d="M0-.75h24v24H0z" fill="none"/>-->
+                            <!--</svg>-->
+                        <!--</div>-->
+                        <!--<div class="menu" style="display: none;">-->
+                            <!--<a href="/users/1" class="menu-element">Профиль</a>-->
+                            <!--<a href="/users/1/settings" class="menu-element">Настройки</a>-->
+                            <!--<a href="/logout" class="menu-element">Выход</a>-->
+                        <!--</div>-->
+                    <!--</li>-->
                         <li class="valign-wrapper" >
                             <a class="btn orange darken-2" id="log-btn" href="/login" >Вход</a>
                         </li>
@@ -105,138 +93,176 @@
 
     <div class="main" id="main">
         <div class="container">
-
-            <div class="row">
-
-                <meta id="article_bg_image" content="../../../resources/images/site-bg.jpg"/>
-
-                <div class="card col s12 l10 offset-l1 z-depth-5" id="article">
-                    <div class="card-image">
-                        <img src="../../../resources/images/parallax3.jpg"/>
-                    </div>
-                    <div class="card-title" >
-                       <h3>Как стать full-stack developer'ом, изучая Spring и Angular</h3>
-                        <div class="article-tags">
-                            <a href="#" class="chip">Программирование</a>
-                            <a href="#" class="chip">Программирование</a>
-                            <a href="#" class="chip">Программирование</a>
-                            <a href="#" class="chip">Программирование</a>
-                            <a href="#" class="chip">Программирование</a>
-                        </div>
-                        <div class="stats">
-                            <div class="stat grey-text">
-                                <img src="../../../resources/images/date.svg"/>
-                                <span>15-11-2001</span>
-                            </div>
-                            <div class="stat grey-text">
-                                <img src="../../../resources/images/star.svg"/>
-                                <span>215</span>
-                            </div>
-                            <div class="stat grey-text">
-                                <img src="../../../resources/images/eye.svg"/>
-                                <span>534</span>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="card-content">
-                        <div id="article-content" class="grey-text text-darken-2">
-                            <h2 style="text-align: center">Большой заголовок</h2>
-                            <img style="width: 100%;" src="../../../resources/images/beatiful.jpg" />
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid animi architecto aut beatae debitis enim explicabo, fugiat illo ipsa iusto labore molestias nostrum officiis perspiciatis provident quae quia quod quos rem repudiandae sunt ullam velit vero. Alias aliquid amet debitis dignissimos eaque error hic ipsa magni, maiores, molestiae mollitia numquam odio placeat quibusdam quo reprehenderit saepe sint, tempore tenetur ullam unde vero voluptas voluptate. Esse hic necessitatibus possimus sapiente. Deleniti eaque nostrum quo quos repellat. Aperiam, architecto asperiores delectus deleniti dignissimos, distinctio dolore ducimus facere iste labore laudantium libero maiores maxime necessitatibus nisi nobis non perspiciatis, placeat porro provident quibusdam quis sapiente sed tenetur vel velit veritatis voluptatibus? Ad atque blanditiis dignissimos ducimus eos esse et eveniet ex hic in, inventore labore laudantium magni nam nemo nulla odio optio provident quisquam, quos reiciendis, saepe sed tempore tenetur veniam! Autem consectetur cum harum laborum magni, natus quibusdam quis sit suscipit velit? Autem exercitationem impedit molestias provident qui ratione repudiandae, tempora temporibus! Aliquid architecto beatae commodi cupiditate deserunt dolor dolores doloribus ducimus error et exercitationem expedita hic incidunt iste itaque mollitia nemo nulla optio, placeat quidem quod repellendus reprehenderit tempora totam vero voluptatem voluptates! Eligendi minima nulla voluptatibus? Alias animi aut autem culpa doloremque ex fugiat hic illum in laudantium quasi quis, reiciendis temporibus tenetur unde voluptate voluptatibus? Asperiores commodi error in sapiente voluptatibus. Beatae dicta illo itaque, laboriosam odio optio ratione reiciendis sed sequi unde? Accusamus aliquid animi at cumque deleniti dolore dolorum, ducimus ea excepturi exercitationem facilis ipsa laboriosam neque nesciunt nobis numquam porro possimus praesentium, qui quidem reiciendis sapiente temporibus totam vel voluptates! Fuga iusto modi obcaecati quis vero. Ad aliquam aspernatur at aut blanditiis commodi cum deserunt distinctio dolorem eius enim error esse fugiat hic, ipsa maiores maxime, molestias non nulla obcaecati porro quasi quisquam quos repellat tempora totam ullam, ut veniam voluptates voluptatum! Dignissimos doloremque earum excepturi expedita illum itaque, iusto laborum mollitia recusandae unde. Aspernatur dicta distinctio ex facilis laborum magnam nulla officiis quae recusandae reiciendis rerum, voluptate. Alias aliquid dignissimos nam obcaecati optio suscipit voluptates! A ad amet deleniti deserunt dolor eum perferendis provident qui quos reiciendis, sapiente veniam veritatis. Alias blanditiis dolor dolore dolorum earum ex ipsa minus necessitatibus odit possimus praesentium quae, quam ratione recusandae repellendus sapiente sed sunt ut vitae voluptatum. Accusamus consequuntur est et exercitationem explicabo laudantium libero modi nam natus, nisi obcaecati, quis, quisquam reiciendis sequi sit tempora vel vitae voluptate? Dolorum ipsum neque sed ut veritatis? Dolorum nemo quos repellendus. Accusamus aut eum excepturi, laborum, magni maxime nemo placeat praesentium totam veniam veritatis, vitae. Ea, impedit, optio? Asperiores, ducimus ex ipsa laudantium maiores maxime nobis nostrum quod reiciendis saepe tenetur unde voluptas. Deleniti dolor harum minus nobis officia quae quod ratione saepe sequi vel! Aperiam, atque earum. Amet debitis, dicta distinctio doloribus dolorum eos facilis fuga in ipsum, magni modi nemo non obcaecati officia perferendis, quam quasi qui reiciendis reprehenderit sunt vel velit vero voluptatum. Accusantium asperiores eos nulla saepe sunt? Asperiores blanditiis consequatur, dicta doloribus eaque et explicabo ipsa laborum nobis officia officiis, omnis porro provident quaerat, voluptatibus? Ex, iste perferendis! Architecto exercitationem fugit nam nisi officia. Ab accusantium adipisci aliquam aliquid asperiores consequuntur ea eius facilis ipsa ipsum iure labore magni minima nobis odio perspiciatis, praesentium quia quidem quod, quos ratione, rem repellat reprehenderit similique soluta voluptates voluptatibus. Libero mollitia nihil optio quo sint! Accusantium aliquam animi aperiam, debitis dignissimos et explicabo facilis fugit id, impedit ipsam laudantium nemo nostrum officia optio perferendis quas qui quisquam repellat saepe totam unde veritatis? Amet aspernatur doloremque eum ex excepturi in incidunt quis, tempora voluptatibus! Ad amet aperiam at aut beatae consequatur culpa debitis deleniti dicta dignissimos dolor dolore earum eum exercitationem facere fugiat hic illum in labore, laboriosam minima molestiae nam nesciunt nulla odio officiis placeat quaerat quasi qui quia quo rerum, sequi tempore unde veritatis voluptatem voluptates! Aliquid aperiam at dolorum, earum eligendi explicabo fuga id molestias, mollitia natus nemo officia perspiciatis, rem repellendus velit veniam vero! Aliquid culpa cupiditate debitis dignissimos ex, excepturi exercitationem facere in magni nesciunt nihil non, quas quidem repudiandae, sequi tempora temporibus vel velit vero vitae? Amet assumenda at atque beatae deleniti ducimus ea eaque eos esse eum ex fuga illum ipsum itaque labore laborum molestiae nesciunt nihil, optio porro qui quia reiciendis rem sunt vero. Alias amet architecto iure libero praesentium vitae, voluptatibus? Accusantium aliquam, aliquid animi architecto consectetur, dolorum ex exercitationem ipsam ipsum labore laborum, maiores modi odit optio sapiente totam ut vero. Ad amet aut delectus deserunt dignissimos dolor eos fugit harum iure minima, minus placeat possimus reiciendis rem repellat sint vero voluptate! Accusamus, quas, voluptatem! A asperiores impedit molestiae recusandae sequi. Aperiam asperiores doloremque magni maiores molestias rerum sint vel! Aliquid, corporis eum facere harum inventore laboriosam laudantium natus optio porro quod quos sed sit veritatis! Aliquam, dolor, dolores facere laudantium magnam nam, natus nesciunt optio quaerat rem sit voluptatibus. Ad, assumenda, consequuntur deserunt earum eius eligendi eos ex facere itaque iure iusto laudantium nostrum perferendis quaerat qui quia recusandae reiciendis, sunt totam voluptatibus? Exercitationem nisi quaerat temporibus? Dignissimos explicabo facere iste iure, magnam maiores officiis quia sit soluta voluptates. Ab ad amet culpa incidunt iusto modi porro possimus repellat totam voluptatibus. Expedita facere molestiae natus odit possimus quaerat quidem sequi totam voluptatum. Cumque debitis distinctio doloremque error molestiae nulla quaerat quia quibusdam reiciendis? A consequuntur culpa cum dolorem dolorum, est harum inventore laboriosam maxime mollitia non nostrum possimus soluta totam vel. Asperiores beatae corporis ex placeat saepe sequi sit tenetur velit. Accusantium ad consectetur esse expedita fugit ipsa, iusto magnam minima non nulla obcaecati officia totam voluptate? Aliquid assumenda consequuntur cum dignissimos dolores, ea earum mollitia odit officia provident quis quod reiciendis rerum saepe unde ut vel veritatis? Atque beatae exercitationem quos ullam voluptates! Accusamus accusantium aliquid animi aperiam, architecto at culpa dignissimos dolores eaque enim et eveniet explicabo facilis illo itaque iusto labore laudantium necessitatibus nihil officia omnis praesentium quam quibusdam quis, quisquam reprehenderit repudiandae saepe suscipit tempora voluptatum? Aperiam culpa delectus hic ipsa ipsum iusto quidem.</p>
-                        </div>
-                    </div>
-                    <div class="card-action">
-                        <div class="user-row col s12 m6">
-                            <div class="user cyan darken-3">
-                                <img src="../../../resources/images/ava.jpg"/>
-                                <div class="user-info">
-                                    <span class="title" style="margin: 0;">zerodotax2</span>
-                                    <div class="rating">
-                                        <img src="../../../resources/images/star.svg"/>
-                                        <span>3214</span>
+                <div class="row">
+                    <div class="head col s12">
+                        <div class="top">
+                            <div class="right">
+                                <a href="/users/1" class="user">
+                                    <img src="../../../resources/images/ava.jpg"/>
+                                    <div class="info">
+                                        <div class="login">zerodotax2</div>
+                                        <div class="rating">
+                                            <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#ffcb05" d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"></path></svg>
+                                            <span>1953</span>
+                                        </div>
                                     </div>
+                                </a>
+                                <a class="edit-article" href="/articles/1/edit">
+                                    <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M290.74 93.24l128.02 128.02-277.99 277.99-114.14 12.6C11.35 513.54-1.56 500.62.14 485.34l12.7-114.22 277.9-277.88zm207.2-19.06l-60.11-60.11c-18.75-18.75-49.16-18.75-67.91 0l-56.55 56.55 128.02 128.02 56.55-56.55c18.75-18.76 18.75-49.16 0-67.91z"></path></svg>
+                                </a>
+                            </div>
+                            <div class="left">
+                                <div class="num-element">
+                                    <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#adb5bd" d="M569.354 231.631C512.97 135.949 407.81 72 288 72 168.14 72 63.004 135.994 6.646 231.631a47.999 47.999 0 0 0 0 48.739C63.031 376.051 168.19 440 288 440c119.86 0 224.996-63.994 281.354-159.631a47.997 47.997 0 0 0 0-48.738zM288 392c-102.556 0-192.091-54.701-240-136 44.157-74.933 123.677-127.27 216.162-135.007C273.958 131.078 280 144.83 280 160c0 30.928-25.072 56-56 56s-56-25.072-56-56l.001-.042C157.794 179.043 152 200.844 152 224c0 75.111 60.889 136 136 136s136-60.889 136-136c0-31.031-10.4-59.629-27.895-82.515C451.704 164.638 498.009 205.106 528 256c-47.908 81.299-137.444 136-240 136z"></path></svg>
+                                    <span>0</span>
+                                </div>
+                                <div class="num-element">
+                                    <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#adb5bd" d="M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z"></path></svg>
+                                    <span>0</span>
+                                </div>
+                                <div class="num-element">
+                                    <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#adb5bd" d="M148 288h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm108-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96-260v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h48V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h128V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h48c26.5 0 48 21.5 48 48zm-48 346V160H48v298c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z"></path></svg>
+                                    <span>15-11-2001 в 22:01</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="rate-row col s12 m6">
-                            <img src="../../../resources/images/rate-up.svg"/>
-                            <span>21</span>
-                            <img src="../../../resources/images/rate-down.svg"/>
+                        <div class="title">
+                            <h4 class="grey-text text-darken-2">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga, non!</h4>
+                            <div class="divider"></div>
+                            <h6 class="grey-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum, quod?</h6>
                         </div>
+                    </div>
+                </div>
+            <div class="row">
+                <div class="image col s12">
+                    <img src="../../../resources/images/beatiful.jpg"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="content">
+                    <p>Содержит ли Slack мой код для контроллера Xbox? Знает ли команда Slack об этом? Знает ли об этом хоть кто-то? Slack занимает 160 Мб на диске. Это порядка 70 несжатых копий Властелина Колец. Другие приложения Electron на моем компьютере — Spotify (200 Мб) и Atom (260 Мб). Linux я впервые установил при помощи дискет. Понадобится 450 дискет, чтобы записать эти три простых приложения. Все вместе они весят как настольный дистрибутив Ubuntu. Который, думаю, содержит в себе клиент IRC, текстовый редактор и музыкальный проигрыватель. Полноценная операционная система, пользовательское окружение и веб-браузер.</p>
+                    <br>
+                    <p>Вы скажете, что дисковое пространство сейчас ничего не стоит. Да, но не оперативная память. Новенький блестящий MacBook Pro по умолчанию укомплектован 8 Гб ОЗУ. В связи с продолжительностью работы от батареи вы не можете приобрести модель с более чем 16 Гб. И прямо сейчас Slack находится где-то между 300 Мб и 1 Гб в памяти моего ноутбука:</p>
+                    <br>
+                    <div class="image-wrapper" style="display: flex;align-items: center;justify-content: center;margin: 20px 0;">
+                        <img src="../../../resources/images/article_writer.png" style="width: 350px;"/>
+                    </div>
+                    <br>
+                    <p>И нет, Spotify не проигрывает музыку. Он просто… запущен. Делает свои загадочные хромовские дела. И он тоже использует несколько процентов процессора. Просто, чтобы существовать.</p>
+                    <br>
+                    <p>(Во время написания этой заметки Chrome в отместку решил занять 100% ресурсов процессора. Во встроенном диспетчере задач это был загадочный процесс «Browser». Спасибо, Chrome.)</p>
+                    <br>
+                    <p>Если быть честным, то JavaScript вне браузера не является проблемой. На самом деле я думаю, что API, которые предоставляет современный веб гораздо лучше существующих API операционных систем. Мы должны ими пользоваться.</p>
+                    <br>
+                    <p>Но нам необходимо найти возможность использовать эти новые парадигмы (React и его друзья) на настольных платформах без необходимости запускать больше чертовых копий Chrome. Мне просто не настолько интересно ваше приложение, чтобы это оправдывало запуск очередного инстанса Chrome. Разработчику легко попасть в ловушку ощущения того, что ваше приложение или сайт это подарок человечеству и самое важное, чем они могут заниматься. Почему бы не воспользоваться избыточными ресурсами? Нам нужно бороться с таким образом мышления. Такой путь приводит к миру, где у нас не может быть хороших вещей. Такой путь приводит к миру, где батареи наших ноутбуков должны вырасти, чтобы обеспечивать питанием процессоры, чтобы они выполняли ещё больше бесполезной работы. Такой путь приводит к возвращению Shockwave Flash и нагревающихся в карманах телефонов, которые загадочным образом оказываются разряжены когда мы хотим ими воспользоваться. К паранойе по отношению к заряду батареи и закрытию приложений как только мы закончили с ними работать. (Я смотрю на вас, iTunes и Mischief.)</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="divider"></div>
+                <div class="article-footer">
+                    <div class="tags">
+                        <a href="/tags/1" class="chip">Программирование</a>
+                        <a href="/tags/1" class="chip">Химия</a>
+                        <a href="/tags/1" class="chip">Органика</a>
+                        <a href="/tags/1" class="chip">Биология</a>
+                        <a href="/tags/1" class="chip">Генетика</a>
+                    </div>
+                    <div class="article-rating">
+                        <svg  role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M288.662 352H31.338c-17.818 0-26.741-21.543-14.142-34.142l128.662-128.662c7.81-7.81 20.474-7.81 28.284 0l128.662 128.662c12.6 12.599 3.676 34.142-14.142 34.142z"></path></svg>
+                        <span>0</span>
+                        <svg  role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path></svg>
                     </div>
                 </div>
             </div>
-
-            <div class="row comments">
-                <div class="comments-title col s12 l10 offset-l1">
-                    <h4>Комментарии</h4>
-                    <span>216</span>
-                </div>
-                <div class="card col s12 l10 offset-l1">
-                    <div class="card-title">
-                        <span class="commenter-login">zerodotax2, 15-11-2018 в 12:06 </span>
-                        <div class="comment-rate"></div>
+            <div class="row">
+                <div class="comments">
+                    <div class="comment-header">
+                        Комментарии <span class="blue">0</span>
                     </div>
-                    <div class="card-content">
-                        <div class="left-side" >
-                            <img src="../../../resources/images/user.png"/>
-                            <img style="width: 40px;height: 40px;" class="star1" src="../../../resources/images/rate-up2.svg"/>
-                            <span>4123</span>
-                            <img style="width: 40px;height: 40px;" class="star2" src="../../../resources/images/rate-down2.svg"/>
+                    <div class="add-comment">
+                        <div class="left-side">
+                            <a href="/users/1">
+                                <img src="../../../resources/images/ava.jpg"/>
+                                <span>zerodotax2</span>
+                            </a>
                         </div>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab, aspernatur aut beatae commodi, corporis debitis, dicta dolore earum enim eveniet fuga itaque magnam maiores nobis officiis quidem quos repellendus tenetur totam veritatis. Delectus, deserunt dolorem expedita ipsam iusto maiores quos repudiandae rerum. Corporis, deserunt, itaque. Aliquam animi distinctio dolor doloremque esse ex excepturi expedita fuga ipsa ipsum laboriosam laudantium minus molestiae nihil nostrum obcaecati officiis provident quae quas repudiandae rerum, sit, soluta tempora tempore totam? Aliquam amet beatae consectetur esse ipsum mollitia odit reiciendis tempora ullam voluptatem. Aspernatur eos harum impedit iste, maxime necessitatibus pariatur possimus quaerat? Culpa doloremque, iste.</p>
+                        <div class="right-side writer">
+                            <div class="write">
+                                <textarea placeholder="Напишите комментарий"></textarea>
+                            </div>
+                            <div class="action">
+                                <div class="counter">
+                                    <p>Осталось символов:</p>
+                                    <span>1000</span>
+                                </div>
+                                <div class="post-comment">Отправить</div>
+                            </div>
+                        </div>
+                        <svg style="display: none;" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#F44336" d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"></path></svg>
+                    </div>
+                    <div class="comment" user="1" id="comment-1">
+                        <div class="left-side">
+                            <a href="/users/1"><img class="ava" src="../../../resources/images/ava.jpg"/></a>
+                            <div class="rating">
+                                <svg class="rate-comment" content="1:1" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M288.662 352H31.338c-17.818 0-26.741-21.543-14.142-34.142l128.662-128.662c7.81-7.81 20.474-7.81 28.284 0l128.662 128.662c12.6 12.599 3.676 34.142-14.142 34.142z"></path></svg>
+                                <span class="rate">21</span>
+                                <svg class="rate-comment" content="1:-1" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path></svg>
+                            </div>
+                        </div>
+                        <div class="right-side">
+                            <div class="top-info">
+                                <div class="left">
+                                    <div class="user-info">
+                                        <div class="login">zerodotax2</div>
+                                        <div class="user-rating">
+                                            <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#ffcb05" d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"></path></svg>
+                                            <span>211</span>
+                                        </div>
+                                    </div>
+                                    <div class="date">
+                                        <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#adb5bd" d="M148 288h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm108-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96-260v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h48V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h128V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h48c26.5 0 48 21.5 48 48zm-48 346V160H48v298c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z"></path></svg>
+                                        <span>15-11-2001 в 12:02</span></div>
+                                </div>
+                                <div class="right">
+                                </div>
+                            </div>
+                            <div class="comment-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur cupiditate doloribus et ipsam maiores. Labore porro vero voluptates? Assumenda, dolor.</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="page-footer bg-dark-blue">
+    <div class="footer">
         <div class="container">
             <div class="row">
-                <div class="col s12 l3 left-align">
-                    <h4 class="cyan-text text-lighten-4 unselectable">Аккаунт</h4>
-                    <ul class="left-align">
-                        <li style="margin-bottom: 10px" ><a class="cyan-text bottom_links text-lighten-4"  href="/login">Войти</a></li>
-                        <li style="margin-bottom: 10px"><a class="cyan-text bottom_links text-lighten-4"  href="/register">Зарегистрироваться</a></li>
-                    </ul>
+                <div class="col s12 footer-container">
+                    <div class="left">
+                        <div>Copyright © 2018 DeepThought |</div>
+                        <a href="/license">License</a>
+                    </div>
+                    <div class="right">
+                        <a href="https://vk.com/prog_ja">
+                            <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#ffffff" d="M545 117.7c3.7-12.5 0-21.7-17.8-21.7h-58.9c-15 0-21.9 7.9-25.6 16.7 0 0-30 73.1-72.4 120.5-13.7 13.7-20 18.1-27.5 18.1-3.7 0-9.4-4.4-9.4-16.9V117.7c0-15-4.2-21.7-16.6-21.7h-92.6c-9.4 0-15 7-15 13.5 0 14.2 21.2 17.5 23.4 57.5v86.8c0 19-3.4 22.5-10.9 22.5-20 0-68.6-73.4-97.4-157.4-5.8-16.3-11.5-22.9-26.6-22.9H38.8c-16.8 0-20.2 7.9-20.2 16.7 0 15.6 20 93.1 93.1 195.5C160.4 378.1 229 416 291.4 416c37.5 0 42.1-8.4 42.1-22.9 0-66.8-3.4-73.1 15.4-73.1 8.7 0 23.7 4.4 58.7 38.1 40 40 46.6 57.9 69 57.9h58.9c16.8 0 25.3-8.4 20.4-25-11.2-34.9-86.9-106.7-90.3-111.5-8.7-11.2-6.2-16.2 0-26.2.1-.1 72-101.3 79.4-135.6z"></path></svg>
+                        </a>
+                        <a href="https://github.com/zerodotax2">
+                            <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="#ffffff" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg>
+                        </a>
+                        <a href="https://www.facebook.com/zerodotax2">
+                            <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#ffffff" d="M448 56.7v398.5c0 13.7-11.1 24.7-24.7 24.7H309.1V306.5h58.2l8.7-67.6h-67v-43.2c0-19.6 5.4-32.9 33.5-32.9h35.8v-60.5c-6.2-.8-27.4-2.7-52.2-2.7-51.6 0-87 31.5-87 89.4v49.9h-58.4v67.6h58.4V480H24.7C11.1 480 0 468.9 0 455.3V56.7C0 43.1 11.1 32 24.7 32h398.5c13.7 0 24.8 11.1 24.8 24.7z"></path></svg>
+                        </a>
+                    </div>
                 </div>
-                <div class="col s12 l3 left-align">
-                    <h4 class="cyan-text text-lighten-4 unselectable">Основное</h4>
-                    <ul class="left-align">
-                        <li style="margin-bottom: 10px" ><a class="cyan-text bottom_links text-lighten-4"  href="/articles">Статьи</a></li>
-                        <li style="margin-bottom: 10px"><a class="cyan-text bottom_links text-lighten-4"  href="/questions">Вопросы</a></li>
-                        <li style="margin-bottom: 10px" ><a class="cyan-text bottom_links text-lighten-4"  href="/problems">Задачи</a></li>
-                        <li style="margin-bottom: 10px"><a class="cyan-text bottom_links text-lighten-4"  href="/support">О нас</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12 l5"  style="margin-bottom: 30px">
-                    <h5 class="cyan-text text-lighten-5 unselectable"> О проекте</h5>
-                    <p class="cyan-text text-lighten-4 unselectable">Проект научного сайта, опирающийся на технологии Java EE
-                        и использующий фреймворки JSF, Materialize, написан разработчиком prog_ja.</p>
-                </div>
-                <div class="col s12 offset-l3 l4" style="margin-top: 40px">
-                    <a class="bottom_links" href="https://fb.com"><img src="../../../resources/images/fb.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
-                    <a href="https://vk.com"> <img src="../../../resources/images/vk.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
-                    <a href="https://instagram.com"> <img src="../../../resources/images/instagram.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
-                    <a href="https://twitter.com"> <img src="../../../resources/images/twitter.png" class="white" style="width: 40px; height: 40px; margin: 10px"/></a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-copyright">
-            <div class="container cyan-text center-align text-lighten-3" style="font-size: 12px">
-                © 2018 prog_ja - All rights reserved
-                <a class="right cyan-text text-lighten-3" href="/license">License</a>
             </div>
         </div>
     </div>
     
     <script src="../../../resources/js/materialize.min.js"></script>
     <script src="../../../resources/js/header_script.js"></script>
+    <script src="../../../resources/js/generic.js"></script>
     <script src="../../../resources/js/xhr.js"></script>
+    <script src="../../../resources/js/modal.js"></script>
     <script src="../../../resources/js/article.js"></script>
 </body>
 </html>

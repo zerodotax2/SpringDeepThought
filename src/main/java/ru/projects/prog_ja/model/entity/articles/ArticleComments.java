@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "ArticleComments")
-public class ArticleComments {
+public class ArticleComments implements Comparable<ArticleComments>{
     private String comment;
     private long postCommentId;
     private UserInfo userInfo;
@@ -103,5 +103,10 @@ public class ArticleComments {
 
     public void setRating(long rating) {
         this.rating = rating;
+    }
+
+    @Override
+    public int compareTo(ArticleComments o) {
+        return createDate.after(o.createDate) ? 1 : -1;
     }
 }

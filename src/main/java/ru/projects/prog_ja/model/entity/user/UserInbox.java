@@ -2,6 +2,7 @@ package ru.projects.prog_ja.model.entity.user;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import ru.projects.prog_ja.dto.NoticeType;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -12,18 +13,23 @@ import java.util.Objects;
 @Table(name = "UserInbox")
 @NamedQueries({
         @NamedQuery(name = "getAllUserNotices", query = "select new ru.projects.prog_ja.dto.smalls.SmallNoticeTransfer (" +
-                " ui.userInboxId, ui.header, ui.message, ui.noticeType, ui.createDate " +
+                " ui.userInboxId, ui.message, ui.noticeType, ui.createDate " +
                 " ) from UserInbox ui " +
                 " where ui.userInfo = :user "),
         @NamedQuery(name = "getLastUserNotices", query = "select new ru.projects.prog_ja.dto.smalls.SmallNoticeTransfer (" +
-                " ui.userInboxId, ui.header, ui.message, ui.noticeType, ui.createDate " +
+                " ui.userInboxId, ui.message, ui.noticeType, ui.createDate " +
                 " ) from UserInbox ui " +
                 " where ui.userInfo = :user and ui.active = true "),
+        @NamedQuery(name = "getLastUserNotices", query = "select new ru.projects.prog_ja.dto.smalls.SmallNoticeTransfer (" +
+                " ui.userInboxId, ui.message, ui.noticeType, ui.createDate " +
+                " ) from UserInbox ui " +
+                " where ui.userInfo = :user"),
         @NamedQuery(name = "unactivateNotice", query = "update UserInbox ui set ui.active = false where ui.userInboxId = :id ")
 })
 public class UserInbox {
 
     public static final String GET_ALL_USER_NOTICES = "getAllUserNotices";
+    public static final String GET_USER_NOTICES = "getUserNotices";
     public static final String GET_LAST_USER_NOTICES = "getLastUserNotices";
     public static final String UNACTIVATE_NOTICE = "unactivateNotice";
 
@@ -39,9 +45,6 @@ public class UserInbox {
     @Column(name = "message", nullable = false, length = 255)
     private String message;
 
-    @Column(name = "title", nullable = false, length = 255)
-    private String header;
-
     @Column(name = "createDate", nullable = false)
     private Date createDate;
 
@@ -54,10 +57,9 @@ public class UserInbox {
 
     public UserInbox(){ }
 
-    public UserInbox( String header, String message, NoticeType type) {
+    public UserInbox(String message, NoticeType type) {
         this.noticeType = type;
         this.message = message;
-        this.header = header;
         createDate = new Date();
     }
 
@@ -99,13 +101,6 @@ public class UserInbox {
         this.message = message;
     }
 
-    public String getHeader() {
-        return header;
-    }
-
-    public void setHeader(String header) {
-        this.header = header;
-    }
 
     public UserInfo getUserInfo() {
         return userInfo;

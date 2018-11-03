@@ -12,13 +12,15 @@ public class SmallProblemTransfer extends TagsContainer {
     protected String title;
     protected Date createDate;
     protected long rating;
+    protected long decided;
     protected ProblemDifficult difficult;
 
-    public SmallProblemTransfer(long id, String title, Date createDate, long rating, ProblemDifficult problemDifficult) {
+    public SmallProblemTransfer(long id, String title, Date createDate, long rating, long decided, ProblemDifficult problemDifficult) {
         super(id);
         this.title = title;
         this.createDate = createDate;
         this.rating = rating;
+        this.decided = decided;
         this.difficult = problemDifficult;
     }
 
@@ -52,5 +54,13 @@ public class SmallProblemTransfer extends TagsContainer {
 
     public void setDifficult(ProblemDifficult difficult) {
         this.difficult = difficult;
+    }
+
+    public long getDecided() {
+        return decided;
+    }
+
+    public void setDecided(long decided) {
+        this.decided = decided;
     }
 }

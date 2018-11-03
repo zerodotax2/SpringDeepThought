@@ -7,11 +7,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class MainController {
-    public static final String FACT_NAME = "fact";
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(){
 
-        return new ModelAndView("index");
+        return new ModelAndView("main/root");
     }
 }

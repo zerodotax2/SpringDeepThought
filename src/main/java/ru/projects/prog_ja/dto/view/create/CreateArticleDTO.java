@@ -6,12 +6,15 @@ import java.util.List;
 public class CreateArticleDTO {
 
     @NotNull
+    @Pattern( regexp = "^.+?\\.(png|gif|jpe?g)$")
     private String smallImagePath;
 
     @NotNull
+    @Pattern( regexp = "^.+?\\.(png|gif|jpe?g)$")
     private String middleImagePath;
 
     @NotNull
+    @Pattern( regexp = "^.+?\\.(png|gif|jpe?g)$")
     private String largeImagePath;
 
     @Min(value = 10, message = "Минимальная длина заголовка - 10 символов")
@@ -29,26 +32,21 @@ public class CreateArticleDTO {
     @NotNull(message = "Поле не может быть пустым")
     private String htmlContent;
 
-    @Min(value = 17, message = "Минимальное кол-во тегов - 3")
-    @Max(value = 29, message = "Максимальное кол-во тегов - 5")
+    @Size(min = 3, max = 5)
     @NotNull(message = "Поле не может быть пустым")
-    private String tagsSTR;
+    private List<Long> tags;
 
-    @NotNull
-    @Pattern(regexp = "^\\d+$", message = "Неправильный id пользователя")
-    private long userId;
 
     public CreateArticleDTO(){}
 
-    public CreateArticleDTO(String smallImagePath, String middleImagePath, String largeImagePath, String title, String subtitle, String htmlContent, String tagsSTR, long userId) {
+    public CreateArticleDTO(String smallImagePath, String middleImagePath, String largeImagePath, String title, String subtitle, String htmlContent, List<Long> tags) {
         this.smallImagePath = smallImagePath;
         this.middleImagePath = middleImagePath;
         this.largeImagePath = largeImagePath;
         this.title = title;
         this.subtitle = subtitle;
         this.htmlContent = htmlContent;
-        this.tagsSTR = tagsSTR;
-        this.userId = userId;
+        this.tags = tags;
     }
 
     public String getSmallImagePath() {
@@ -99,19 +97,11 @@ public class CreateArticleDTO {
         this.htmlContent = htmlContent;
     }
 
-    public long getUserId() {
-        return userId;
+    public List<Long> getTags() {
+        return tags;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-
-    public String getTagsSTR() {
-        return tagsSTR;
-    }
-
-    public void setTagsSTR(String tagsSTR) {
-        this.tagsSTR = tagsSTR;
+    public void setTags(List<Long> tags) {
+        this.tags = tags;
     }
 }

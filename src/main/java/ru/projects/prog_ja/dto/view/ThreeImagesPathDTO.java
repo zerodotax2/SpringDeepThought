@@ -2,40 +2,40 @@ package ru.projects.prog_ja.dto.view;
 
 public class ThreeImagesPathDTO {
 
-    private String small;
-    private String middle;
-    private String large;
+    private String smallImagePath;
+    private String middleImagePath;
+    private String largeImagePath;
 
     public ThreeImagesPathDTO() {
     }
 
-    public ThreeImagesPathDTO(String small, String middle, String large) {
-        this.small = small;
-        this.middle = middle;
-        this.large = large;
+    public ThreeImagesPathDTO(String smallImagePath, String middleImagePath, String largeImagePath) {
+        this.smallImagePath = smallImagePath;
+        this.middleImagePath = middleImagePath;
+        this.largeImagePath = largeImagePath;
     }
 
-    public String getSmall() {
-        return small;
+    public String getSmallImagePath() {
+        return smallImagePath;
     }
 
-    public void setSmall(String small) {
-        this.small = small;
+    public void setSmallImagePath(String smallImagePath) {
+        this.smallImagePath = smallImagePath;
     }
 
-    public String getMiddle() {
-        return middle;
+    public String getMiddleImagePath() {
+        return middleImagePath;
     }
 
-    public void setMiddle(String middle) {
-        this.middle = middle;
+    public void setMiddleImagePath(String middleImagePath) {
+        this.middleImagePath = middleImagePath;
     }
 
-    public String getLarge() {
-        return large;
+    public String getLargeImagePath() {
+        return largeImagePath;
     }
 
-    public void setLarge(String large) {
-        this.large = large;
+    public void setLargeImagePath(String largeImagePath) {
+        this.largeImagePath = largeImagePath;
     }
 }

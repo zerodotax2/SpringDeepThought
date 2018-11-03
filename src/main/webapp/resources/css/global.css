@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Ubuntu';
-  src: url("/resources/fonts/3976.ttf");
+  src: url("../fonts/3976.ttf");
   font-weight: normal;
   font-style: normal; }
 html {
@@ -69,7 +69,146 @@ body {
   padding: 0 10px 0 10px !important;
 }
 
+#tag-popup{
+  display: none;
+  opacity: 0;
+  position: absolute;
+  padding: 10px;
+  background: white;
+  border-radius: 10px;
+  border: 2px solid #f9690e;
+  height: 150px;
+  width: 250px;
+}
 
+#tag-popup:after{
+  content: '';
+  position: absolute;
+  left: 120px;
+  top: -14px;
+  border: 7px solid transparent;
+  border-bottom: 7px solid #f9690e;
+}
+
+#tag-popup .card-content{
+  padding: 0 !important;
+  height: 100%;
+  font-size: 12px;
+  line-height: 14px;
+  display: block;
+}
+
+#tag-popup .card-content .describe{
+  height: 70%;
+  overflow: hidden;
+  color: dimgrey;
+  position: relative;
+}
+
+#tag-popup .card-content .describe:after{
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: inset 20px -80px 20px -75px rgba(255, 255, 255, 0.94);
+}
+
+#tag-popup .card-content .nums{
+  display: flex;
+  height: 30%;
+  position: relative;
+}
+
+
+#tag-popup .card-content .nums .num-element{
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  color: #959595;
+  height: 100%;
+  width: 33.33%;
+  overflow: hidden;
+  padding-top: 3%;
+  padding-bottom: 1px;
+}
+
+#tag-popup .card-content .nums .num-element .num{
+  color: white;
+  background: #42A5F5;
+  padding: 2px 5px;
+  border-radius: 5px;
+}
+#modal-wrapper{
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#modal-wrapper .modal-window{
+  border-radius: 10px;
+  box-shadow: 0 0 10px #3d3d3d;
+  width: 40%;
+}
+#modal-wrapper .modal-head{
+  color: white;
+  border-radius: 10px 10px 0 0;
+  padding: 5px 10px;
+  text-align: center;
+}
+#modal-wrapper .modal-window .modal-content{
+  background: #ffffff;
+  /*border-radius: 0 0 10px 10px;*/
+  padding: 20px;
+  color: dimgrey;
+}
+#modal-wrapper .modal-window .actions{
+  background: #ffffff;
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+#modal-wrapper .modal-window .actions .action-btn{
+  padding: 5px 10%;
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+  margin: 0 10px;
+  transition-duration: 0.3s;
+}
+#modal-wrapper .modal-window .actions .action-btn:hover{
+  box-shadow: 0 0 5px #818181;
+}
+#modal-wrapper .modal-window .actions .accept{
+  background: #2196F3;
+}
+#modal-wrapper .modal-window .actions .decline{
+  background: #E53935;
+}
+.feedback textarea{
+  border: 1px solid lightgray;
+  resize: none;
+  min-height: 150px;
+  box-shadow:  0 0 10px lightgray;
+  border-radius: 10px;
+  padding: 10px;
+}
+.feedback .counter{
+  color: dimgrey;
+  font-weight: 100;
+  margin: 5px;
+}
+.feedback .counter span{
+  color: #2196F3;
+}
 @media (max-device-width: 600px) {
   .chip{
     font-size: 11px !important;
@@ -77,6 +216,12 @@ body {
     height: 22px !important;
     line-height: 22px !important;
   }
+  #modal-wrapper .modal-window{
+    width: 80%;
+  }
 }
-
-/*# sourceMappingURL=global.css.map */
+@media (min-device-width: 601px) and (max-device-width: 992px) {
+    #modal-wrapper .modal-window{
+      width: 60%;
+    }
+}

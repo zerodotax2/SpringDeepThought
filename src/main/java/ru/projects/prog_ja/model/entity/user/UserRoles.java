@@ -1,5 +1,7 @@
 package ru.projects.prog_ja.model.entity.user;
 
+import ru.projects.prog_ja.dto.Role;
+
 import javax.persistence.*;
 
 @Entity

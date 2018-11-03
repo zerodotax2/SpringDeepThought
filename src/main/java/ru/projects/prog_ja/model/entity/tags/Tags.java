@@ -23,11 +23,13 @@ import java.util.Set;
                 " ) " +
                 " from Tags t where t.tagId = :id"),
         @NamedQuery(name = "getFullTag", query = "select new ru.projects.prog_ja.dto.full.FullTagTransfer( " +
-                " t.tagId, t.name, t.description, t.color, tc.articles, tc.questions, tc.problems, tc.users, tc.facts " +
+                " t.tagId, t.name, t.description, t.color, tc.articles, tc.questions, tc.problems, tc.users, tc.facts, " +
+                " t.createDate, u.userId, u.login, u.smallImagePath, u.rating " +
                 " ) from Tags t " +
                 " left join t.tagCounter as tc " +
+                " left join t.creator as u " +
                 " where t.tagId = :id"),
-        @NamedQuery(name = "deleteTag", query = "delete from Tags t where t.tagId = :id"),
+        @NamedQuery(name = "deleteTag", query = "delete from Tags t where t.tagId = :id and t.creator = :user"),
         @NamedQuery(name = "getSmallPopularTags", query = "select new ru.projects.prog_ja.dto.smalls.SmallTagTransfer ( " +
                 " t.id, t.name, t.color " +
                 " ) " +

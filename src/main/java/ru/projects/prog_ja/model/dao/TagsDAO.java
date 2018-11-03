@@ -1,13 +1,8 @@
 package ru.projects.prog_ja.model.dao;
 
-import ru.projects.prog_ja.dto.commons.CommonArticleTransfer;
-import ru.projects.prog_ja.dto.commons.CommonFactTransfer;
-import ru.projects.prog_ja.dto.commons.CommonQuestionTransfer;
-import ru.projects.prog_ja.dto.full.FullTagTransfer;
-import ru.projects.prog_ja.dto.smalls.SmallArticleTransfer;
-import ru.projects.prog_ja.dto.smalls.SmallQuestionTransfer;
-import ru.projects.prog_ja.dto.smalls.SmallTagTransfer;
 import ru.projects.prog_ja.dto.commons.CommonTagTransfer;
+import ru.projects.prog_ja.dto.full.FullTagTransfer;
+import ru.projects.prog_ja.dto.smalls.SmallTagTransfer;
 
 import java.util.List;
 
@@ -18,7 +13,7 @@ import java.util.List;
 * */
 public interface TagsDAO {
 
-    void delete(long id);
+    boolean removeTag(long tagId, long userId);
 
     /**
     * it is using when we find all by one tag
@@ -50,12 +45,12 @@ public interface TagsDAO {
      * @param name,
      * @param description
      * */
-    long createTag(String name, String description, String color, long userId);
+    CommonTagTransfer createTag(String name, String description, String color, long userId);
 
     /**
      * update tag with this params
      * */
-    void updateTag(String name, String description, String color, long id);
+    boolean updateTag( long tagId, String name, String description, String color, long userId);
     /**
      * @return tags by search string
      * */

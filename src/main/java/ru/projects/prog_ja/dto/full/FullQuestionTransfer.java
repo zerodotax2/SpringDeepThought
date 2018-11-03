@@ -11,15 +11,18 @@ import java.util.TreeSet;
 public class FullQuestionTransfer extends CommonQuestionTransfer {
 
     private Set<CommonAnswerTransfer> answers;
+    private long right;
 
-    public FullQuestionTransfer(long id, String title, Date createDate,  long rating, long userId, String smallImagePath, String login, long userRating, String content) {
-        super(id, title, createDate, rating, userId, smallImagePath, login, userRating, content);
+    public FullQuestionTransfer(long id, String title, Date createDate,  long rating, long views, long userId, String smallImagePath, String login, long userRating, String content, long right) {
+        super(id, title, createDate, rating, views, userId, smallImagePath, login, userRating, content);
         this.answers = new TreeSet<>();
+        this.right = right;
     }
 
-    public FullQuestionTransfer(long id, String title, Date createDate,  long rating, SmallUserTransfer user, String content) {
-        super(id, title, createDate,  rating, user, content);
+    public FullQuestionTransfer(long id, String title, Date createDate,  long rating, long views, SmallUserTransfer user, String content, long right) {
+        super(id, title, createDate,  rating, views, user, content);
         this.answers = new TreeSet<>();
+        this.right = right;
     }
 
     public Set<CommonAnswerTransfer> getAnswers() {
@@ -30,4 +33,11 @@ public class FullQuestionTransfer extends CommonQuestionTransfer {
         this.answers = answers;
     }
 
+    public long getRight() {
+        return right;
+    }
+
+    public void setRight(long right) {
+        this.right = right;
+    }
 }

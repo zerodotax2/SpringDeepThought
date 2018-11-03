@@ -5,9 +5,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ru.projects.prog_ja.dto.commons.CommonFactTransfer;
+import ru.projects.prog_ja.dto.full.FullFactTransfer;
 import ru.projects.prog_ja.model.dao.FactsDAO;
 import ru.projects.prog_ja.model.dao.Hibernate.helpers.AttachTagService;
 import ru.projects.prog_ja.model.dao.Hibernate.helpers.FactConverter;
@@ -17,14 +16,12 @@ import ru.projects.prog_ja.model.entity.tags.Tags;
 import ru.projects.prog_ja.model.entity.user.UserInfo;
 
 import javax.persistence.criteria.*;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Repository
 @Scope(scopeName = "prototype")
-@Transactional(propagation = Propagation.REQUIRED)
 public class HibernateFactsDAOImpl extends GenericDAO implements FactsDAO {
 
     public static final String ID_COLUMN = "factId";
@@ -42,58 +39,87 @@ public class HibernateFactsDAOImpl extends GenericDAO implements FactsDAO {
     }
 
     @Override
-    public long addFact(String fact, List<Long> tags, long userId) {
+    public CommonFactTransfer addFact(String fact, List<Long> tags, long userId) {
 
-        Session session = session();
+        try {
+            Session session = session();
 
-        UserInfo user = session.load(UserInfo.class, userId);
-        if(user == null){
-            return 0;
+            UserInfo user = session.load(UserInfo.class, userId);
+            if(user == null){
+                return null;
+            }
+
+            Facts facts = new Facts(fact);
+            facts.setCreator(user);
+
+            Set<FactsTags> factsTags = new HashSet<>();
+            session.byMultipleIds(Tags.class).multiLoad(tags).forEach((tag)->{
+                factsTags.add(new FactsTags(facts, tag));
+            });
+            if(factsTags.size() < 3){
+                return null;
+            }
+            facts.setTags(factsTags);
+
+            return getFact((long) session.save(fact));
+        }catch (Exception e){
+            return null;
         }
-
-        Facts facts = new Facts(fact);
-        facts.setCreator(user);
-
-        Set<FactsTags> factsTags = new HashSet<>();
-        session.byMultipleIds(Tags.class).multiLoad(tags).forEach((tag)->{
-            factsTags.add(new FactsTags(facts, tag));
-        });
-        if(factsTags.size() < 3){
-            return 0;
-        }
-        facts.setTags(factsTags);
-
-        return (long) session.save(facts);
     }
 
     @Override
-    public void deleteFact(long id) {
+    public boolean deleteFact(long id, long userId) {
 
-        session().createNamedQuery(Facts.DELETE_FACT).setParameter("id", id).executeUpdate();
+        try {
+
+           return session().createNamedQuery(Facts.DELETE_FACT)
+                    .setParameter("id", id)
+                    .executeUpdate() != 0;
+
+        }catch (Exception e){
+            return false;
+        }
 
     }
 
     @Override
-    public void updateFact(long id, String fact, List<Long> tags) {
+    public boolean updateFact(long id, String fact, List<Long> tags, long userId) {
 
-        Session session = session();
+        try {
+            Session session = session();
 
-        Facts facts = session.find(Facts.class, id);
+            Facts facts = session.find(Facts.class, id);
 
-        if(facts == null)
-            return;
-        facts.setText(fact);
+            if(facts == null || facts.getCreator().getUserId() != userId)
+                return false;
+            facts.setText(fact);
 
-        Set<FactsTags> factsTags = new HashSet<>();
-        session.byMultipleIds(Tags.class).multiLoad(tags).forEach((tag)->{
-            factsTags.add(new FactsTags(facts, tag));
-        });
-        if(factsTags.size() < 3){
-            return;
+            Set<FactsTags> factsTags = new HashSet<>();
+            session.byMultipleIds(Tags.class).multiLoad(tags).forEach((tag)->{
+                factsTags.add(new FactsTags(facts, tag));
+            });
+            if(factsTags.size() < 3){
+                return false;
+            }
+            facts.setTags(factsTags);
+
+            session.save(facts);
+        }catch (Exception e){
+            return false;
         }
-        facts.setTags(factsTags);
+        return true;
+    }
 
-        session.save(facts);
+    @Override
+    public boolean updateFactRate(long factId, int rate, long userId) {
+        try{
+            return session().createNamedQuery(Facts.UPDATE_FACT_RATE)
+                    .setParameter("id", factId)
+                    .setParameter("rate", rate)
+                    .executeUpdate() != 0;
+        }catch (Exception e){
+            return false;
+        }
     }
 
     @Override
@@ -114,6 +140,28 @@ public class HibernateFactsDAOImpl extends GenericDAO implements FactsDAO {
 
         return attachTags.tags(session.createQuery(query).setFirstResult(start).setMaxResults(size).getResultList(),
                 ID_COLUMN, ENTITIES_NAME);
+    }
+
+    @Override
+    public List<CommonFactTransfer> findFacts(int start, int size, String query, String orderField, int sort) {
+
+        Session session = session();
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<CommonFactTransfer> cq = cb.createQuery(CommonFactTransfer.class);
+        Root<Facts> root = cq.from(Facts.class);
+
+        cq.select(cb.construct(CommonFactTransfer.class, root.get("factId"), root.get("text")));
+        cq.where(cb.like(root.get("text"), "%"+query.replace(" ", "%")+"%"));
+        if(sort == 0){
+            cq.orderBy(cb.asc(root.get(orderField)));
+        }else{
+            cq.orderBy(cb.desc(root.get(orderField)));
+        }
+
+        return attachTags.tags(
+                session.createQuery(cq).setFirstResult(start)
+                .setMaxResults(size).getResultList(), ID_COLUMN, ENTITIES_NAME);
     }
 
     @Override
@@ -139,29 +187,74 @@ public class HibernateFactsDAOImpl extends GenericDAO implements FactsDAO {
     }
 
     @Override
-    public CommonFactTransfer getFactByTags(List<Long> tagsIDs){
+    public List<CommonFactTransfer> findFactsByTag(int start, int size, long tagID, String query, String orderField, int sort) {
         Session session = session();
 
         CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<CommonFactTransfer> query = cb.createQuery(CommonFactTransfer.class);
-        Root<Facts> fact = query.from(Facts.class);
+        CriteriaQuery<CommonFactTransfer> cq = cb.createQuery(CommonFactTransfer.class);
+        Root<Facts> root = cq.from(Facts.class);
 
-        Fetch<Facts, FactsTags> tagsFetch = fact.fetch("tags", JoinType.LEFT);
-        Join<Facts, FactsTags> tags = fact.join("tags", JoinType.LEFT);
+        Join<Facts, FactsTags> tagsJoin = root.join("tags", JoinType.LEFT);
 
-        Fetch<FactsTags, Tags> tag = fact.fetch("tagId", JoinType.LEFT);
-
-        query.select(cb.construct(CommonFactTransfer.class, fact.get("factId"), fact.get("text")));
-
-        List<Predicate> predicates = new ArrayList<>();
-        for(long l : tagsIDs){
-            predicates.add(cb.equal(tags.get("tagId"), session.load(Tags.class, l)));
+        cq.select(cb.construct(CommonFactTransfer.class, root.get("factId"), root.get("text")));
+        cq.where(cb.and(cb.like(root.get("text"),"%" +query.replace(" ", "%") + "%"),
+                cb.equal(tagsJoin.get("tagId"), tagID)));
+        if(sort == 0){
+            cq.orderBy(cb.asc(root.get(orderField)));
+        }else{
+            cq.orderBy(cb.desc(root.get(orderField)));
         }
-        query.where(cb.or((Predicate[]) predicates.toArray()));
 
+        return attachTags.tags(
+                session.createQuery(cq).setFirstResult(start)
+                        .setMaxResults(size).getResultList(), ID_COLUMN, ENTITIES_NAME);
+    }
 
-        return attachTags.tags(session.createQuery(query).getResultList(),
-                ID_COLUMN, ENTITIES_NAME).get(0);
+    @Override
+    public List<CommonFactTransfer> getFactsByUser(int start, int size, long userId, String orderField, int sort) {
+        Session session = session();
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<CommonFactTransfer> cq = cb.createQuery(CommonFactTransfer.class);
+        Root<Facts> root = cq.from(Facts.class);
+
+        Join<Facts, UserInfo> user = root.join("userInfo", JoinType.LEFT);
+
+        cq.select(cb.construct(CommonFactTransfer.class, root.get("factId"), root.get("text")));
+        cq.where(cb.equal(user.get("userId"), userId));
+        if(sort == 0){
+            cq.orderBy(cb.asc(root.get(orderField)));
+        }else{
+            cq.orderBy(cb.desc(root.get(orderField)));
+        }
+
+        return attachTags.tags(
+                session.createQuery(cq).setFirstResult(start)
+                        .setMaxResults(size).getResultList(), ID_COLUMN, ENTITIES_NAME);
+    }
+
+    @Override
+    public List<CommonFactTransfer> findFactsByUser(int start, int size, long userId, String query, String orderField, int sort) {
+        Session session = session();
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<CommonFactTransfer> cq = cb.createQuery(CommonFactTransfer.class);
+        Root<Facts> root = cq.from(Facts.class);
+
+        Join<Facts, UserInfo> user = root.join("user", JoinType.LEFT);
+
+        cq.select(cb.construct(CommonFactTransfer.class, root.get("factId"), root.get("text")));
+        cq.where(cb.and(cb.like(root.get("text"), "%"+query.replace(" ", "%")+"%"),
+                cb.equal(user.get("userId"), user)));
+        if(sort == 0){
+            cq.orderBy(cb.asc(root.get(orderField)));
+        }else{
+            cq.orderBy(cb.desc(root.get(orderField)));
+        }
+
+        return attachTags.tags(
+                session.createQuery(cq).setFirstResult(start)
+                        .setMaxResults(size).getResultList(), ID_COLUMN, ENTITIES_NAME);
     }
 
 
@@ -190,6 +283,14 @@ public class HibernateFactsDAOImpl extends GenericDAO implements FactsDAO {
         }
 
         return factConverter.commonFact(fact, fact.getTags());
+    }
+
+    @Override
+    public FullFactTransfer getFullFact(long factId) {
+
+        return session().createNamedQuery(Facts.GET_FULL_FACT, FullFactTransfer.class)
+                .setParameter("id", factId)
+                .getResultList().stream().findFirst().orElse(null);
     }
 
     @Override

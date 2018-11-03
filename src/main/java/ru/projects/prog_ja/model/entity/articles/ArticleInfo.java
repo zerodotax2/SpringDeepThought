@@ -45,9 +45,17 @@ import java.util.Set;
                 " or lower(pc.subtitle) like lower(:search) " +
                 " group by p.articleId  " +
                 " order by p.createDate desc"),
-        @org.hibernate.annotations.NamedQuery(name = "deleteArticle", query = "delete from ArticleInfo p where p.articleId = :id"),
-        @org.hibernate.annotations.NamedQuery(name = "updateArticleComment", query = "update ArticleComments set comment = :comment where postCommentId = :id"),
-        @org.hibernate.annotations.NamedQuery(name = "countArticles", query = "select distinct count(a.articleId) from Articles a")
+        @org.hibernate.annotations.NamedQuery(name = "deleteArticle", query = "delete from ArticleInfo p where p.articleId = :id and p.userInfo = :user"),
+        @org.hibernate.annotations.NamedQuery(name = "updateArticleComment", query = "update ArticleComments set comment = :comment where postCommentId = :id and userInfo = :user"),
+        @org.hibernate.annotations.NamedQuery(name = "updateArticleCommentRate", query = "update ArticleComments set rating = rating + :rate where postCommentId = :id"),
+        @org.hibernate.annotations.NamedQuery(name = "deleteArticleComment", query = "delete from ArticleComments where postCommentId = :id and userInfo = :user"),
+        @org.hibernate.annotations.NamedQuery(name = "getArticleComment", query = "select new ru.projects.prog_ja.dto.CommonCommentTransfer(" +
+                " ac.postCommentId, ac.comment, ac.rating, ac.createDate, u.userId, u.login, u.smallImagePath, u.rating " +
+                ") from ArticleComments ac " +
+                " left join ac.userInfo as u " +
+                " where ac.postCommentId = :id"),
+        @org.hibernate.annotations.NamedQuery(name = "countArticles", query = "select distinct count(a.articleId) from Articles a"),
+        @org.hibernate.annotations.NamedQuery(name = "changeArticleRate", query = "update Articles set rating = rating + :rate where articleId = :id")
 })
 public class ArticleInfo {
 
@@ -58,7 +66,11 @@ public class ArticleInfo {
     public static final String FIND_SMALL_ARTICLES = "findSmallArticles";
     public static final String FIND_COMMON_ARTICLES = "findCommonArticles";
     public static final String UPDATE_ARTICLE_COMMENT = "updateArticleComment";
+    public static final String UPDATE_ARTICLE_COMMENT_RATE = "updateArticleCommentRate";
+    public static final String DELETE_ARTICLE_COMMENT = "deleteArticleComment";
+    public static final String GET_ARTICLE_COMMENT = "getArticleComment";
     public static final String COUNT_ARTICLES = "countArticles";
+    public static final String CHANGE_ARTICLE_RATE = "changeArticleRate";
 
     private long articleId;
     private String title;

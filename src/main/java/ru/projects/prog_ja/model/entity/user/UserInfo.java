@@ -3,12 +3,16 @@ package ru.projects.prog_ja.model.entity.user;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
-import ru.projects.prog_ja.model.entity.answer.Answer;
+import ru.projects.prog_ja.model.entity.problems.ProblemFeedback;
+import ru.projects.prog_ja.model.entity.questions.Answer;
 import ru.projects.prog_ja.model.entity.articles.ArticleComments;
 import ru.projects.prog_ja.model.entity.articles.ArticleInfo;
 import ru.projects.prog_ja.model.entity.facts.Facts;
+import ru.projects.prog_ja.model.entity.problems.ProblemsSolvedUsers;
 import ru.projects.prog_ja.model.entity.problems.ProblemsUsers;
 import ru.projects.prog_ja.model.entity.questions.Questions;
+import ru.projects.prog_ja.model.entity.support.UserForumAnswer;
+import ru.projects.prog_ja.model.entity.support.UserQuestion;
 import ru.projects.prog_ja.model.entity.tags.Tags;
 
 import javax.persistence.*;
@@ -27,9 +31,13 @@ import java.util.Set;
                 " where u.userId = :id"),
         @NamedQuery(name = "getSmallUsers", query = "select new ru.projects.prog_ja.dto.smalls.SmallUserTransfer( u.userId, u.login, u.smallImagePath, u.rating ) from UserInfo u " +
                 " order by u.rating desc "),
-        @NamedQuery(name = "getSmallUserByLogin", query = "select new ru.projects.prog_ja.dto.smalls.SmallUserTransfer( u.userId, u.login, u.smallImagePath, u.rating ) from UserInfo u " +
-                " left join u.logInfo l" +
-                " where l.login = :login"),
+        @NamedQuery(name = "getSmallUserByLogin", query = "select u from UserInfo u " +
+                " left join fetch u.logInfo l " +
+                " left join fetch l.role " +
+                " left join fetch u.interests ui " +
+                " left join fetch ui.tagId " +
+                " left join fetch u.notices " +
+                " where u.login = :login"),
         @NamedQuery(name = "getCommonUser", query = "select new ru.projects.prog_ja.dto.commons.CommonUserTransfer(" +
                 " u.userId, u.login, u.middleImagePath, u.rating, ue.firstName, ue.lastName, ue.createDate, ue.birthDate" +
                 " ) " +
@@ -64,11 +72,28 @@ import java.util.Set;
                 " left outer join fetch u.interests as i" +
                 " left outer join fetch i.tagId " +
                 " where u.userId = :id"),
-        @NamedQuery(name = "checkUser", query = "select new ru.projects.prog_ja.dto.smalls.SmallUserTransfer " +
-                " ( u.userId, u.login, u.smallImagePath, u.rating ) " +
-                " from UserInfo u " +
-                " left join u.logInfo as l " +
+        @NamedQuery(name = "checkUser", query = "select u from UserInfo u " +
+                " left join fetch u.logInfo l " +
+                " left join fetch l.role " +
+                " left join fetch u.interests ui " +
+                " left join fetch ui.tagId " +
+                " left join fetch u.notices " +
                 " where l.logH = :login and l.passH = :pass"),
+        @NamedQuery(name = "getSettingsUser", query = "select new ru.projects.prog_ja.dto.commons.SettingsUserTransfer (" +
+                " u.userId, u.login, u.smallImagePath, u.rating, ue.firstName, ue.lastName, ue.about, ue.birthDate  " +
+                " ) from UserInfo u" +
+                " left join u.userExtended ue  " +
+                " where u.userId = :id"),
+        @NamedQuery(name = "getSettingsAccount", query = "select new ru.projects.prog_ja.dto.commons.SettingsUserTransfer (" +
+                " u.userId, u.login, u.smallImagePath, u.rating, ui.firstName, ui.lastName, ui.email " +
+                " ) from UserInfo u" +
+                " left join u.userExtended ui  " +
+                " where u.userId = :id"),
+        @NamedQuery(name = "getSettingsNotifications", query = "select new ru.projects.prog_ja.dto.commons.SettingsUserTransfer (" +
+                " u.userId, u.login, u.smallImagePath, u.rating, ue.firstName, ue.lastName " +
+                " ) from UserInfo u" +
+                " left join u.userExtended ue " +
+                " where u.userId = :id"),
         @NamedQuery(name = "updateImage", query = "update UserInfo set smallImagePath = :small, set middleImagePath = :middle, set largeImagePath = :large where userId = :id"),
         @NamedQuery(name = "updateBirthDate", query = "update UserExtended ue set birthDate = :date  where userExtendedId in (select userExtendedId from UserInfo where userId = :id)"),
         @NamedQuery(name = "updateFirstName", query = "update UserExtended ue set firstName = :firstName  where userExtendedId in (select userExtendedId from UserInfo where userId = :id)"),
@@ -101,11 +126,14 @@ public class UserInfo {
     public static final String UPDATE_EMAIl = "updateEmail";
     public static final String UPDATE_LOGIN = "updateLogin";
     public static final String GET_USER_EXTENDED = "getExtendedByUser";
+    public static final String GET_SETTINGS_USER = "getSettingsUser";
+    public static final String GET_SETTINGS_ACCOUNT = "getSettingsAccount";
+    public static final String GET_SETTINGS_NOTIFICATIONS = "getSettingsNotifications";
     public static final String COUNT_USERS = "countUsers";
 
     private long userId;
     private String login;
-    private long rating = 0;
+    private long rating;
     private Set<Questions> userQuestions;
     private Set<ArticleComments> userArticleComments;
     private Set<ArticleInfo> userArticles;
@@ -115,6 +143,10 @@ public class UserInfo {
     private Set<ProblemsUsers> problems;
     private Set<Tags> tags;
     private Set<Facts> facts;
+    private Set<ProblemsSolvedUsers> solved;
+    private Set<UserQuestion> userForumQuestions;
+    private Set<UserForumAnswer> userForumAnswers;
+    private Set<ProblemFeedback> userProblemFeedbacks;
     private UserCounter userCounter;
 
     private UserExtended userExtended;
@@ -352,5 +384,45 @@ public class UserInfo {
 
     public void setFacts(Set<Facts> facts) {
         this.facts = facts;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST}, mappedBy = "user")
+    @BatchSize(size = 10)
+    public Set<ProblemsSolvedUsers> getSolved() {
+        return solved;
+    }
+
+    public void setSolved(Set<ProblemsSolvedUsers> solved) {
+        this.solved = solved;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST}, mappedBy = "user", orphanRemoval = true)
+    @BatchSize(size = 10)
+    public Set<UserQuestion> getUserForumQuestions() {
+        return userForumQuestions;
+    }
+
+    public void setUserForumQuestions(Set<UserQuestion> userForumQuestions) {
+        this.userForumQuestions = userForumQuestions;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST}, mappedBy = "user", orphanRemoval = true)
+    @BatchSize(size = 10)
+    public Set<UserForumAnswer> getUserForumAnswers() {
+        return userForumAnswers;
+    }
+
+    public void setUserForumAnswers(Set<UserForumAnswer> userForumAnswers) {
+        this.userForumAnswers = userForumAnswers;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST}, mappedBy = "userInfo", orphanRemoval = true)
+    @BatchSize(size = 10)
+    public Set<ProblemFeedback> getUserProblemFeedbacks() {
+        return userProblemFeedbacks;
+    }
+
+    public void setUserProblemFeedbacks(Set<ProblemFeedback> userProblemFeedbacks) {
+        this.userProblemFeedbacks = userProblemFeedbacks;
     }
 }

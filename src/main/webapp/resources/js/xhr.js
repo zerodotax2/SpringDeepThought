@@ -1,34 +1,37 @@
 window.xhr = {
 
-    headers: function (xhr) {
+    file: function (path, file, callback) {
 
-        if(xhr instanceof XMLHttpRequest) {
-
-            var header = document.getElementById("_csrf_header").getAttribute("content");
-            var token = document.getElementById("_csrf").getAttribute("content");
-
-            xhr.setRequestHeader(header, token);
-            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
-        }
-    },
-
-    file: function (path, file, ajax) {
-
-        xhr.open("POST", path, true);
-
-        xhr.headers(ajax);
-
-        var formData = new FormData();
+        let formData = new FormData();
         formData.append("file", file);
 
-        ajax.send(formData);
-
+        xhr.request({path: path, method: "POST", content: formData}, function(response, error){
+            if(error){
+                callback(response)
+            }else if(response){
+                callback(undefined, error);
+            }
+        });
     },
+    request: function (options, callback) {
+        const ajax = new XMLHttpRequest();
+        ajax.onreadystatechange = function (e) {
+            if (ajax.readyState !== 4) {
+                return;
+            } else if (ajax.status >= 400) {
+                callback(undefined, ajax.responseText);
+            }
 
-    get: function () {
-        var ajax = new XMLHttpRequest();
-        xhr.headers(xhr);
-        return ajax;
+            callback(ajax.responseText);
+        };
+        ajax.open(options.method || "GET", options.path || "/", true);
+        ajax.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        ajax.setRequestHeader(appConf.csrfHeader, appConf.csrfToken);
+        if(options.headers){
+            for(let header in options.headers){
+                ajax.setRequestHeader(header.name, header.value)
+            }
+        }
+        ajax.send(options.content || null);
     }
-
 };

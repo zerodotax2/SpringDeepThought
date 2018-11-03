@@ -7,8 +7,16 @@
     <http>
 
         <intercept-url pattern="/articles/write" access="isAuthenticated()"/>
-        <intercept-url pattern="/problems/write" access="isAuthenticated()"/>
-        <intercept-url pattern="/questions/write" access="isAuthenticated()"/>
+        <intercept-url pattern="/articles/*/edit" access="isAuthenticated()"/>
+        <intercept-url pattern="/problems/create" access="isAuthenticated()"/>
+        <intercept-url pattern="/problems/*/edit" access="isAuthenticated()"/>
+        <intercept-url pattern="/questions/ask" access="isAuthenticated()"/>
+        <intercept-url pattern="/questions/*/edit" access="isAuthenticated()"/>
+        <intercept-url pattern="/facts/add" access="isAuthenticated()"/>
+        <intercept-url pattern="/facts/*/edit" access="isAuthenticated()"/>
+        <intercept-url pattern="/tags/add" access="isAuthenticated()"/>
+        <intercept-url pattern="/tags/*/edit" access="isAuthenticated()"/>
+        <intercept-url pattern="/settings/*" access="isAuthenticated()"/>
         <intercept-url pattern="/admin" access="hasRole('ROLE_ADMIN')"/>
         <intercept-url pattern="/moder" access="hasRole('ROLE_ADMIN') || hasRole('ROLE_MODER')"/>
 

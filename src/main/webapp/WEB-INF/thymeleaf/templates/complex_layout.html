@@ -7,6 +7,7 @@
     <title layout:title-pattern="$CONTENT_TITLE"></title>
     <th:block th:replace="templates/meta :: headStyles"/>
     <link rel="stylesheet" th:href="@{/resources/css/right-panel.css}"/>
+    <link rel="stylesheet" th:href="@{/resources/css/function_panel.css}"/>
 </head>
 <body>
 
@@ -16,7 +17,7 @@
 
     </div>
 
-    <div class="main" id="main" style="margin-top: -90px;">
+    <div class="main" id="main" style="margin-top: -100px;">
         <div class="container">
             <div class="row">
                 <div layout:fragment="content">
@@ -30,6 +31,8 @@
     <div th:replace="templates/footer :: footer"></div>
 
     <th:block th:replace="templates/meta :: footerJS"/>
+    <script th:src="@{/resources/js/right-panel.js}"></script>
+    <script th:src="@{/resources/js/function_panel.js}"></script>
     <th:block layout:fragment="js">
 
     </th:block>

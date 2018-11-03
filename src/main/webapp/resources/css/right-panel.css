@@ -1,26 +1,105 @@
 .popular_item {
-  padding: 0 -20px 0 10px;
-  font-weight: 100; }
-
+  padding: 0 0 0 10px;
+  display: flex;
+  align-items: center;
+  font-weight: 100;
+}
 .popular_item a {
   font-weight: 100;
   color: black;
   font-size: 14px; }
-
 .popularity {
-  border-radius: 5px; }
-
+  border-radius: 5px;
+  border: none;
+}
+.popularity h4{
+  font-size: 25px;
+  color: #757575;
+  text-align: center;
+}
+.popularity .collection-text{
+  color: #616161;
+}
+.popularity .login{
+  font-size: 14px;
+  font-weight: normal;
+}
+.popularity .rating{
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  color: #a2a2a2;
+}
+.popularity .rating svg{
+  width: 15px;
+  height: 15px;
+  margin-right: 2px;
+}
+.more{
+  margin-top: 20px;
+}
 .more-button{
-  background-color: white;
-  border: 2px #d5d5d5 solid;
-  color: #717171;
-  font-weight: 500;
-  padding: 7px;
-  border-radius: 15px;
-  transition-duration: 0.2s;
+  color: #9d9d9d;
+  font-weight: 100;
+  border-radius: 10px;
+  border: 1px solid lightgray;
+  background: #ffffff;
+  padding: 5px 15px;
 }
-
 .more-button:hover{
-  border: 1px white solid;
+  background-color: #f3f3f3;
 }
-/*# sourceMappingURL=right-panel.css.map */
+.fact{
+  cursor: pointer;
+  position: relative;
+}
+.fact .card-action a{
+  color: white !important;
+}
+#fact h6{
+  font-size: 14px;
+  color: #bdbdbd;
+}
+.fact-hover{
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.36);
+}
+.fact-hover svg{
+  width: 50px;
+  height: 50px;
+  margin: 0 20px;
+}
+.fact-hover svg:hover{
+  fill: lightgray !important;
+}
+#factText{
+  word-break: break-all;
+  display: flex;
+  color: #616161;
+}
+#factText .progress{
+  margin-top: 20px;
+}
+#factText svg{
+  width: 30px;
+  height: 30px;
+  margin: 10px auto;
+}
+.left-tags svg{
+  width: 20px;
+  height: 20px;
+}
+.left-tags h5{
+  margin: 0 0 5px 5px;
+  color: #757575;
+}
+.tag-more{
+  margin-top: -13px;
+}

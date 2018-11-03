@@ -44,7 +44,7 @@
       <mapping class="ru.projects.prog_ja.model.entity.articles.ArticlesTags"/>
       <mapping class="ru.projects.prog_ja.model.entity.user.LogInfo"/>
       <mapping class="ru.projects.prog_ja.model.entity.user.UserInfo"/>
-      <mapping class="ru.projects.prog_ja.model.entity.answer.Answer"/>
+      <mapping class="ru.projects.prog_ja.model.entity.questions.Answer"/>
       <mapping class="ru.projects.prog_ja.model.entity.user.UserExtended"/>
       <mapping class="ru.projects.prog_ja.model.entity.user.UserInbox"/>
       <mapping class="ru.projects.prog_ja.model.entity.user.UsersTags"/>
@@ -53,6 +53,9 @@
       <mapping class="ru.projects.prog_ja.model.entity.problems.ProblemsUsers"/>
       <mapping class="ru.projects.prog_ja.model.entity.problems.ProblemContent"/>
       <mapping class="ru.projects.prog_ja.model.entity.problems.ProblemsTags"/>
+      <mapping class="ru.projects.prog_ja.model.entity.problems.ProblemSolution"/>
+      <mapping class="ru.projects.prog_ja.model.entity.problems.ProblemComment"/>
+      <mapping class="ru.projects.prog_ja.model.entity.problems.ProblemsSolvedUsers"/>
 
 
       <!-- DB schema will be updated if needed -->
