@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html layout:decorate="~{templates/complex_layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:charset="UTF-8">
+<head>
+    <link rel="stylesheet" th:href="@{/resources/css/facts.css}"/>
+    <title>Факты</title>
+</head>
+<body>
+
+<th:block layout:fragment="top-panel">
+    <div class="text-panel">
+        <h1>Факты</h1>
+        <h4 class="grey-text text-lighten-3">Интересные факты со всего мира</h4>
+    </div>
+    <a th:href="@{/facts/add}" class="create ">Добавить факт</a>
+</th:block>
+
+<div layout:fragment="content">
+    <div class="content col s12 l8" style="padding:0 10px;">
+
+        <div class="function-panel">
+            <div class="card">
+                <div class="card-content" >
+                    <form action="" method="get" id="sort-form" onsubmit="removeEmptyFields()">
+                        <div class="search-div">
+                            <input class="search-input" name="q" type="text" placeholder="Поиск"/>
+                        </div>
+                        <div class="options">
+                            <div class="category-element">
+                                <div id="sort-btn" content="sort-content" class="category-btn btn-flat">
+                                    Сортировка<svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path></svg>
+                                </div>
+                                <div id="sort-content" class="category-content z-depth-2">
+                                    <div datatype="sort" class="category-select" content="0">По возрастанию</div>
+                                    <div datatype="sort" class="category-select" content="1">По убыванию</div>
+                                    <input type="hidden" name="sort"/>
+                                </div>
+                            </div>
+                            <div class="category-element">
+                                <div id="type-btn" content="type-content" class="category-btn btn-flat">
+                                    Тип<svg aria-hidden="true" data-prefix="fas" data-icon="caret-down" class="svg-inline--fa fa-caret-down fa-w-10" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path></svg>
+                                </div>
+                                <div id="type-content" class="category-content z-depth-2">
+                                    <div datatype="type" class="category-select" content="rating">Рейтинг</div>
+                                    <div datatype="type" class="category-select" content="date">Новые</div>
+                                    <input type="hidden" name="type"/>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="small-helpers">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="facts-container">
+            <div th:each="fact : ${facts}" class="factElement z-depth-1-half hoverable">
+                <div class="content" th:text="${fact.text}">
+                </div>
+                <div class="tags">
+                    <a th:each="tag : ${fact.tags}" th:href="@{/tags/${tag.id}}" th:style="'background: '+${tag.color}+';'" class="chip" th:text="${tag.name}"></a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<th:block layout:fragment="js">
+    <script th:src="@{/resources/js/facts.js}"></script>
+</th:block>
+</body>
+</html>

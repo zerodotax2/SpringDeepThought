@@ -1,0 +1,117 @@
+.head-info .left h4{
+    font-size: 40px;
+    margin-bottom: 30px;
+}
+.head-info .select-difficult{
+    position: relative;
+    color: dimgray;
+    font-weight: 100;
+}
+.head-info .select-difficult .title{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    border: 1px solid lightgray;
+    cursor: pointer;
+}
+.head-info .select-difficult .content {
+    border: 1px solid lightgray;
+    position: absolute;
+    background: #ffffff;
+    border-radius: 0 0 10px 10px;
+    width: 100%;
+    z-index: 100;
+}
+.head-info .select-difficult .content .select-element{
+    padding: 10px 10px;
+    cursor: pointer;
+    color: #0C2834;
+    transition-duration: 0.3s;
+}
+.head-info .select-difficult .content .select-element:hover{
+    background-color: #0C2834;
+    color: white;
+}
+.head-info .select-difficult .content .select-element:last-of-type{
+    border-radius: 0 0 10px 10px;
+}
+.head-info .right .title {
+    display: flex;
+    align-items: center;
+}
+.head-info .right .title svg{
+    width: 25px;
+    height: 25px;
+    margin-right: 15px;
+}
+.head-info .right .title .input-field{
+    width: 100%;
+}
+.panels{
+    margin-top: 40px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+}
+.panels .top{
+    display: flex;
+    border-radius: 10px 10px 0 0;
+    padding: 10px;
+    background: #0C2834;
+}
+.panels .top .select{
+    width: 50%;
+    text-align: center;
+    color: #bcbcbc;
+    transition-duration: 0.3s;
+    cursor: pointer;
+}
+.panels .top .active{
+    color: white;
+}
+.panels .top .select:hover{
+    color: white;
+}
+.panels .editor{
+    font-size: 14px;
+}
+.error img{
+    width: 15px;
+    height: 15px;
+}
+.answer {
+    display: flex;
+    align-items: center;
+}
+.answer .input-field{
+    width: 100%;
+    margin-left: 10px;
+}
+.answer svg{
+    height: 20px;
+    width: 20px;
+}
+.actions{
+    display: flex;
+    justify-content: end;
+}
+#create-problem{
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    background: #0C2834;
+    color: #dedede;
+    box-shadow: 0 0 20px #a9a9a9;
+    transition-duration: 0.3s;
+}
+#create-problem:hover{
+    box-shadow: 0 0 20px #727272;
+    color: white;
+}
+
+@media (max-device-width: 600px) {
+    .head-info .title .left{
+        width: 100% !important;
+    }
+}

@@ -1,0 +1,60 @@
+.main{
+    background-color: whitesmoke;
+}
+.card{
+    border-radius: 15px !important;
+}
+.title{
+    font-size: 30px;
+    color: #919191;
+}
+.content{
+    margin: 20px 0;
+}
+.content .tags svg{
+    margin-top: 10px;
+}
+.content .describe{
+    margin-top: 20px;
+}
+.content .describe textarea{
+    resize: none;
+    border: 1px solid lightgray;
+    min-height: 150px;
+    padding: 20px;
+    border-radius: 15px;
+}
+.content .describe .counter{
+    font-weight: 100;
+    color: dimgrey;
+}
+.content .describe .counter span{
+    color: #2196F3;
+}
+.card-action{
+    display: flex;
+    align-items: center;
+    padding: 0 !important;
+    justify-content: right;
+    border-radius: 0 0 15px 15px !important;
+}
+.card-action .create{
+    padding: 10px 20px;
+    color: #ffffff;
+    background: #2196F3;
+    border-radius: 0 0 15px 0;
+    cursor: pointer;
+}
+.card-action .create:hover{
+    background: #239dff;
+}
+@media (max-device-width: 600px) {
+    .title{
+        text-align: center;
+    }
+    .card-action .create{
+        width: 100%;
+        border-radius: 0 0 15px 15px;
+        text-align: center;
+    }
+}

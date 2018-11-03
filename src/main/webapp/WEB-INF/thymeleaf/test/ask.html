@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--Content type-->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <!--Css-->
+    <!--<link rel="stylesheet" href="../../../resources/css/materialize.min.css"/>-->
+    <link rel="stylesheet" href="../../../resources/css/colors.min.css"/>
+    <link rel="stylesheet" href="../../../resources/css/normalize.min.css"/>
+    <link rel="stylesheet" href="../../../resources/css/global.css"/>
+    <link rel="stylesheet" href="../../../resources/css/footer.css"/>
+    <link rel="stylesheet" href="../../../resources/css/typography.css"/>
+    <link rel="stylesheet" href="../../../resources/css/header.css"/>
+    <link rel="stylesheet" href="../../../resources/css/quill.bubble.css" />
+    <link rel="stylesheet" href="../../../resources/css/tagSuggester.css" />
+    <link rel="stylesheet" href="../../../resources/css/ask.css"/>
+
+    <meta id="fileServerLocation" content="http://localhost:80"/>
+    <meta id="_csrf_header" content="csrf"/>
+    <meta id="_csrf" content="0"/>
+    <meta id="_edit"/>
+
+    <!--Top icon-->
+    <link rel="shortcut icon" href="../../../resources/images/icon2.ico" type="image/x-icon"/>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="background-color: white">
+
+    <div class="nav z-depth-2">
+        <div class="nav-wrapper bg-dark-blue">
+            <div class="container">
+                <!--Logo div-->
+                <a  href="/" class="brand-logo" style="display: flex;">
+                    <div class="valign-wrapper">
+                        <img src="../../../resources/images/logo.png" style="width: 40px; height: 40px"/>
+                        <h5 class="white-text">DeepThought</h5>
+                    </div>
+                </a>
+                <!--Menu icon for mobiles-->
+                <a href="#" data-target="mobile-demo" class="sidenav-trigger" style="font-weight: bold; transform: rotate(90deg)">|||</a>
+                <!--Menu div-->
+                <ul id="nav-mobile" class="right hide-on-med-and-down" style="display: flex;">
+                    <li id="feedElement"><a class="white-text" href="/articles">СТАТЬИ</a></li>
+                    <li id="questionElement"><a class="white-text" href="/questions">ВОПРОСЫ</a></li>
+                    <li id="problemsElement"><a class="white-text" href="/problems">ЗАДАЧИ</a></li>
+                    <li id="supportElement"><a class="white-text" href="/support">ПОМОЩЬ</a></li>
+                    <!--<li class="user-account">-->
+                        <!--<div class="user">-->
+                            <!--<div class="info">-->
+                                <!--<span class="login">zerodotax2</span>-->
+                                <!--<span class="rating"></span>-->
+                            <!--</div>-->
+                            <!--<div class="ava"><img src="../../../resources/images/ava.jpg"/> </div>-->
+                            <!--<svg fill="#ffffff" height="24" viewBox="0 0 24 18" width="24" xmlns="http://www.w3.org/2000/svg">-->
+                                <!--<path d="M7.41 7.84L12 12.42l4.59-4.58L18 9.25l-6 6-6-6z"/>-->
+                                <!--<path d="M0-.75h24v24H0z" fill="none"/>-->
+                            <!--</svg>-->
+                        <!--</div>-->
+                        <!--<div class="menu" style="display: none;">-->
+                            <!--<a href="/users/1" class="menu-element">Профиль</a>-->
+                            <!--<a href="/users/1/settings" class="menu-element">Настройки</a>-->
+                            <!--<a href="/logout" class="menu-element">Выход</a>-->
+                        <!--</div>-->
+                    <!--</li>-->
+                        <li class="valign-wrapper" >
+                            <a class="btn orange darken-2" id="log-btn" href="/login" >Вход</a>
+                        </li>
+                        <li class="valign-wrapper">
+                            <div class="left-divider"></div>
+                        </li>
+                        <li class="valign-wrapper" >
+                            <a class="btn-flat" href="/register" id="reg-btn">Регистрация</a>
+                        </li>
+                </ul>
+    
+                <!--Для мобилок-->
+                <ul id="mobile-demo" class="sidenav bg-dark-blue center-align">
+                    <!--<div if="${not empty sessionScope.user.firstName}">-->
+                        <img src="../../../resources/images/user.png" style="width: 100px; height: 100px; margin-top: 10px"/>
+                        <li><a class="white-text" href="/profile" >firstName</a></li>
+                    <!--</div>-->
+                    <li><a class="white-text" href="/login">Войти</a></li>
+                    <li><a class="cyan-text text-darken-4" href="/articles">СТАТЬИ</a></li>
+                    <li><a class="cyan-text text-darken-4" href="/questions">ВОПРОСЫ</a></li>
+                    <li><a class="cyan-text text-darken-4" href="/problems">ЗАДАЧИ</a></li>
+                    <li><a class="cyan-text text-darken-4" href="/about">О НАС</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="main" id="main">
+        <div class="container">
+            <div class="left-side">
+                <div class="row">
+                    <div class="col s12 title">
+                        <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#42A5F5" d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zM262.655 90c-54.497 0-89.255 22.957-116.549 63.758-3.536 5.286-2.353 12.415 2.715 16.258l34.699 26.31c5.205 3.947 12.621 3.008 16.665-2.122 17.864-22.658 30.113-35.797 57.303-35.797 20.429 0 45.698 13.148 45.698 32.958 0 14.976-12.363 22.667-32.534 33.976C247.128 238.528 216 254.941 216 296v4c0 6.627 5.373 12 12 12h56c6.627 0 12-5.373 12-12v-1.333c0-28.462 83.186-29.647 83.186-106.667 0-58.002-60.165-102-116.531-102zM256 338c-25.365 0-46 20.635-46 46 0 25.364 20.635 46 46 46s46-20.636 46-46c0-25.365-20.635-46-46-46z"></path></svg>
+                        <h1>Задать вопрос</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 header-input">
+                        <div class="input-field" style="display: flex;">
+                            <svg  class="prefix" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#7E7E7E" d="M497.94 74.17l-60.11-60.11c-18.75-18.75-49.16-18.75-67.91 0l-56.55 56.55 128.02 128.02 56.55-56.55c18.75-18.75 18.75-49.15 0-67.91zm-246.8-20.53c-15.62-15.62-40.94-15.62-56.56 0L75.8 172.43c-6.25 6.25-6.25 16.38 0 22.62l22.63 22.63c6.25 6.25 16.38 6.25 22.63 0l101.82-101.82 22.63 22.62L93.95 290.03A327.038 327.038 0 0 0 .17 485.11l-.03.23c-1.7 15.28 11.21 28.2 26.49 26.51a327.02 327.02 0 0 0 195.34-93.8l196.79-196.79-82.77-82.77-84.85-84.85z"></path></svg>
+                            <label for="header" >Введите заголовок</label>
+                            <input id="header" type="text"/>
+                        </div>
+                        <div style="display: none;" id="title_edit">Hello world</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 tags">
+                        <div class="name">Теги</div>
+                        <div class="input-field">
+                            <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="#9e9e9e" d="M0 512V48C0 21.49 21.49 0 48 0h288c26.51 0 48 21.49 48 48v464L192 400 0 512z"></path></svg>
+                            <div class="tags-input">
+                                <input class="chips" id="tags-input" type="text"/>
+                            </div>
+                        </div>
+                        <div class="tags-view" style="display: none;">
+                        </div>
+                        <div id="tags_edit" style="display: none;">
+                            <meta name="Программирование" color="#ffaaff" content="1"/>
+                            <meta name="Программирование" color="#ffaaff" content="2"/>
+                            <meta name="Программирование" color="#ffaaff" content="3"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="divider col s12"></div>
+                    <div class="col s12 editor-container">
+                        <div id="question-editor">
+                        </div>
+                        <div id="question_edit" style="display: none;">
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium consequatur cupiditate ea explicabo facere laudantium minima nemo, quaerat quam quas rem, tenetur ut vel. Doloribus est, fuga inventore iste libero nulla numquam, provident tempora tenetur totam ullam, voluptates. Ad debitis dolor esse hic magni nam, nemo non numquam ullam veniam. A amet commodi, distinctio dolore enim inventore ipsa magnam minus nesciunt, nobis possimus provident quia sunt vel voluptatum. Ad aperiam architecto cumque delectus, deserunt, facilis magnam nemo numquam porro quaerat quisquam quos sequi unde. Ab animi beatae cum earum esse excepturi expedita facere, id, laboriosam modi natus nulla possimus quasi, rem rerum sequi sunt! Eaque modi molestias neque nesciunt non, officia quaerat quas vitae? Ad aliquid architecto atque deserunt facilis impedit molestias quae, quia ratione repellat tempora, temporibus vero voluptates. Exercitationem libero maiores, maxime modi nam nesciunt officiis porro, quod ratione saepe ullam vero voluptate. Architecto assumenda, corporis delectus dolorem et fugiat harum illo illum labore magnam maxime molestias nemo omnis optio pariatur praesentium quas, reprehenderit saepe suscipit tempore ut vitae voluptatem? Accusantium, amet at dolorem ea ex fuga ipsam ipsum molestias nihil officiis omnis reprehenderit tempora. Alias aperiam consequatur dolores dolorum excepturi fuga nesciunt pariatur tempora unde, ut, voluptatum.
+                        </div>
+                    </div>
+                    <div class="divider col s12"></div>
+                </div>
+                <div class="row">
+                    <div class="col s12 action">
+                        <div class="send-question z-depth-2">
+                            <div class="text">Отправить вопрос</div>
+                            <div class="image"><svg  role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><path fill="#ffffff" d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"></path></svg></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="right-side">
+                <div class="help">
+                    <div class="head">
+                        <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#42A5F5" d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"></path></svg>
+                        <span>Как пользоваться</span>
+                    </div>
+                    <div class="content">
+                        <ul>
+                            <li>В названии наиболее точно укажите главную мысль вопроса</li>
+                            <li>Выделите категории, наиболее подходящие к вашему вопросу</li>
+                            <li>Старайтесь наиболее детально раскрыть ваши рассуждения по поводу задаваемого вопроса</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="last-questions">
+                    <div class="head">Последние вопросы</div>
+                    <div class="questions">
+                        <a href="/questions/1" class="question">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat, qui.</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col s12 footer-container">
+                    <div class="left">
+                        <div>Copyright © 2018 DeepThought |</div>
+                        <a href="/license">License</a>
+                    </div>
+                    <div class="right">
+                        <a href="https://vk.com/prog_ja">
+                            <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#ffffff" d="M545 117.7c3.7-12.5 0-21.7-17.8-21.7h-58.9c-15 0-21.9 7.9-25.6 16.7 0 0-30 73.1-72.4 120.5-13.7 13.7-20 18.1-27.5 18.1-3.7 0-9.4-4.4-9.4-16.9V117.7c0-15-4.2-21.7-16.6-21.7h-92.6c-9.4 0-15 7-15 13.5 0 14.2 21.2 17.5 23.4 57.5v86.8c0 19-3.4 22.5-10.9 22.5-20 0-68.6-73.4-97.4-157.4-5.8-16.3-11.5-22.9-26.6-22.9H38.8c-16.8 0-20.2 7.9-20.2 16.7 0 15.6 20 93.1 93.1 195.5C160.4 378.1 229 416 291.4 416c37.5 0 42.1-8.4 42.1-22.9 0-66.8-3.4-73.1 15.4-73.1 8.7 0 23.7 4.4 58.7 38.1 40 40 46.6 57.9 69 57.9h58.9c16.8 0 25.3-8.4 20.4-25-11.2-34.9-86.9-106.7-90.3-111.5-8.7-11.2-6.2-16.2 0-26.2.1-.1 72-101.3 79.4-135.6z"></path></svg>
+                        </a>
+                        <a href="https://github.com/zerodotax2">
+                            <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="#ffffff" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg>
+                        </a>
+                        <a href="https://www.facebook.com/zerodotax2">
+                            <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#ffffff" d="M448 56.7v398.5c0 13.7-11.1 24.7-24.7 24.7H309.1V306.5h58.2l8.7-67.6h-67v-43.2c0-19.6 5.4-32.9 33.5-32.9h35.8v-60.5c-6.2-.8-27.4-2.7-52.2-2.7-51.6 0-87 31.5-87 89.4v49.9h-58.4v67.6h58.4V480H24.7C11.1 480 0 468.9 0 455.3V56.7C0 43.1 11.1 32 24.7 32h398.5c13.7 0 24.8 11.1 24.8 24.7z"></path></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../../resources/js/materialize.min.js"></script>
+    <script src="../../../resources/js/header_script.js"></script>
+    <script src="../../../resources/js/generic.js"></script>
+    <script src="../../../resources/js/xhr.js"></script>
+    <script src="../../../resources/js/modal.js"></script>
+    <script src="../../../resources/js/quill.min.js"></script>
+    <script src="../../../resources/js/tagSuggester.js"></script>
+    <script src="../../../resources/js/ask.js"></script>
+</body>
+</html>

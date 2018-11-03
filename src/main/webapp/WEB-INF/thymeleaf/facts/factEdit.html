@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html layout:decorate="~{templates/simple_layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:charset="UTF-8">
+<head>
+    <link rel="stylesheet" th:href="@{/resources/css/factAdd.css}"/>
+    <title th:title="'Добавить факт'"> </title>
+    <meta id="fact_id" th:content="${factEdit.id}"/>
+    <meta id="_edit"/>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="card">
+        <div class="card-content">
+            <div class="title">Добавить факт</div>
+            <div class="content">
+                <div class="tags">
+                    <div class="name" style="margin-bottom: -7px;">Теги</div>
+                    <div class="input-field">
+                        <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="#9e9e9e" d="M0 512V48C0 21.49 21.49 0 48 0h288c26.51 0 48 21.49 48 48v464L192 400 0 512z"></path></svg>
+                        <div class="tags-input">
+                            <input class="chips" id="tags-input" type="text"/>
+                        </div>
+                    </div>
+                    <div id="tags_edit" style="display: none;">
+                        <meta th:each="tag : ${factEdit.tags}" th:name="${tag.name}" th:color="${tag.color}" th:content="${tag.id}"/>
+                    </div>
+                    <div class="tags-view" style="display: none;">
+                    </div>
+                </div>
+                <div class="describe">
+                    <meta id="text_edit" th:content="${factEdit.text}"/>
+                    <textarea id="describeInput" placeholder="Описание"></textarea>
+                    <div class="counter">
+                        Осталось символов: <span>1000</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-action">
+            <div class="create">
+                Создать
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="js">
+    <script th:src="@{/resources/js/tagSuggester.js}"></script>
+    <script th:src="@{/resources/js/factAdd.js}"></script>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html layout:decorate="~{templates/simple_layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:charset="UTF-8">
+<head>
+    <link rel="stylesheet" th:href="@{/resources/css/factAdd.css}"/>
+    <meta id="fact_id" content="0"/>
+    <title th:title="'Добавить факт'"> </title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="card">
+        <div class="card-content">
+            <div class="title">Добавить факт</div>
+            <div class="content">
+                <div class="tags">
+                    <div class="name" style="margin-bottom: -7px;">Теги</div>
+                    <div class="input-field">
+                        <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="#9e9e9e" d="M0 512V48C0 21.49 21.49 0 48 0h288c26.51 0 48 21.49 48 48v464L192 400 0 512z"></path></svg>
+                        <div class="tags-input">
+                            <input class="chips" id="tags-input" type="text"/>
+                        </div>
+                    </div>
+                    <!--<div id="tags_edit" style="display: none;">-->
+                        <!--<meta name="Программирование" color="#000000" content="1"/>-->
+                    <!--</div>-->
+                    <div class="tags-view" style="display: none;">
+                    </div>
+                </div>
+                <div class="describe">
+                    <!--<meta id="text_edit" content=" Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi consectetur distinctio doloremque enim error in iusto laborum libero molestias necessitatibus neque perferendis qui quidem, quo recusandae repellat sed, similique totam, vitae voluptas? Aperiam at doloremque eum fugiat iure magni reiciendis repellendus totam. Architecto atque eius, ex hic modi mollitia nulla quam quod sed ullam? Culpa eius illum iure molestiae nam quam reiciendis tempore! Ad esse et iste laudantium reiciendis repellendus. Aspernatur dignissimos hic inventore molestiae mollitia nihil! A accusamus accusantium aliquam amet assumenda at blanditiis ea, error fugit illo, non, numquam obcaecati praesentium quam quod repellat saepe voluptatem? Quas, sapiente?"/>-->
+                    <textarea id="describeInput" placeholder="Описание"></textarea>
+                    <div class="counter">
+                        Осталось символов: <span>1000</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-action">
+            <div class="create">
+                Создать
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="js">
+    <script th:src="@{/resources/js/tagSuggester.js}"></script>
+    <script th:src="@{/resources/js/factAdd.js}"></script>
+</th:block>
+</body>
+</html>

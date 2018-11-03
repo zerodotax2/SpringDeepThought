@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html layout:decorate="~{templates/complex_layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:charset="UTF-8">
+<head>
+    <title>Вопросы</title>
+    <link rel="stylesheet" th:href="@{/resources/css/quill.bubble.css}"/>
+    <link rel="stylesheet" th:href="@{/resources/css/tagSuggester.css}"/>
+    <link rel="stylesheet" th:href="@{/resources/css/ask.css}"/>
+    <meta id="_edit"/>
+</head>
+<body>
+
+
+<div layout:fragment="content">
+    <div class="left-side">
+        <div class="row">
+            <div class="col s12 title">
+                <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#42A5F5" d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zM262.655 90c-54.497 0-89.255 22.957-116.549 63.758-3.536 5.286-2.353 12.415 2.715 16.258l34.699 26.31c5.205 3.947 12.621 3.008 16.665-2.122 17.864-22.658 30.113-35.797 57.303-35.797 20.429 0 45.698 13.148 45.698 32.958 0 14.976-12.363 22.667-32.534 33.976C247.128 238.528 216 254.941 216 296v4c0 6.627 5.373 12 12 12h56c6.627 0 12-5.373 12-12v-1.333c0-28.462 83.186-29.647 83.186-106.667 0-58.002-60.165-102-116.531-102zM256 338c-25.365 0-46 20.635-46 46 0 25.364 20.635 46 46 46s46-20.636 46-46c0-25.365-20.635-46-46-46z"></path></svg>
+                <h1>Задать вопрос</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 header-input">
+                <div class="input-field" style="display: flex;">
+                    <svg class="prefix" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#7E7E7E" d="M497.94 74.17l-60.11-60.11c-18.75-18.75-49.16-18.75-67.91 0l-56.55 56.55 128.02 128.02 56.55-56.55c18.75-18.75 18.75-49.15 0-67.91zm-246.8-20.53c-15.62-15.62-40.94-15.62-56.56 0L75.8 172.43c-6.25 6.25-6.25 16.38 0 22.62l22.63 22.63c6.25 6.25 16.38 6.25 22.63 0l101.82-101.82 22.63 22.62L93.95 290.03A327.038 327.038 0 0 0 .17 485.11l-.03.23c-1.7 15.28 11.21 28.2 26.49 26.51a327.02 327.02 0 0 0 195.34-93.8l196.79-196.79-82.77-82.77-84.85-84.85z"></path></svg>
+                    <label for="header" >Введите заголовок</label>
+                    <input id="header" type="text"/>
+                </div>
+                <div style="display: none;" id="title_edit" th:text="${questionEdit.title}"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 tags">
+                <div class="name">Теги</div>
+                <div class="input-field">
+                    <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="#9e9e9e" d="M0 512V48C0 21.49 21.49 0 48 0h288c26.51 0 48 21.49 48 48v464L192 400 0 512z"></path></svg>
+                    <div class="tags-input">
+                        <input class="chips" id="tags-input" type="text"/>
+                    </div>
+                </div>
+                <div class="tags-view" style="display: none;">
+                </div>
+                <div id="tags_edit" style="display: none;">
+                    <meta th:each="tag : ${questionEdit.tags}" th:name="${tag.name}" th:color="${tag.color}" th:content="${tag.id}"/>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="divider col s12"></div>
+            <div class="col s12 editor-container">
+                <div id="question-editor">
+                </div>
+                <div id="question_edit" style="display: none;" th:text="${questionEdit.content}">
+                </div>
+            </div>
+            <div class="divider col s12"></div>
+        </div>
+        <div class="row">
+            <div class="col s12 action">
+                <div class="send-question z-depth-2">
+                    <div class="text">Отправить вопрос</div>
+                    <div class="image"><svg  role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><path fill="#ffffff" d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"></path></svg></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="right-side">
+        <div class="help">
+            <div class="head">
+                <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#42A5F5" d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"></path></svg>
+                <span>Как пользоваться</span>
+            </div>
+            <div class="content">
+                <ul>
+                    <li>В названии наиболее точно укажите главную мысль вопроса</li>
+                    <li>Выделите категории, наиболее подходящие к вашему вопросу</li>
+                    <li>Старайтесь наиболее детально раскрыть ваши рассуждения по поводу задаваемого вопроса</li>
+                </ul>
+            </div>
+        </div>
+        <div class="last-questions">
+            <div class="head">Последние вопросы</div>
+            <div class="questions">
+                <a th:each="lastQuestion : ${lastQuestions}" th:href="@{/questions/${lastQuestion.id}}" class="question" th:text="${lastQuestion.title}"></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="js">
+    <script th:src="@{/resources/js/quill.min.js}"></script>
+    <script th:src="@{/resources/js/tagSuggester.js}"></script>
+    <script th:src="@{/resources/js/questions.js}"></script>
+</th:block>
+</body>
+</html>

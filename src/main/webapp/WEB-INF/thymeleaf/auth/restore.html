@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html layout:decorate="~{templates/simple_layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:charset="UTF-8">
+<head>
+    <title>Регистрация</title>
+    <link rel="stylesheet" th:href="@{/resources/css/restore.css}"/>
+</head>
+<body>
+
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col s12">
+                <div class="window">
+                    <div class="title">
+                        Восстановление пароля
+                    </div>
+                    <div class="info">
+                        Если вы забыли свой пароль, то введите в форму ниже E-mail, привязанный к вашему аккаунту
+                        и мы вышлем вам новый пароль от аккаунта.
+                    </div>
+                    <div class="input">
+                        <div class="input-field">
+                            <input type="text" id="email" placeholder="Введите E-mail"/>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <div class="restore green">Восстановить доступ</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block layout:fragment="js">
+        <script th:src="@{/resources/js/restore.js}"></script>
+    </th:block>
+</body>
+</html>

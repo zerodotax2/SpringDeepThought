@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html layout:decorate="~{templates/simple_layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:charset="UTF-8">
+<head>
+    <link rel="stylesheet" th:href="@{/resources/css/tag.css}"/>
+    <title th:title="'Тег | '+${tag.name}"> </title>
+    <meta id="tag_id" th:content="${fullTagDTO.id}"/>
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <div class="row">
+        <div class="tag-header col s12">
+            <div class="top-of-header">
+                <div class="left">
+                    <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="#9e9e9e" d="M0 512V48C0 21.49 21.49 0 48 0h288c26.51 0 48 21.49 48 48v464L192 400 0 512z"></path></svg>
+                    <div class="tag-name" th:text="${fullTagDTO.name}">
+
+                    </div>
+                </div>
+                <a th:if="${user!=null && user.id == fulLTagDTO.user.id}" class="edit-tag" th:href="@{/tags/${fullTagDTO.id}/edit}">
+                    <svg role="img" xmlns="http://www.w3.org/2000/svg" fill="#adb5bd" viewBox="0 0 512 512"><path d="M290.74 93.24l128.02 128.02-277.99 277.99-114.14 12.6C11.35 513.54-1.56 500.62.14 485.34l12.7-114.22 277.9-277.88zm207.2-19.06l-60.11-60.11c-18.75-18.75-49.16-18.75-67.91 0l-56.55 56.55 128.02 128.02 56.55-56.55c18.75-18.76 18.75-49.16 0-67.91z"></path></svg>
+                </a>
+            </div>
+            <div class="describe" th:text="${fullTagDTO.description}">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col s12 creator">
+            <a th:href="@{/users/${fullTagDTO.user.id}}" class="user">
+                <img th:src="@{${fullTagDTO.user.userImage}}"/>
+                <div class="info">
+                    <div class="login blue" th:text="${fullTagDTO.user.login}"></div>
+                    <div class="rating"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#ffcb05" d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"></path></svg>
+                        <span th:text="${#numbers.formatDecimal(fullTagDTO.user.rating, 1, 3, 'WHITESPACE')}"></span> </div>
+                </div>
+            </a>
+            <div class="date"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#adb5bd" d="M148 288h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm108-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96-260v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h48V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h128V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h48c26.5 0 48 21.5 48 48zm-48 346V160H48v298c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z"></path></svg>
+                <span th:text="${#dates.format(fullTagDTO.createDate, 'dd-MM-yyyy')}"><span class="hide-on-med-and-down" th:text="${#dates.format(fullTagDTO.createDate, 'в HH:mm')}"></span></span></div>
+        </div>
+    </div>
+
+    <div class="row stats">
+        <div class="col s12 m4 l2 stat" id="article_btn" content="articles-panel">
+            <div class="name">Статьи</div>
+            <div class="num" th:text="${fullTagDTO.articles}"></div>
+        </div>
+        <div class="col s12 m4 l2 stat" id="question_btn" content="questions-panel">
+            <div class="name">Вопросы</div>
+            <div class="num" th:text="${fullTagDTO.questions}"></div>
+        </div>
+        <div class="col s12 m4 l2 stat" id="problem_btn" content="problems-panel">
+            <div class="name">Задачи</div>
+            <div class="num" th:text="${fullTagDTO.problems}"></div>
+        </div>
+        <div class="col s12 m4 l2 stat" id="user_btn" content="users-panel">
+            <div class="name">Люди</div>
+            <div class="num" th:text="${fullTagDTO.users}"></div>
+        </div>
+        <div class="col s12 m4 l2 stat" id="fact_btn" content="facts-panel">
+            <div class="name">Факты</div>
+            <div class="num" th:text="${fullTagDTO.facts}"></div>
+        </div>
+    </div>
+
+
+    <div class="row tab-content">
+        <div id="articles-panel" style="display: none;">
+
+        </div>
+        <div id="questions-panel" style="display: none;">
+
+        </div>
+        <div id="problems-panel" style="display: none;">
+
+        </div>
+        <div id="users-panel" style="display: none;">
+
+        </div>
+        <div id="facts-panel" style="display: none;">
+
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="js">
+    <script th:src="@{/resources/js/tag.js}"></script>
+</th:block>
+</body>
+</html>

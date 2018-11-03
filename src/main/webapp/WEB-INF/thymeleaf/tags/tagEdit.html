@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html layout:decorate="~{templates/simple_layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:charset="UTF-8">
+<head>
+    <link rel="stylesheet" th:href="@{/resources/css/tagCreate.css}"/>
+    <title th:title="'Создать тег'"> </title>
+    <meta id="_edit"/>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="card">
+        <div class="card-content">
+            <div class="head">
+                <div class="title">
+                    Добавить
+                </div>
+                <div class="tag-preview">тег</div>
+            </div>
+            <div class="content">
+                <div class="left">
+                    <meta id="color_edit" th:content="${tagEdit.color}"/>
+                    <div class="color-container">
+
+                    </div>
+                    <div class="pick">Выберите цвет</div>
+                </div>
+                <div class="right">
+                    <div class="input-field">
+                        <meta id="name_edit" th:content="${tagEdit.name}"/>
+                        <input type="text" id="nameInput" placeholder="Имя тега"/>
+                    </div>
+                    <meta id="describe_edit" th:content="${tagEdit.description}"/>
+                    <textarea id="describeInput" placeholder="Введите описание"></textarea>
+                    <div class="counter">Символов осталось: <span>1000</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="card-action">
+            <div class="create">
+                Создать
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="js">
+    <script th:src="@{/resources/js/iro.min.js}"></script>
+    <script th:src="@{/resources/js/tagCreate.js}"></script>
+</th:block>
+</body>
+</html>
