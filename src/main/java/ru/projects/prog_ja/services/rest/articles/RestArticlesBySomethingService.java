@@ -3,12 +3,8 @@ package ru.projects.prog_ja.services.rest.articles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.projects.prog_ja.dto.smalls.SmallArticleTransfer;
-import ru.projects.prog_ja.dto.view.BySomethingContainer;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.ArticleReadService;
 import ru.projects.prog_ja.services.AbstractRestService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/services/articles")
@@ -23,27 +19,24 @@ public class RestArticlesBySomethingService  extends AbstractRestService {
 
     @GetMapping("/user/{id}")
     public ResponseEntity<?> getArticlesByUser(@PathVariable("id") long id,
-                                               @RequestParam(value = "size", defaultValue = "6") String size){
+                                               @RequestParam(name = "size", defaultValue = "6") String size,
+                                               @RequestParam(name = "q", required = false) String q,
+                                               @RequestParam(name = "page", defaultValue = "1") String page,
+                                               @RequestParam(name = "type", defaultValue = "rating") String rating,
+                                               @RequestParam(name = "sort", defaultValue = "1")String sort){
 
-        BySomethingContainer container = articleReadService.getArticlesByUser(0, size, id, "rating", "1");
-        if(container == null){
-            return  notFound();
-        }
-
-        return found(container);
+        return found(articleReadService.getSmallArticlesByUser(page, size, id, q,rating, sort));
     }
 
     @GetMapping("/tag/{id}")
     public ResponseEntity<?> getArticlesByTag(@PathVariable("id") long id,
-                                              @RequestParam(value = "size", defaultValue = "6") String size){
+                                              @RequestParam(name = "size", defaultValue = "6") String size,
+                                              @RequestParam(name = "q", required = false) String q,
+                                              @RequestParam(name = "page", defaultValue = "1") String page,
+                                              @RequestParam(name = "type", defaultValue = "rating") String rating,
+                                              @RequestParam(name = "sort", defaultValue = "1")String sort){
 
 
-        BySomethingContainer container = articleReadService.getArticlesByTag(0,size, id, "rating", "1");
-        if(container == null){
-            return  notFound();
-        }
-
-
-        return found(container);
+        return found(articleReadService.getSmallArticlesByTag(page,size,id,q, rating, sort));
     }
 }

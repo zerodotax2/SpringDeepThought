@@ -2,7 +2,6 @@ package ru.projects.prog_ja.logic.caches.local;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.projects.prog_ja.dto.commons.CommonFactTransfer;
@@ -17,7 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Scope( scopeName = "singleton")
-@EnableScheduling
 public class FactsLocalCache implements FactsCache {
 
     /**
@@ -88,7 +86,7 @@ public class FactsLocalCache implements FactsCache {
     }
 
     /**
-    * Обновляем кеш каждые 1000 мс * 60 * 60 (час),
+    * Обновляем кеш каждые 60c * 60 (час),
     * */
     @Scheduled(fixedRate = 3_600_000)
     public void update(){
@@ -113,22 +111,16 @@ public class FactsLocalCache implements FactsCache {
      * если всё правильно, то возвращаем факт из общей карты
     * */
 
-    private static final Object factByTagKey = new Object();
-
     @Override
     public CommonFactTransfer getFactByTag(long tagID, int positionInList){
 
-        synchronized (factsByTagKey){
+        List<Long> tagsList = indexes.get(tagID);
+        if(tagsList == null || tagsList.size() < positionInList){
 
-            List<Long> tagsList = indexes.get(tagID);
-            if(tagsList == null || tagsList.size() < positionInList){
-
-                return null;
-            }
-
-            return facts.get(tagsList.get(positionInList));
+            return null;
         }
 
+        return facts.get(tagsList.get(positionInList));
     }
 
     /**
@@ -144,47 +136,29 @@ public class FactsLocalCache implements FactsCache {
      * получаем длину листа по данному тегу
      *
      * */
-    private final static Object factsByTagKey = new Object();
 
     @Override
     public int factsByTagSize(long tagID){
 
-        synchronized (factsByTagKey){
-
-            List tagsList = indexes.get(tagID);
-            if(tagsList == null){
-                return 0;
-            }else{
-                return tagsList.size();
-            }
-
-        }
-
+        return indexes.getOrDefault(tagID, Collections.emptyList()).size();
     }
 
 
     /**
     * Обеспечиваем конкурентный доступ к добавлению фактов в кеш
     * */
-    private static final Object putFactKey = new Object();
 
     @Override
     public void putFact(CommonFactTransfer fact){
 
-        synchronized (putFactKey){
             facts.put(fact.getId(), fact);
-        }
 
     }
-
-    private static final Object deleteFactKey = new Object();
 
     @Override
     public void deleteFactFromCache(long factId){
 
-        synchronized (deleteFactKey){
             facts.remove(factId);
-        }
 
     }
 }

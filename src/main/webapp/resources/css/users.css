@@ -1,15 +1,3 @@
-.top-panel{
-    min-height: 300px;
-    background: url("../images/blue-bg.jpg") no-repeat center / cover ;
-    display: flex;
-    align-items: start;
-    justify-content: center;
-}
-
-.top-panel .text-panel{
-    color: white;
-    text-align: center;
-}
 .users-container {
     display: flex;
     flex-flow: wrap;

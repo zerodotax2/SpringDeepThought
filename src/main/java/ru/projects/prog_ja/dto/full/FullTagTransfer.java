@@ -12,11 +12,11 @@ public class FullTagTransfer extends CommonTagTransfer {
     private Date createDate;
     private SmallUserTransfer user;
 
-    public FullTagTransfer(long id, String name, String description , String color,
+    public FullTagTransfer(long id, String name, String color, String description ,
                            long articles, long questions, long problems, long users, long facts,
                            Date createDate,
                            SmallUserTransfer user) {
-        super(id, name, description,color, articles, questions, problems);
+        super(id, name, color, description, articles, questions, problems);
         this.facts = facts;
         this.users = users;
         this.createDate = createDate;
@@ -32,6 +32,18 @@ public class FullTagTransfer extends CommonTagTransfer {
         this.users = users;
         this.createDate = createDate;
         this.user = new SmallUserTransfer(userId, login, userImage, rating);
+    }
+
+    @Override
+    public String toString() {
+        return "\n FullTagTransfer:" +
+                "\n id: " + id +
+                "\n name: " + name +
+                "\n color:" +color+
+                "\n createDate: " + createDate +
+                "\n articles: "+articles +
+                "\n problems: " + problems +
+                "\n questions:" + questions;
     }
 
     public long getId() {

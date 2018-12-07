@@ -4,14 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.ModelAndView;
-import ru.projects.prog_ja.dto.UserDTO;
+import ru.projects.prog_ja.dto.auth.UserDTO;
 import ru.projects.prog_ja.dto.commons.SettingsAccountTransfer;
 import ru.projects.prog_ja.dto.commons.SettingsNotificationsTransfer;
 import ru.projects.prog_ja.dto.commons.SettingsUserTransfer;
-import ru.projects.prog_ja.logic.services.transactional.interfaces.SettingsReadService;
 import ru.projects.prog_ja.exceptions.InternalServerException;
+import ru.projects.prog_ja.exceptions.NotFoundException;
+import ru.projects.prog_ja.logic.services.transactional.interfaces.SettingsReadService;
 
 @Controller
 @RequestMapping(value = "/settings")
@@ -29,7 +31,7 @@ public class SettingsController {
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public ModelAndView getUserSettings(@SessionAttribute("user") UserDTO userDTO) throws InternalServerException {
+    public ModelAndView getUserSettings(@SessionAttribute(name = "user") UserDTO userDTO) throws InternalServerException {
 
         SettingsUserTransfer settingsUserTransfer = settingsReadService.getUserSettingsTransfer(userDTO.getId());
         if(settingsUserTransfer == null){
@@ -41,7 +43,7 @@ public class SettingsController {
     }
 
     @RequestMapping(value = "/account", method = RequestMethod.GET)
-    public ModelAndView getAccountSettings(@SessionAttribute("user") UserDTO userDTO) throws InternalServerException {
+    public ModelAndView getAccountSettings(@SessionAttribute(name = "user") UserDTO userDTO) throws InternalServerException {
 
         SettingsAccountTransfer settingsAccountTransfer = settingsReadService.getAccountSettingsTransfer(userDTO.getId());
         if(settingsAccountTransfer == null){
@@ -53,12 +55,13 @@ public class SettingsController {
     }
 
     @RequestMapping(value = "/notifications")
-    public ModelAndView getUserNotifications(@SessionAttribute("user") UserDTO user) throws InternalServerException {
+    public ModelAndView getUserNotifications(@SessionAttribute(name = "user") UserDTO user,
+                                             @RequestParam(name = "page", defaultValue = "1") String page) throws InternalServerException, NotFoundException {
 
         SettingsNotificationsTransfer settingsNotificationsTransfer
-                = settingsReadService.getUserNotificationsTransfer(user.getId());
+                = settingsReadService.getUserNotificationsTransfer(user.getId(), page);
         if(settingsNotificationsTransfer == null){
-            throw new InternalServerException();
+            throw new NotFoundException();
         }
 
         return new ModelAndView("users/settingsNotifications",

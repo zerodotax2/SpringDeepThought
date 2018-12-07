@@ -1,13 +1,17 @@
 package ru.projects.prog_ja.model.entity.questions;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "QuestionContent")
 public class QuestionContent {
+
     private long questionId;
     private String htmlContent;
+    private Questions question;
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_content_id")
@@ -19,7 +23,7 @@ public class QuestionContent {
         this.questionId = questionId;
     }
 
-    @Basic
+    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "htmlContent")
     public String getHtmlContent() {
         return this.htmlContent;
@@ -50,5 +54,13 @@ public class QuestionContent {
     }
 
 
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "question_content_fk"))
+    public Questions getQuestion() {
+        return question;
+    }
 
+    public void setQuestion(Questions question) {
+        this.question = question;
+    }
 }

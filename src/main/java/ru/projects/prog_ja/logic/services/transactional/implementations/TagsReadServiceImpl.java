@@ -7,12 +7,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.projects.prog_ja.dto.commons.CommonTagTransfer;
+import ru.projects.prog_ja.dto.dao.PageableEntity;
 import ru.projects.prog_ja.dto.full.FullTagTransfer;
 import ru.projects.prog_ja.dto.smalls.SmallTagTransfer;
-import ru.projects.prog_ja.logic.services.transactional.interfaces.TagsReadService;
+import ru.projects.prog_ja.dto.view.PageableContainer;
 import ru.projects.prog_ja.logic.caches.interfaces.TagsCache;
+import ru.projects.prog_ja.logic.services.simple.implementations.RegexUtil;
+import ru.projects.prog_ja.logic.services.simple.interfaces.ValuesParser;
+import ru.projects.prog_ja.logic.services.transactional.interfaces.TagsReadService;
 import ru.projects.prog_ja.model.dao.TagsDAO;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -22,17 +27,18 @@ public class TagsReadServiceImpl implements TagsReadService {
 
     private final TagsDAO tagsDAO;
     private final TagsCache tagsCache;
+    private final ValuesParser parser;
 
-    @Value("{tags.small.show.size}")
     private static int smallTagsSize;
-
-    @Value("{tags.common.show.size}")
     private static int commonTagSize;
 
-    public TagsReadServiceImpl(@Autowired TagsDAO tagsDAO,
-                               @Autowired TagsCache tagsCache) {
+    @Autowired
+    public TagsReadServiceImpl(TagsDAO tagsDAO,
+                               TagsCache tagsCache,
+                               ValuesParser parser) {
         this.tagsDAO = tagsDAO;
         this.tagsCache = tagsCache;
+        this.parser = parser;
     }
 
     @Override
@@ -40,40 +46,88 @@ public class TagsReadServiceImpl implements TagsReadService {
 
         List<SmallTagTransfer> popularTags = tagsCache.getPopularTags();
         if(popularTags == null){
-            return tagsDAO.getSmallPopularTags(0, smallTagsSize);
+            popularTags = tagsDAO.getSmallPopularTags(0, smallTagsSize);
         }
 
-        return popularTags;
+        return popularTags == null ? Collections.emptyList() : popularTags;
     }
 
     @Override
-    public List<CommonTagTransfer> getCommonTags(int start, String type, String sort) {
+    public String getName(long tagId) {
 
-        return tagsDAO.getCommonTags(start, commonTagSize, getOrderField(type), getSort(sort));
+        String name;
+        CommonTagTransfer tag = tagsCache.getCommonTagByID(tagId);
+        if(tag != null)
+            name = tag.getName();
+        else
+            name = tagsDAO.getName(tagId);
+
+        return name == null? "" : name;
     }
 
     @Override
-    public List<CommonTagTransfer> findCommonTags(int start, String search, String type, String sort) {
+    public PageableContainer getCommonTags(String page, String type, String sort) {
 
-        if(!search.matches("^[\\w|\\s]+$"))
-            return getCommonTags(start, type, sort);
+        int parsedPage = parser.getPage(page);
 
-        return tagsDAO.findCommonTags(start, commonTagSize, search, getOrderField(type), getSort(sort));
+        PageableEntity pageable
+                = tagsDAO.getCommonTags((parsedPage-1)*commonTagSize, commonTagSize, getOrderField(type), parser.getSort(sort));
+
+        return new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), commonTagSize));
     }
 
     @Override
-    public List<SmallTagTransfer> getSmallTags(int start, String type, String sort) {
+    public PageableContainer findCommonTags(String page, String search, String type, String sort) {
 
-        return tagsDAO.getSmallTags(start, smallTagsSize, getOrderField(type), getSort(sort));
+        if(search == null || !RegexUtil.string(search).matches())
+            return getCommonTags(page, type, sort);
+
+        int parsedPage = parser.getPage(page);
+        PageableEntity pageable
+                = tagsDAO.findCommonTags((parsedPage-1)*commonTagSize, commonTagSize, search,
+                getOrderField(type), parser.getSort(sort));
+
+        return new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), commonTagSize));
     }
 
     @Override
-    public List<SmallTagTransfer> findSmallTags(int start, String search, String type, String sort) {
+    public PageableContainer getTagsByUser(String page, String size, long userId, String q, String type, String sort) {
 
-        if(!search.matches("^[\\w|\\s]+$"))
-            return getSmallTags(start, type, sort);
+        int parsedPage = parser.getPage(page),
+            parsedSize = parser.getSize(size);
+        PageableEntity pageable = tagsDAO.getTagsByUser((parsedPage-1)*parsedSize,parsedSize, userId, parser.getQuery(q),
+                getOrderField(type), parser.getSort(sort));
 
-        return tagsDAO.findTags(start, smallTagsSize, search, getOrderField(type), getSort(sort));
+        return new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), parsedSize));
+    }
+
+    @Override
+    public PageableContainer getSmallTags(String page, String type, String sort) {
+
+        int parsedPage = parser.getPage(page);
+        PageableEntity pageable
+                = tagsDAO.getSmallTags((parsedPage-1)*smallTagsSize, smallTagsSize, getOrderField(type), parser.getSort(sort));
+
+        return new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), smallTagsSize));
+    }
+
+    @Override
+    public PageableContainer findSmallTags(String page, String search, String type, String sort) {
+
+        if(search == null || !RegexUtil.string(search).matches())
+            return getSmallTags(page, type, sort);
+
+        int parsedPage = parser.getPage(page);
+        PageableEntity pageable
+                = tagsDAO.findTags((parsedPage-1)*smallTagsSize, smallTagsSize, search,
+                getOrderField(type), parser.getSort(sort));
+
+        return new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), smallTagsSize));
     }
 
     @Override
@@ -94,20 +148,29 @@ public class TagsReadServiceImpl implements TagsReadService {
     }
 
     @Override
-    public List<CommonTagTransfer> getTags(int start, String query, String type, String sort){
+    public PageableContainer getTags(String page, String query, String type, String sort){
         if(query != null && !query.equals("")){
-            return findCommonTags(start, query, type, sort);
+            return findCommonTags(page, query, type, sort);
         }else{
-            return getCommonTags(start, type, sort);
+            return getCommonTags(page, type, sort);
         }
     }
-    
-    
-    private int getSort(String sort){
-        return "0".equals(sort) ? 0 : 1;
+
+    @Override
+    public List<SmallTagTransfer> getTagsByPrefix(String prefix) {
+
+        if(prefix == null || !RegexUtil.string(prefix).matches())
+            return Collections.emptyList();
+
+        List<SmallTagTransfer> resultList = tagsDAO.getTagsByPrefix(prefix, 5);
+
+        return resultList != null ? resultList : Collections.emptyList();
     }
 
     private String getOrderField(String type){
+
+        if(type == null)
+            return "rating";
 
         switch (type){
 
@@ -122,5 +185,15 @@ public class TagsReadServiceImpl implements TagsReadService {
 
         }
 
+    }
+
+    @Value("${tags.small.show.size}")
+    public  void setSmallTagsSize(int size) {
+        smallTagsSize = size;
+    }
+
+    @Value("${tags.common.show.size}")
+    public  void setCommonTagSize(int size) {
+        commonTagSize = size;
     }
 }

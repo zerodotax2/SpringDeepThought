@@ -18,7 +18,7 @@
     <meta id="fileServerLocation" content="http://localhost:80"/>
     <meta id="_csrf_header" content="csrf"/>
     <meta id="_csrf" content="0"/>
-    <meta id="user_id" content="1"/>
+    <meta id="user_id" content="-1"/>
     <!--Top icon-->
     <link rel="shortcut icon" href="../../../resources/images/icon2.ico" type="image/x-icon"/>
     <meta charset="UTF-8">
@@ -45,6 +45,19 @@
                     <li id="questionElement"><a class="white-text" href="/questions">ВОПРОСЫ</a></li>
                     <li id="problemsElement"><a class="white-text" href="/problems">ЗАДАЧИ</a></li>
                     <li id="supportElement"><a class="white-text" href="/support">ПОМОЩЬ</a></li>
+                    <!--<li class="user-notifications">-->
+                        <!--<div class="action">-->
+                            <!--<svg role="img" xmlns="http://www.w3.org/2000/svg" fill="#EEEEEE" viewBox="0 0 448 512"><path d="M224 512c35.32 0 63.97-28.65 63.97-64H160.03c0 35.35 28.65 64 63.97 64zm215.39-149.71c-19.32-20.76-55.47-51.99-55.47-154.29 0-77.7-54.48-139.9-127.94-155.16V32c0-17.67-14.32-32-31.98-32s-31.98 14.33-31.98 32v20.84C118.56 68.1 64.08 130.3 64.08 208c0 102.3-36.15 133.53-55.47 154.29-6 6.45-8.66 14.16-8.61 21.71.11 16.4 12.98 32 32.1 32h383.8c19.12 0 32-15.6 32.1-32 .05-7.55-2.61-15.27-8.61-21.71z"></path></svg>-->
+                            <!--<div class="nums">10</div>-->
+                        <!--</div>-->
+                        <!--<div class="panel" style="display: none;">-->
+                            <!--<div class="loader">-->
+                                <!--<div class="lds-dual-ring"></div>-->
+                            <!--</div>-->
+                            <!--<div class="empty" style="display: none;">Нет уведомлений</div>-->
+                            <!--<div class="error" style="display: none;">Ошибка при загрузке уведомлений</div> <a href="/settings/user" class="more">Смотреть всё</a>                            <a href="/settings/user" class="more">Смотреть всё</a>-->
+                        <!--</div>-->
+                    <!--</li>-->
                     <!--<li class="user-account">-->
                         <!--<div class="user">-->
                             <!--<div class="info">-->
@@ -98,7 +111,7 @@
                         <img src="../../../resources/images/top_user.png"/>
                         <h4 class="white-text">Авторизация</h4>
                     </div>
-                    <form  method="post" action="/auth" class="container login_form">
+                    <form method="post" action="/auth" class="container login_form">
                         <div class="row">
                             <div class="input-field">
                                 <i class="prefix"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#adb5bd" d="M319.4 320.6L224 416l-95.4-95.4C57.1 323.7 0 382.2 0 454.4v9.6c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-9.6c0-72.2-57.1-130.7-128.6-133.8zM13.6 79.8l6.4 1.5v58.4c-7 4.2-12 11.5-12 20.3 0 8.4 4.6 15.4 11.1 19.7L3.5 242c-1.7 6.9 2.1 14 7.6 14h41.8c5.5 0 9.3-7.1 7.6-14l-15.6-62.3C51.4 175.4 56 168.4 56 160c0-8.8-5-16.1-12-20.3V87.1l66 15.9c-8.6 17.2-14 36.4-14 57 0 70.7 57.3 128 128 128s128-57.3 128-128c0-20.6-5.3-39.8-14-57l96.3-23.2c18.2-4.4 18.2-27.1 0-31.5l-190.4-46c-13-3.1-26.7-3.1-39.7 0L13.6 48.2c-18.1 4.4-18.1 27.2 0 31.6z"></path></svg></i>
@@ -117,7 +130,7 @@
                             <span style="display: none;" class="red-text text-lighten-2 error">Неправильный логин или пароль</span>
                         </div>
                         <div class="row sign-div">
-                            <input type="button" class="btn red z-depth-2" value="Войти"/>
+                            <input type="submit" class="btn red z-depth-2" value="Войти"/>
                         </div>
                         <div class="row">
                             <div class="col s12 center-align switch">

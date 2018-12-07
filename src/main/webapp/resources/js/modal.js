@@ -1,3 +1,4 @@
+'use strict';
 window.modal = {
     errorColor: '#e53935',
     infoColor: '#2196F3',
@@ -61,6 +62,9 @@ window.modal = {
             xhr.request({
                 path: path,
                 method: 'POST',
+                headers: {
+                    'Content-Type':'application/json'
+                },
                 content: JSON.stringify({
                     text: textArea.value.substring(0, 1000),
                     id: id || 0
@@ -73,18 +77,19 @@ window.modal = {
         modal.head.innerText = name;
         modal.show();
     },
-    customActions(){
+    customActions: function() {
         modal.actions.innerHTML = '';
-        Array.forEach(arguments, function (arg) {
-           modal.actions.appendChild(arg);
-        });
-    },
+        for (let i = 0; i < arguments.length; i++) {
+            modal.actions.appendChild(arguments[i]);
+        }
+    }
+    ,
     createDefaultButton: function (name, color) {
         let btn = document.createElement('div');
         btn.classList.add('action-btn');
         btn.innerText = name;
         btn.style.background = color;
-        btn.onclick = modal.close;
+        btn.addEventListener('click', modal.close);
         return btn;
     }
 };
@@ -95,12 +100,10 @@ document.addEventListener('DOMContentLoaded', function () {
    modal.m.style.display = 'none';
    modal.m.innerHTML =
        '        <div class="modal-window">' +
-       '            <div class="modal-head">' +
-       '            </div>' +
-       '            <div class="modal-content">' +
-       '            </div>' +
+       '            <div class="modal-head"></div>' +
+       '            <div class="modal-content"></div>' +
        '            <div class="actions">' +
-       '                <div class="action-btn accept">Ок</div>' +
+       '                <div class="action-btn accept">Ok</div>' +
        '            </div>' +
        '        </div>'; 
    document.body.appendChild(modal.m);
@@ -119,9 +122,8 @@ document.addEventListener('DOMContentLoaded', function () {
        modal.close();
     });
 
-    modal.acceptBtn  = document.createElement('div');
-    modal.acceptBtn.classList.add('action-btn', 'accept');
-    modal.acceptBtn.innerText = 'Ок';
+    modal.acceptBtn = modal.actions.querySelector('.accept');
+    modal.acceptBtn.innerHTML = 'Ок';
     modal.acceptBtn.addEventListener('click', function () {
         modal.close();
     });

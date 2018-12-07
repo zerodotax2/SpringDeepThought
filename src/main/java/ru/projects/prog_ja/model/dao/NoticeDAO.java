@@ -1,7 +1,7 @@
 package ru.projects.prog_ja.model.dao;
 
-import ru.projects.prog_ja.dto.smalls.SmallNoticeTransfer;
 import ru.projects.prog_ja.dto.NoticeType;
+import ru.projects.prog_ja.dto.smalls.SmallNoticeTransfer;
 
 import java.util.List;
 
@@ -24,4 +24,6 @@ public interface NoticeDAO {
     boolean unactivateNotice(long noticeId);
 
     boolean unactivateNotices(List<Long> notices);
+
+    boolean setWatchedNotices(long userId);
 }

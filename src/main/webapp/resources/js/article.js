@@ -1,4 +1,6 @@
+'use strict';
 const userId = document.getElementById('user_id').getAttribute('content'),
+    ownerId = document.getElementById('owner_id').getAttribute('content'),
     href = location.href,
     articleId = href.substring(href.lastIndexOf('/')+1, href.length);
 
@@ -17,17 +19,27 @@ function initRating() {
     function changeRate(rate) {
         if(voted){
             return;
+        }else if(ownerId === userId){
+            modal.error('Нельзя голосовать за свою статью');
+            return;
         }
         xhr.request({
             path: '/services/articles/rating',
             method: 'POST',
+            headers: {
+                'Content-Type':'application/json'
+            },
             content: JSON.stringify({
                 id: articleId,
                 rate: rate
             })
-        }, function (response) {
+        }, function (response, error, status) {
             if(response){
                 voted = true;
+                if(status === 208) {
+                    modal.info("Вы уже голосовали");
+                    return;
+                }
                 num.innerText = Number(num.innerText) + Number(rate);
             }
         })
@@ -43,7 +55,7 @@ function initComments() {
         commentTextArea = writer.querySelector('textarea'),
         commentLetterCounter = writer.querySelector('.counter span'),
         postButton = writer.querySelector('.post-comment'),
-        postError = writer.querySelector('.add-comment-error'),
+        postError = addCommentPanel.querySelector('.add-comment-error'),
         comments = document.querySelectorAll('.comment'),
         rateButtons = document.querySelectorAll('.comment .rate-comment');
     comment.writer = writer;
@@ -64,6 +76,9 @@ function initComments() {
         xhr.request({
             method: 'POST',
             path: '/services/articles/comments',
+            headers: {
+                'Content-Type':'application/json'
+            },
             content: JSON.stringify({
                 text: value.substring(0, 1000),
                 id: articleId
@@ -77,7 +92,7 @@ function initComments() {
                 div.setAttribute('user', newComment.user.id);
                 div.setAttribute('id', 'comment-'+newComment.id);
                 div.innerHTML = '<div class="left-side">' +
-                    '                            <img class="ava" src="'+appConf.fileServerLocation+newComment.user.userImage+'"/>' +
+                    '                            <img class="ava" src="'+'/'+newComment.user.userImage+'"/>' +
                     '                            <div class="rating">' +
                     '                                <svg  class="rate-comment" content="'+newComment.id+':1" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M288.662 352H31.338c-17.818 0-26.741-21.543-14.142-34.142l128.662-128.662c7.81-7.81 20.474-7.81 28.284 0l128.662 128.662c12.6 12.599 3.676 34.142-14.142 34.142z"></path></svg>' +
                     '                                <span class="rate">'+newComment.rating+'</span>' +
@@ -100,26 +115,26 @@ function initComments() {
                     '                                   </div>' +
                     '                              <div class="right"></div>' +
                     '                            </div>' +
-                    '                            <div class="comment-text">'+newComment.comment+'</div>' +
+                    '                            <div class="comment-text">'+newComment.text+'</div>' +
                     '                        </div>';
                 addCommentPanel.parentNode.insertBefore(div, addCommentPanel.nextSibling);
                 const rates = addCommentPanel.nextElementSibling.querySelectorAll('.rate-comment');
-                Array.forEach(rates, function (rate) {
-                    commentRate(rate);
-                })
+                for(let i = 0; i < rates.length; i++){
+                    commentRate(rates[i]);
+                }
             }else if(error){
                 postError.style.display = 'block';
             }
         });
     });
-    Array.forEach(rateButtons, function (rateButton) {
-        commentRate(rateButton);
-    });
-    Array.forEach(comments, function (comment) {
-        if(comment.getAttribute('user') === userId){
-            editComment(comment);
+    for (let i = 0; i < rateButtons.length; i++){
+        commentRate(rateButtons[i]);
+    }
+    for(let i = 0; i < comments.length; i++){
+        if(comments[i].getAttribute('user') === userId){
+            editComment(comments[i]);
         }
-    });
+    }
 }
 
     function editComment(comment) {
@@ -172,6 +187,9 @@ function initComments() {
                xhr.request({
                    path: '/services/articles/comments',
                    method: 'PUT',
+                   headers: {
+                       'Content-Type':'application/json'
+                   },
                    content: JSON.stringify({
                        id: commentId,
                        text: value
@@ -193,6 +211,9 @@ function initComments() {
                 xhr.request({
                     path: '/services/articles/comments',
                     method: 'DELETE',
+                    headers: {
+                        'Content-Type':'application/json'
+                    },
                     content: JSON.stringify({
                         id: commentId
                     })
@@ -216,16 +237,28 @@ function initComments() {
             let target = e.currentTarget,
                 content = target.getAttribute('content').split(':'),
                 commentId = content[0],
-                rate = content[1];
+                rate = content[1],
+                commentOwnerId = target.parentElement.parentElement.parentElement.getAttribute('user');
+            if(commentOwnerId === userId){
+                modal.error('Нельзя голосовать за свой комментарий');
+                return;
+            }
             xhr.request({
                 path: '/services/articles/comments/rating',
                 method: 'POST',
+                headers: {
+                    'Content-Type':'application/json'
+                },
                 content: JSON.stringify({
                     id: commentId,
                     rate: rate
                 })
-            }, function (response) {
+            }, function (response, error, status) {
                 if(response){
+                    if(status === 208){
+                        modal.info('Вы уже голосовали');
+                        return;
+                    }
                     let num = target.parentElement.querySelector('.rate');
                     num.innerText = Number(num.innerText) + Number(rate);
                 }

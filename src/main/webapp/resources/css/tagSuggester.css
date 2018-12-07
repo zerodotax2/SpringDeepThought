@@ -40,6 +40,9 @@
     margin: 0 4px !important;
     padding: 0 7px 0 7px !important;
 }
+.tags-view{
+    padding-bottom: 10px;
+}
 @media  (max-device-width: 600px){
     .tags .tags-input input{
         width: 100%;

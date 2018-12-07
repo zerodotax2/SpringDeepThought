@@ -1,12 +1,14 @@
 package ru.projects.prog_ja.dto.view.create;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 public class CreateArticleDTO {
 
     @NotNull
-    @Pattern( regexp = "^.+?\\.(png|gif|jpe?g)$")
+    @Pattern(regexp = "^.+?\\.(png|gif|jpe?g)$")
     private String smallImagePath;
 
     @NotNull
@@ -17,16 +19,14 @@ public class CreateArticleDTO {
     @Pattern( regexp = "^.+?\\.(png|gif|jpe?g)$")
     private String largeImagePath;
 
-    @Min(value = 10, message = "Минимальная длина заголовка - 10 символов")
-    @Max(value = 100, message = "Максимальная длина заголовка - 100 символов")
+    @Size(min = 10, max = 100)
     @NotNull(message = "Поле не может быть пустым")
-    @Pattern(regexp = "^[A-z|1-9|А-я]+$", message = "Заголовок может включать только следующие символы (A-z, А-я, 1-9)")
+    @Pattern(regexp = "^[A-z|0-9|А-я|\\s]+$", message = "Заголовок может включать только следующие символы (A-z, А-я, 1-9)")
     private String title;
 
-    @Min(value = 10, message = "Минимальная длина подзаголовка - 10 символов")
-    @Max(value = 100, message = "Максимальная длина подзаголовка - 100 символов")
+    @Size(min = 10, max = 100)
     @NotNull(message = "Поле не может быть пустым")
-    @Pattern(regexp = "^[A-z|1-9|А-я]+$", message = "Подзаголовок может включать только следующие символы (A-z, А-я, 1-9)")
+    @Pattern(regexp = "^[A-z|0-9|А-я|\\s]+$", message = "Подзаголовок может включать только следующие символы (A-z, А-я, 1-9)")
     private String subtitle;
 
     @NotNull(message = "Поле не может быть пустым")

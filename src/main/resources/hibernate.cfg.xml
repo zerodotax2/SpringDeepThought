@@ -14,7 +14,7 @@
     <property name="hibernate.connection.username">root</property>
     <property name="hibernate.connection.password">228322</property>
 
-    <property name="hbm2ddl.auto">update</property>
+    <property name="hbm2ddl.auto">validate</property>
 
     <!--На время разработки(показывает sql)-->
     <property name="show_sql">true</property>
@@ -38,24 +38,36 @@
       <mapping class="ru.projects.prog_ja.model.entity.questions.QuestionContent"/>
       <mapping class="ru.projects.prog_ja.model.entity.questions.Questions"/>
       <mapping class="ru.projects.prog_ja.model.entity.questions.QuestionsTags"/>
+      <mapping class="ru.projects.prog_ja.model.entity.questions.QuestionVoters"/>
+      <mapping class="ru.projects.prog_ja.model.entity.questions.AnswerVoters"/>
       <mapping class="ru.projects.prog_ja.model.entity.articles.ArticleContent"/>
       <mapping class="ru.projects.prog_ja.model.entity.articles.ArticleComments"/>
       <mapping class="ru.projects.prog_ja.model.entity.articles.ArticleInfo"/>
       <mapping class="ru.projects.prog_ja.model.entity.articles.ArticlesTags"/>
+      <mapping class="ru.projects.prog_ja.model.entity.articles.ArticleVoters"/>
+      <mapping class="ru.projects.prog_ja.model.entity.articles.ArticleCommentVoters"/>
       <mapping class="ru.projects.prog_ja.model.entity.user.LogInfo"/>
+      <mapping class="ru.projects.prog_ja.model.entity.user.SecuredToken"/>
       <mapping class="ru.projects.prog_ja.model.entity.user.UserInfo"/>
       <mapping class="ru.projects.prog_ja.model.entity.questions.Answer"/>
       <mapping class="ru.projects.prog_ja.model.entity.user.UserExtended"/>
       <mapping class="ru.projects.prog_ja.model.entity.user.UserInbox"/>
       <mapping class="ru.projects.prog_ja.model.entity.user.UsersTags"/>
       <mapping class="ru.projects.prog_ja.model.entity.user.UserCounter"/>
+      <mapping class="ru.projects.prog_ja.model.entity.user.UserRoles"/>
+      <mapping class="ru.projects.prog_ja.model.entity.user.ActivateTokens"/>
       <mapping class="ru.projects.prog_ja.model.entity.problems.Problem"/>
-      <mapping class="ru.projects.prog_ja.model.entity.problems.ProblemsUsers"/>
       <mapping class="ru.projects.prog_ja.model.entity.problems.ProblemContent"/>
+      <mapping class="ru.projects.prog_ja.model.entity.problems.ProblemCounter"/>
       <mapping class="ru.projects.prog_ja.model.entity.problems.ProblemsTags"/>
       <mapping class="ru.projects.prog_ja.model.entity.problems.ProblemSolution"/>
       <mapping class="ru.projects.prog_ja.model.entity.problems.ProblemComment"/>
+      <mapping class="ru.projects.prog_ja.model.entity.problems.ProblemFeedback"/>
       <mapping class="ru.projects.prog_ja.model.entity.problems.ProblemsSolvedUsers"/>
+      <mapping class="ru.projects.prog_ja.model.entity.problems.ProblemVoters"/>
+      <mapping class="ru.projects.prog_ja.model.entity.problems.ProblemCommentVoters"/>
+      <mapping class="ru.projects.prog_ja.model.entity.support.UserQuestion"/>
+      <mapping class="ru.projects.prog_ja.model.entity.support.UserForumAnswer"/>
 
 
       <!-- DB schema will be updated if needed -->

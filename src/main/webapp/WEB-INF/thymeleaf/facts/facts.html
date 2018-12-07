@@ -5,16 +5,19 @@
       th:charset="UTF-8">
 <head>
     <link rel="stylesheet" th:href="@{/resources/css/facts.css}"/>
+    <meta th:if="${specialView!=null}" id="special_sort" th:name="${specialView.name}" th:path="${specialView.path}">
     <title>Факты</title>
 </head>
 <body>
 
 <th:block layout:fragment="top-panel">
-    <div class="text-panel">
-        <h1>Факты</h1>
-        <h4 class="grey-text text-lighten-3">Интересные факты со всего мира</h4>
+    <div class="top-panel">
+        <div class="text-panel">
+            <h1>Факты</h1>
+            <h4 class="grey-text text-lighten-3">Интересные факты со всего мира</h4>
+        </div>
+        <a th:href="@{/facts/add}" class="create ">Добавить факт</a>
     </div>
-    <a th:href="@{/facts/add}" class="create ">Добавить факт</a>
 </th:block>
 
 <div layout:fragment="content">
@@ -55,16 +58,31 @@
                 </div>
             </div>
         </div>
+        <div th:if="${#lists.isEmpty(facts)}" class="col s12 no-content">
+            По вашему запросу ничего не найдено
+        </div>
         <div id="facts-container">
             <div th:each="fact : ${facts}" class="factElement z-depth-1-half hoverable">
                 <div class="content" th:text="${fact.text}">
                 </div>
                 <div class="tags">
-                    <a th:each="tag : ${fact.tags}" th:href="@{/tags/${tag.id}}" th:style="'background: '+${tag.color}+';'" class="chip" th:text="${tag.name}"></a>
+                    <a th:each="tag : ${fact.tags}" th:href="@{'/tags/'+${tag.id}}" th:style="'background: '+${tag.color}+';'" class="chip" th:text="${tag.name}"></a>
                 </div>
             </div>
         </div>
-
+        <div th:if="${pages.last > 1}" th:with="baseUrl=(${#request.getRequestURI()})" class="pagination col s12">
+            <div class="content">
+                <a th:if="${pages.current!=1}" th:href="@{${baseUrl}(page=${pages.current-1},type=${#request.getParameter('type')},sort=${#request.getParameter('sort')},q=${#request.getParameter('q')})}" class="previous elem act">Назад</a>
+                <div class="center">
+                    <a th:each="p:${#numbers.sequence(pages.first, pages.last)}" th:href="@{${baseUrl}(page=${p},type=${#request.getParameter('type')},sort=${#request.getParameter('sort')},q=${#request.getParameter('q')})}" th:class="'elem '+${p==pages.current?'active':''}" th:text="${p}"></a>
+                    <div th:if="${pages.current+2<pages.total}" class="all-pages">
+                        <span class="divide">...</span>
+                        <a th:href="@{${baseUrl}(page=${pages.total},type=${#request.getParameter('type')},sort=${#request.getParameter('sort')},q=${#request.getParameter('q')})}" class="elem" th:text="${pages.total}"></a>
+                    </div>
+                </div>
+                <a th:if="${pages.current!=total}" th:href="@{${baseUrl}(page=${pages.current+1},type=${#request.getParameter('type')},sort=${#request.getParameter('sort')},q=${#request.getParameter('q')})}" class="next elem act">Далее</a>
+            </div>
+        </div>
     </div>
 </div>
 

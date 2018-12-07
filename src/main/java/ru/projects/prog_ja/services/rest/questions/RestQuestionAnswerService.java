@@ -4,13 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.projects.prog_ja.dto.UserDTO;
+import ru.projects.prog_ja.dto.auth.UserDTO;
 import ru.projects.prog_ja.dto.commons.CommonAnswerTransfer;
 import ru.projects.prog_ja.dto.view.IDDto;
 import ru.projects.prog_ja.dto.view.RemoveDTO;
 import ru.projects.prog_ja.dto.view.create.CreateAnswerDTO;
 import ru.projects.prog_ja.dto.view.update.UpdateAnswerDTO;
 import ru.projects.prog_ja.dto.view.update.UpdateRatingDTO;
+import ru.projects.prog_ja.exceptions.RepeatVotedException;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.QuestionWriteService;
 import ru.projects.prog_ja.services.AbstractRestService;
 
@@ -29,7 +30,7 @@ public class RestQuestionAnswerService extends AbstractRestService {
 
     @PostMapping
     public ResponseEntity<?> addAnswer(@Valid @RequestBody CreateAnswerDTO createAnswerDT0, BindingResult bindingResult,
-                                       @SessionAttribute("user")UserDTO userDTO){
+                                       @SessionAttribute(name = "user", required = false)UserDTO userDTO){
         if(bindingResult.hasErrors())
             return badRequest();
 
@@ -47,7 +48,7 @@ public class RestQuestionAnswerService extends AbstractRestService {
 
     @PutMapping
     public ResponseEntity<?> updateAnswer(@Valid @RequestBody UpdateAnswerDTO updateAnswerDTO, BindingResult bindingResult,
-                                          @SessionAttribute("user") UserDTO userDTO){
+                                          @SessionAttribute(name = "user", required = false) UserDTO userDTO){
 
         if(bindingResult.hasErrors())
             return badRequest();
@@ -66,7 +67,7 @@ public class RestQuestionAnswerService extends AbstractRestService {
 
     @DeleteMapping
     public ResponseEntity<?> removeAnswer(@Valid @RequestBody RemoveDTO removeDTO, BindingResult bindingResult,
-                                          @SessionAttribute("user") UserDTO userDTO){
+                                          @SessionAttribute(name = "user", required = false) UserDTO userDTO){
 
         if(bindingResult.hasErrors())
             return badRequest();
@@ -84,16 +85,19 @@ public class RestQuestionAnswerService extends AbstractRestService {
     @RequestMapping(value = "/rating", method = RequestMethod.POST)
     public ResponseEntity<?> updateAnswerRating(@Valid @RequestBody UpdateRatingDTO updateRatingDTO,
                                                 BindingResult bindingResult,
-                                                @SessionAttribute("user") UserDTO userDTO){
+                                                @SessionAttribute(name = "user", required = false) UserDTO userDTO){
         if(bindingResult.hasErrors())
             return badRequest();
 
         if(userDTO == null || userDTO.getId() == -1)
             return accessDenied();
 
-        if(questionWriteService.updateAnswerRate(updateRatingDTO.getId(), updateRatingDTO.getRate(),
-                userDTO.getId())){
-            return ok();
+        try {
+            if(questionWriteService.updateAnswerRate(updateRatingDTO.getId(), updateRatingDTO.getRate(),
+                    userDTO.getId()))
+                return ok();
+        }catch (RepeatVotedException e){
+            return already();
         }
 
         return serverError();
@@ -101,7 +105,7 @@ public class RestQuestionAnswerService extends AbstractRestService {
 
     @RequestMapping(value = "/right", method = RequestMethod.POST)
     public ResponseEntity<?> setRightAnswer(@Valid @RequestBody IDDto idDto, BindingResult bindingResult,
-                                            @SessionAttribute("user") UserDTO userDTO){
+                                            @SessionAttribute(name = "user", required = false) UserDTO userDTO){
         if(bindingResult.hasErrors())
             return badRequest();
         if(userDTO == null || userDTO.getId() == -1)

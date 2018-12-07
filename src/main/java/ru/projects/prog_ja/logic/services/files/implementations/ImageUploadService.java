@@ -42,13 +42,15 @@ public class ImageUploadService extends FileResponseMessages implements FileServ
             }
             byte[] image = os.toByteArray();
 
+
             for(FileSize fileSize : fileSizes){
 
                 StringBuilder sb = new StringBuilder();
                 sb.append(name).append("-").append(fileSize.getName()).append(ext);
 
-                FileOutputStream fileOutputStream = new FileOutputStream(sb.insert(0, uploadPath).toString());
+                FileOutputStream fileOutputStream = new FileOutputStream(uploadPath + sb.toString());
                 byte[] convertedImage = imageConverter.convertAndGet(image, fileSize.getWidth(), fileSize.getHeight());
+
 
                 fileOutputStream.write(convertedImage);
                 fileOutputStream.flush();
@@ -56,7 +58,6 @@ public class ImageUploadService extends FileResponseMessages implements FileServ
 
                 generator.write(fileSize.getName(), sb.toString());
             }
-
 
         }catch (IOException e){
             return serverError();

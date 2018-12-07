@@ -1,3 +1,4 @@
+'use strict';
 let sending = false;
 function  initRestore() {
     const email = document.getElementById('email'),
@@ -10,14 +11,18 @@ function  initRestore() {
         if(value.length < 5 || value.length > 50){
             modal.error('Неверный размер E-mail');
             return;
-        }else if(!value.match(/^[A-z|0-9|_]+?@[A-z]+?\.[A-z]+?$/)){
+        }else if(!value.match(/^[A-z|0-9|_|.]+?@[A-z]+?\.[A-z]+?$/)){
             modal.error('Неверный формат E-mail');
             return;
         }
         sending = true;
+        modal.load('Отправляется письмо');
         xhr.request({
             path: '/services/restore',
             method: 'POST',
+            headers: {
+                'Content-Type':'application/json'
+            },
             content: JSON.stringify({
                 email: value
             })
@@ -31,7 +36,7 @@ function  initRestore() {
                 modal.customActions(ok);
                 modal.head.style.background = modal.loadColor;
                 modal.head.innerText = 'Успешно';
-                modal.content.innerHTML = 'Письмо было отправлено';
+                modal.content.innerHTML = 'Письмо было отправлено на ваш email';
                 modal.show();
             }else if(error){
                 modal.error('Не удалось отправить письмо, попробуйте позже');
@@ -39,7 +44,6 @@ function  initRestore() {
             }
             sending = false;
         });
-        modal.load('Отправляется письмо');
     });
 }
 

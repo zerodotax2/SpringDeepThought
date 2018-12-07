@@ -1,0 +1,66 @@
+@charset "UTF-8";
+//colors
+@import "materialize/color-variables";
+
+//variables
+@import "materialize/variables";
+
+@import "materialize/global";
+@import "materialize/navbar";
+@import "materialize/sidenav";
+@import "materialize/modal";
+@import "materialize/dropdown";
+@import "materialize/chips";
+@import "materialize/cards";
+@import "materialize/forms/forms";
+@import "materialize/buttons";
+@import "materialize/grid";
+
+
+
+.sidenav li{
+    width: 100%;
+}
+.sidenav {
+    width: 80%;
+}
+.dropdown-content{
+    margin-top: 30px;
+    width: 180px;
+}
+.dropdown-content li a{
+    font-size: 15px;
+    font-weight: 100;
+}
+
+.tags-line{
+    height: 40px;
+}
+.tags-container{
+    background-color: white;
+    height: inherit;
+    border-radius: 0 0 10px 10px;
+}
+
+.left-divider{
+    border-left: 2px white solid;
+    height: 20px;
+}
+
+#reg-btn{
+    border: 2px #4CAF50 solid;
+    line-height: 30px;
+    border-radius: 5px;
+}
+
+#reg-btn:hover{
+    background-color: #4CAF50;
+}
+
+#log-btn{
+    border: 3px #f57c00 solid;
+    line-height: 30px;
+}
+#log-btn:hover{
+    background-color: rgba(255, 255, 255, 0) !important;
+}

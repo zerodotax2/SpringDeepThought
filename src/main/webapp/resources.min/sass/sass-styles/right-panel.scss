@@ -1,0 +1,25 @@
+@charset "UTF-8";
+//colors
+@import "materialize/color-variables";
+
+//variables
+@import "materialize/variables";
+
+.popular_item{
+    padding: 0 -20px 0 10px;
+    font-weight: 100;
+}
+.popular_item a{
+    font-weight: 100;
+    color: black;
+    font-size: 14px;
+}
+.fact{
+    border-left: 5px solid #ee6e73;
+    border-right: 5px solid #ee6e73;
+    border-radius: 5px;
+}
+
+.popularity{
+    border-radius: 5px;
+}

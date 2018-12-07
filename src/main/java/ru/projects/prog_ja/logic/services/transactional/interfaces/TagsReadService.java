@@ -4,6 +4,7 @@ package ru.projects.prog_ja.logic.services.transactional.interfaces;
 import ru.projects.prog_ja.dto.commons.CommonTagTransfer;
 import ru.projects.prog_ja.dto.full.FullTagTransfer;
 import ru.projects.prog_ja.dto.smalls.SmallTagTransfer;
+import ru.projects.prog_ja.dto.view.PageableContainer;
 
 import java.util.List;
 
@@ -11,17 +12,23 @@ public interface TagsReadService {
 
     List<SmallTagTransfer> getPopularTags();
 
-    List<CommonTagTransfer> getCommonTags(int start, String type, String sort);
+    String getName(long tagId);
 
-    List<CommonTagTransfer> findCommonTags(int start, String search, String type, String sort);
+    PageableContainer getCommonTags(String page, String type, String sort);
 
-    List<SmallTagTransfer> getSmallTags(int start, String type, String sort);
+    PageableContainer findCommonTags(String page, String search, String type, String sort);
 
-    List<SmallTagTransfer> findSmallTags(int start, String search, String type, String sort);
+    PageableContainer getSmallTags(String page, String type, String sort);
+
+    PageableContainer findSmallTags(String page, String search, String type, String sort);
 
     FullTagTransfer getFullTag(long id);
 
-    List<CommonTagTransfer> getTags(int start, String query, String type, String sort);
+    PageableContainer getTags(String page, String query, String type, String sort);
 
     CommonTagTransfer getCommonTag(long id);
+
+    List<SmallTagTransfer> getTagsByPrefix(String prefix);
+
+    PageableContainer getTagsByUser(String page, String size, long userId, String q, String type, String sort);
 }

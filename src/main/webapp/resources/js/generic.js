@@ -1,20 +1,26 @@
-
+'use strict';
 window.appConf = {
     fileServerLocation: document.getElementById('fileServerLocation').getAttribute('content'),
     csrfHeader: document.getElementById('_csrf_header').getAttribute('content'),
-    csrfToken: document.getElementById('_csrf').getAttribute('content')
+    csrfToken: document.getElementById('_csrf').getAttribute('content'),
+    user_id: document.getElementById('user_id').getAttribute('content')
 };
 const tagsCache = {},
     tagPopup = document.createElement('div'),
-    chips = document.querySelectorAll('.chip');
+    chips = document.querySelectorAll('.chip'),
+    main = document.getElementById("main") || document.querySelector(".main");
 let timer = null;
 function initChips(){
 
-    tagPopup.id = 'tagPopup';
-    tagPopup.style.display = 'none';
-    document.body.appendChild(tagPopup);
+    if(main === null)
+	    return;
 
-    Array.forEach(chips, function (chip) {
+    tagPopup.setAttribute('id', 'tag-popup');
+    tagPopup.style.display = 'none';
+    main.appendChild(tagPopup);
+
+    for(let i = 0; i < chips.length; i++) {
+        let chip = chips[i];
         chip.addEventListener("mouseenter", function (event) {
             clearInterval(timer);
 
@@ -31,9 +37,8 @@ function initChips(){
         chip.addEventListener("mouseout", function () {
             tagPopup.style.display = 'none';
             tagPopup.style.opacity = '0';
-        })
-    });
-
+        });
+    }
 }
 
 function loadTag(tagID, chip) {
@@ -163,5 +168,15 @@ window.delete_get = function(parameter){
 
     location.search = query;
 };
+
+window.construct_get = function(params){
+
+    let query = "?", param_names = Object.keys(params);
+    for(let i = 0; i < param_names.length; i++) {
+       query += "&"+param_names[i]+"="+params[param_names[i]];
+    }
+
+    return query;
+}
 
 initChips();

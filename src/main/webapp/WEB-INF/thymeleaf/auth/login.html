@@ -34,12 +34,12 @@
                         <span th:style="'display: '+${(param.error!=null)and(param.error[0]=='true')? 'block' : 'none'}+';'" class="red-text text-lighten-2 error">Неправильный логин или пароль</span>
                     </div>
                     <div class="row sign-div">
-                        <input type="button" class="btn red z-depth-2" value="Войти"/>
+                        <input type="submit" class="btn red z-depth-2" value="Войти"/>
                     </div>
                     <div class="row">
                         <div class="col s12 center-align switch">
                             <label>
-                                <input type="checkbox" name="remember-me" class="" checked="checked" />
+                                <input type="checkbox" name="remember" class="" checked="checked" />
                                 <span>Запомнить меня</span>
                             </label>
                         </div>

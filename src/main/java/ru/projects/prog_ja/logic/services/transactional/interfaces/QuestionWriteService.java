@@ -2,7 +2,7 @@ package ru.projects.prog_ja.logic.services.transactional.interfaces;
 
 import ru.projects.prog_ja.dto.commons.CommonAnswerTransfer;
 import ru.projects.prog_ja.dto.full.FullQuestionTransfer;
-import ru.projects.prog_ja.exceptions.BadRequestException;
+import ru.projects.prog_ja.exceptions.RepeatVotedException;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public interface QuestionWriteService {
 
     boolean deleteQuestion(long id, long userId);
 
-    boolean updateQuestionRate(long questionId, int rate, long userId);
+    boolean updateQuestionRate(long questionId, int rate, long userId) throws RepeatVotedException;
 
     CommonAnswerTransfer addAnswer(long questionId, String htmlContent, long userId);
 
@@ -24,5 +24,5 @@ public interface QuestionWriteService {
 
     boolean deleteAnswer(long id, long userId) ;
 
-    boolean updateAnswerRate(long answerId, int rate, long userId) ;
+    boolean updateAnswerRate(long answerId, int rate, long userId) throws RepeatVotedException;
 }

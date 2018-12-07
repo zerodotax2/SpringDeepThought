@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,7 +29,6 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/services/nav")
 @Scope("singleton")
-@EnableScheduling
 public class NavigationPanelController {
 
     /**
@@ -64,7 +62,7 @@ public class NavigationPanelController {
     @PostConstruct
     public void init(){
 
-        List<SmallArticleTransfer> popularArticlesTemp = articleReadService.getPopularArticles(0);
+        List<SmallArticleTransfer> popularArticlesTemp = articleReadService.getPopularArticles();
         if(popularArticlesTemp != null){
             this.popularArticles = popularArticlesTemp;
         }
@@ -74,7 +72,8 @@ public class NavigationPanelController {
             this.popularTags = popularTagsTemp;
         }
 
-        List<SmallUserTransfer> popularUsersTemp = userReadService.getSmallUsers(0, "rating", "1");
+        List<SmallUserTransfer> popularUsersTemp
+                = userReadService.getSmallUsers("1", "rating", "1").getList();
         if(popularUsersTemp != null){
             this.popularUsers = popularUsersTemp;
         }

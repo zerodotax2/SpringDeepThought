@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html layout:decorate="~{templates/simple_layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:charset="UTF-8">
+<head>
+    <title>Аккаунт подтверждён</title>
+    <link rel="stylesheet" th:href="@{/resources/css/activated.css}"/>
+</head>
+<body>
+
+    <div layout:fragment="content">
+        <div class="panel">
+            <div class="header">
+                Ваша регистрация успешно закончена
+            </div>
+            <div class="sign">
+                <a th:href="@{/login}">Войти</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

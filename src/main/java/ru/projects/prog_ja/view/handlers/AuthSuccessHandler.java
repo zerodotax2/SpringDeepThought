@@ -4,8 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import ru.projects.prog_ja.dto.UserDTO;
-import ru.projects.prog_ja.logic.services.transactional.interfaces.UserReadService;
+import ru.projects.prog_ja.dto.Role;
+import ru.projects.prog_ja.dto.auth.UserDTO;
+import ru.projects.prog_ja.logic.services.transactional.interfaces.AuthService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,11 +18,11 @@ import java.io.IOException;
 @Component
 public class AuthSuccessHandler implements AuthenticationSuccessHandler {
 
-    private UserReadService userReadService;
+    private final AuthService authService;
 
-
-    public AuthSuccessHandler(@Autowired UserReadService userReadService){
-        this.userReadService = userReadService;
+    @Autowired
+    public AuthSuccessHandler(AuthService authService){
+        this.authService = authService;
     }
 
     /**
@@ -34,24 +35,25 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
 
         String login = authentication.getName();
 
-        UserDTO userTransfer = userReadService.getUserByLogin(login);
+        UserDTO userTransfer = authService.getUserByLogin(login);
         if(userTransfer == null){
             authentication.setAuthenticated(false);
             httpServletResponse.sendRedirect("/login?error=true");
             return;
         }
 
-        /**
-         * Также при авторизации добавляем к пользователю секретный токен
-         * */
-        if(!userReadService.createUserToken(userTransfer.getId(), httpServletResponse)){
-            authentication.setAuthenticated(false);
-            httpServletResponse.sendRedirect("/login?error=true");
+        httpServletRequest.getSession().setAttribute("user", userTransfer);
+        if(userTransfer.getRole() == Role.ROLE_NONACTIVE) {
+            httpServletResponse.sendRedirect("/account/nonactive");
             return;
         }
 
-        httpServletRequest.getSession().setAttribute("user", userTransfer);
-        httpServletResponse.sendRedirect("/articles");
+        String path = httpServletRequest.getRequestURL().toString();
+        if(path.contains("auth"))
+            httpServletResponse.sendRedirect("/articles");
+        else
+            httpServletResponse.sendRedirect(path);
     }
+
 
 }

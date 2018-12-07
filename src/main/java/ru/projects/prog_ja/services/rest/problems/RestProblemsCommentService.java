@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.projects.prog_ja.dto.UserDTO;
+import ru.projects.prog_ja.dto.auth.UserDTO;
 import ru.projects.prog_ja.dto.commons.CommonCommentTransfer;
-import ru.projects.prog_ja.dto.view.FeedbackDTO;
 import ru.projects.prog_ja.dto.view.RemoveDTO;
 import ru.projects.prog_ja.dto.view.create.CreateCommentDTO;
 import ru.projects.prog_ja.dto.view.update.UpdateRatingDTO;
+import ru.projects.prog_ja.exceptions.RepeatVotedException;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.ProblemReadService;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.ProblemWriteService;
 import ru.projects.prog_ja.services.AbstractRestService;
@@ -32,7 +32,7 @@ public class RestProblemsCommentService extends AbstractRestService {
 
     @PostMapping
     public ResponseEntity<?> postComment(@Valid @RequestBody CreateCommentDTO createCommentDTO, BindingResult bindingResult,
-                                         @SessionAttribute UserDTO userDTO){
+                                         @SessionAttribute(name = "user", required = false) UserDTO userDTO){
         if(bindingResult.hasErrors())
             return badRequest();
         if(userDTO == null || userDTO.getId() == -1){
@@ -48,7 +48,7 @@ public class RestProblemsCommentService extends AbstractRestService {
 
     @DeleteMapping
     public ResponseEntity<?> removeComment(@Valid @RequestBody RemoveDTO removeDTO, BindingResult bindingResult,
-                                           @SessionAttribute UserDTO userDTO){
+                                           @SessionAttribute(name = "user", required = false) UserDTO userDTO){
         if(bindingResult.hasErrors())
             return badRequest();
         if(userDTO == null || userDTO.getId() == -1)
@@ -62,7 +62,7 @@ public class RestProblemsCommentService extends AbstractRestService {
 
     @PutMapping
     public ResponseEntity<?> updateComment(@Valid @RequestBody CreateCommentDTO createCommentDTO, BindingResult bindingResult,
-                                           @SessionAttribute UserDTO userDTO){
+                                           @SessionAttribute(name = "user", required = false) UserDTO userDTO){
         if(bindingResult.hasErrors())
             return badRequest();
         if(userDTO == null || userDTO.getId() == -1)
@@ -76,31 +76,20 @@ public class RestProblemsCommentService extends AbstractRestService {
 
     @PostMapping("/rating")
     public ResponseEntity<?> updateRating(@Valid @RequestBody UpdateRatingDTO updateRatingDTO, BindingResult bindingResult,
-                                          @SessionAttribute("user") UserDTO userDTO){
+                                          @SessionAttribute(name = "user", required = false) UserDTO userDTO){
         if(bindingResult.hasErrors())
             return badRequest();
         if(userDTO == null || userDTO.getId() == -1)
             return accessDenied();
 
-        if(problemWriteService.updateCommentRate(updateRatingDTO.getId(), updateRatingDTO.getRate(),
-                 userDTO.getId()))
-            return ok();
-
-
-        return serverError();
-    }
-
-    @PostMapping("/feedback")
-    public ResponseEntity<?> sendFeedback(@Valid @RequestBody FeedbackDTO feedbackDTO, BindingResult bindingResult,
-                                          @SessionAttribute("user") UserDTO userDTO){
-        if(bindingResult.hasErrors())
-            return badRequest();
-        if(userDTO == null || userDTO.getId() == -1)
-            return accessDenied();
-
-        if(problemWriteService.sendFeedback(feedbackDTO.getId(),feedbackDTO.getText(), userDTO.getId())){
-            return ok();
+        try {
+            if(problemWriteService.updateCommentRate(updateRatingDTO.getId(), updateRatingDTO.getRate(),
+                    userDTO.getId()))
+                return ok();
+        }catch (RepeatVotedException e){
+            return already();
         }
+
 
         return serverError();
     }

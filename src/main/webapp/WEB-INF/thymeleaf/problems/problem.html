@@ -4,9 +4,11 @@
         layout:decorate="~{templates/simple_layout}"
         th:charset="UTF-8">
 <head>
-    <title th:title="'Задача | '+${problem.title}"></title>
+    <title th:text="'Задача | '+${fullProblemDTO.title}"></title>
     <link rel="stylesheet" th:href="@{/resources/css/problem.css}"/>
-    <meta id="user_id" th:content="${user==null?-1:user.id}"/>
+    <meta id="user_id" th:content="${session.user==null?-1:session.user.id}"/>
+    <meta id="owner_id" th:content="${fullProblemDTO.user.id}"/>
+    <meta id="problem_id" th:content="${fullProblemDTO.id}"/>
 </head>
 <body>
 
@@ -17,12 +19,12 @@
             <div class="problem-header col s12">
                 <div class="left">
                     <div class="title grey-text text-darken-2" th:text="${fullProblemDTO.title}"></div>
-                    <a th:if="${user!=null && user.id==fullProblemDTO.user.id}" class="edit-problem" th:href="@{/problems/${fullProblemDTO.id}/edit}">
+                    <a th:if="${session.user!=null && session.user.id==fullProblemDTO.user.id}" class="edit-problem" th:href="@{'/problems/'+${fullProblemDTO.id}+'/edit'}">
                         <svg role="img" xmlns="http://www.w3.org/2000/svg" fill="#adb5bd" viewBox="0 0 512 512"><path d="M290.74 93.24l128.02 128.02-277.99 277.99-114.14 12.6C11.35 513.54-1.56 500.62.14 485.34l12.7-114.22 277.9-277.88zm207.2-19.06l-60.11-60.11c-18.75-18.75-49.16-18.75-67.91 0l-56.55 56.55 128.02 128.02 56.55-56.55c18.75-18.76 18.75-49.16 0-67.91z"></path></svg>
                     </a>
                 </div>
                 <div class="actions">
-                    <a th:href="@{/problems/${fullProblemDTO.id}/solution}" class="solution">Решение</a>
+                    <a th:href="@{'/problems/'+${fullProblemDTO.id}+'/solution'}" class="solution">Решение</a>
                     <div class="rate-line hoverable z-depth-3">
                         <div class="rate-elem">
                             <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#4CAF50" d="M104 224H24c-13.255 0-24 10.745-24 24v240c0 13.255 10.745 24 24 24h80c13.255 0 24-10.745 24-24V248c0-13.255-10.745-24-24-24zM64 472c-13.255 0-24-10.745-24-24s10.745-24 24-24 24 10.745 24 24-10.745 24-24 24zM384 81.452c0 42.416-25.97 66.208-33.277 94.548h101.723c33.397 0 59.397 27.746 59.553 58.098.084 17.938-7.546 37.249-19.439 49.197l-.11.11c9.836 23.337 8.237 56.037-9.308 79.469 8.681 25.895-.069 57.704-16.382 74.757 4.298 17.598 2.244 32.575-6.148 44.632C440.202 511.587 389.616 512 346.839 512l-2.845-.001c-48.287-.017-87.806-17.598-119.56-31.725-15.957-7.099-36.821-15.887-52.651-16.178-6.54-.12-11.783-5.457-11.783-11.998v-213.77c0-3.2 1.282-6.271 3.558-8.521 39.614-39.144 56.648-80.587 89.117-113.111 14.804-14.832 20.188-37.236 25.393-58.902C282.515 39.293 291.817 0 312 0c24 0 72 8 72 81.452z"></path></svg>
@@ -50,7 +52,7 @@
         <div class="row">
             <div class="col s12">
                 <div class="tags">
-                    <a th:each="tag : ${fullProblemDTO.tags}" th:href="@{/tags/${tag.id}}" th:style="'background: '+${tag.color}+';'" class="chip" th:text="${tag.name}"></a>
+                    <a th:each="tag : ${fullProblemDTO.tags}" th:href="@{'/tags/'+${tag.id}}" th:style="'background: '+${tag.color}+';'" class="chip" th:text="${tag.name}"></a>
                 </div>
             </div>
         </div>

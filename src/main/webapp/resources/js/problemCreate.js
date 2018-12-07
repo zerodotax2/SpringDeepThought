@@ -1,3 +1,4 @@
+'use strict';
 const editors = {
     quillOptions: {
         theme: 'bubble',
@@ -48,11 +49,14 @@ function initIfEdit() {
         problemEdit = document.getElementById('problem_edit'),
         answerEdit = document.getElementById('answer_edit');
 
+    inputs.problemId = document.getElementById("problem_id").getAttribute("content");
+
     inputs.difficultSpan.innerText = difficultEdit.innerText;
     selectDifficult.difficult = difficultEdit.getAttribute('content');
     inputs.titleInput.value = titleEdit.innerText;
-    Array.forEach(tagsEditChilds, function (tag) {
-        let selectedTag = document.createElement('div'),
+    for(let i = 0; i < tagsEditChilds.length; i++){
+        let tag = tagsEditChilds[i],
+            selectedTag = document.createElement('div'),
             name = tag.getAttribute('name'),
             color = tag.getAttribute('color'),
             id = tag.getAttribute('content');
@@ -61,10 +65,10 @@ function initIfEdit() {
         selectedTag.innerText = name;
         selectedTag.style.color = '#ffffff';
         selectedTag.setAttribute('content', id);
-        selectedTag.onclick = deleteTagOnClick;
+        selectedTag.addEventListener('click',  deleteTagOnClick);
         tags.tagsCount[id] = 1;
         tags.tagsInputContainer.insertBefore(selectedTag, tags.tagsInputContainer.lastElementChild);
-    });
+    }
     upPlaceholder();
     inputs.qlProblemEditor.innerHTML = problemEdit.innerHTML.trim();
     inputs.answerInput.value = answerEdit.innerText.trim();
@@ -85,8 +89,9 @@ function initEditors() {
     editors.currentSelector = editors.panelSelectors[0];
     inputs.qlProblemEditor = document.querySelector('#problem-panel .ql-editor');
 
-    Array.forEach(editors.panelSelectors, function (selector) {
-        selector.addEventListener('click', function (e) {
+    let panelSelectors = editors.panelSelectors;
+    for(let i = 0; i < panelSelectors.length; i++) {
+        panelSelectors[i].addEventListener('click', function (e) {
             let current = editors.currentSelector,
                 target = e.currentTarget;
             document.getElementById(current.getAttribute('content')).style.display = 'none';
@@ -95,13 +100,13 @@ function initEditors() {
             target.classList.add('active');
             editors.currentSelector = target;
         })
-    });
+    };
     editors.panelSelectors[1].addEventListener('click', initSolutionEditor);
     function initSolutionEditor() {
         initQuillEditor(editors.solutionEditor);
+        inputs.qlSolutionEditor = document.querySelector('#solution-panel .ql-editor');
         if(inputs.edit){
             let solutionEdit = document.getElementById('solution_edit');
-            inputs.qlSolutionEditor = document.querySelector('#solution-panel .ql-editor');
             inputs.qlSolutionEditor.innerHTML = solutionEdit.innerHTML.trim();
             solutionEdit.parentNode.removeChild(solutionEdit);
         }
@@ -112,12 +117,13 @@ function initDifficultSelect() {
     selectDifficult.selectTitle.addEventListener('click', function () {
         selectDifficult.selectContent.style.display = 'block';
     });
-    Array.forEach(selectDifficult.options, function (current) {
-        current.addEventListener('click', function (e) {
+    let difficultOptions = selectDifficult.options;
+    for(let i = 0; i < difficultOptions.length; i++){
+        difficultOptions[i].addEventListener('click', function (e) {
             selectDifficult.difficult = e.currentTarget.getAttribute('content');
             selectDifficult.selectTitleSpan.innerText = e.currentTarget.innerText;
         });
-    });
+    }
     document.addEventListener('click', function () {
         selectDifficult.selectContent.style.display = 'none';
     }, true);
@@ -164,6 +170,7 @@ function initCreator(){
             solutionContent: inputs.qlSolutionEditor.innerHTML,
             answer: answer
         };
+
         if(!inputs.edit){
             createProblem(problem);
         }else{
@@ -173,36 +180,42 @@ function initCreator(){
 }
 
     function createProblem(problem){
+        modal.load('Идёт создание задачи...');
         xhr.request({
             path: '/services/problems',
             method: 'POST',
+            headers: {
+                'Content-Type':'application/json'
+            },
             content: JSON.stringify(problem)
         }, function (response, error) {
             if(response){
                 let obj = JSON.parse(response);
-                location.href = 'http://localhost:8080/problems/' + obj.id;
+                location.href = 'http://localhost/problems/' + obj.id;
             }if(error){
                 modal.error('Не удалось создать новую задачу');
                 creating = false;
             }
         });
-        modal.load('Идёт создание задачи...')
     }
     function updateProblem(problem){
+        problem.problemId = inputs.problemId;
+        modal.load('Идёт обновление задачи...');
         xhr.request({
             path: '/services/problems',
             method: 'PUT',
+            headers: {
+                'Content-Type':'application/json'
+            },
             content: JSON.stringify(problem)
         }, function (response, error) {
             if(response){
-                let obj = JSON.parse(response);
-                location.href = 'http://localhost:8080/problems/' + obj.id;
+                location.href = 'http://localhost:80/problems/' + inputs.problemId;
             }if(error){
                 modal.error('Не удалось обновить задачу');
                 creating = false;
             }
         });
-        modal.load('Идёт обновление задачи...');
     }
 
 initTags();

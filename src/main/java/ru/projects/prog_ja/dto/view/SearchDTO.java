@@ -8,7 +8,7 @@ public class SearchDTO {
 
     private int start = 0;
 
-    @Pattern(regexp = "^[A-z | А-я | 1-9]+$")
+    @Pattern(regexp = "^[А-я| |0-9|A-z|\\-|_]+$")
     @Size(min = 1, max = 100)
     private String search;
 

@@ -1,10 +1,9 @@
 package ru.projects.prog_ja.model.dao;
 
-import ru.projects.prog_ja.dto.UserDTO;
 import ru.projects.prog_ja.dto.commons.CommonUserTransfer;
+import ru.projects.prog_ja.dto.dao.PageableEntity;
 import ru.projects.prog_ja.dto.full.FullUserTransfer;
-import ru.projects.prog_ja.dto.smalls.SmallUserTransfer;
-import ru.projects.prog_ja.model.entity.user.SecuredToken;
+import ru.projects.prog_ja.dto.smalls.SmallTagTransfer;
 
 import java.sql.Date;
 import java.util.List;
@@ -36,22 +35,22 @@ public interface UserDAO {
     /**
      * @return small users founded by this search string
      * */
-    List<SmallUserTransfer> findUsers(int start, int size, String search, String type, int sort);
+    PageableEntity findUsers(int start, int size, String search, String type, int sort);
 
     /**
      * @return common users founded by this search string
      * */
-    List<CommonUserTransfer> findCommonUsers(int start, int size, String search, String type, int sort);
+    PageableEntity findCommonUsers(int start, int size, String search, String type, int sort);
 
-    List<SmallUserTransfer> getSmallUsers(int start, int size, String type,int sort);
+    PageableEntity getSmallUsers(int start, int size, String type,int sort);
 
-    List<CommonUserTransfer> getCommonUsers(int start, int size, String type, int sort);
+    PageableEntity getCommonUsers(int start, int size, String type, int sort);
 
-    List<SmallUserTransfer> getModers(int start, int size, String orderField, int sort);
+    PageableEntity getModers(int start, int size, String orderField, int sort);
 
-    List<SmallUserTransfer> findModers(int start,  int size, String query, String orderField, int sort);
+    PageableEntity findModers(int start,  int size, String query, String orderField, int sort);
 
-    List<SmallUserTransfer> getSmallUsersByTag(int start, int size, long tagID, String orderField, int sort);
+    PageableEntity getSmallUsersByTag(int start, int size, long tagID, String query, String orderField, int sort);
     /**
      * delete user with
      * @param  id
@@ -82,6 +81,14 @@ public interface UserDAO {
     boolean updateInterests(long id, List<Long> tags);
 
     boolean updateBirthdate(long id, Date date);
+
+    boolean updateUserRate(long userId, int rate);
+
+    String getUsername(long articleId);
+
+    List<Long> getTagsByUser(long userId);
+
+    List<SmallTagTransfer> getUserInterests(long userId);
 
     long getUsersNum();
 }

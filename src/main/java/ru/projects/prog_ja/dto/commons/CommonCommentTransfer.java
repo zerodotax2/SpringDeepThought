@@ -2,6 +2,7 @@ package ru.projects.prog_ja.dto.commons;
 
 import ru.projects.prog_ja.dto.smalls.SmallUserTransfer;
 
+import javax.json.bind.annotation.JsonbDateFormat;
 import java.util.Date;
 
 public class CommonCommentTransfer implements Comparable<CommonCommentTransfer>{
@@ -9,6 +10,8 @@ public class CommonCommentTransfer implements Comparable<CommonCommentTransfer>{
     private long id;
     private String text;
     private SmallUserTransfer user;
+
+    @JsonbDateFormat(value = "dd-MM-yy в HH:mm")
     private Date createDate;
     private long rating;
 
@@ -42,14 +45,6 @@ public class CommonCommentTransfer implements Comparable<CommonCommentTransfer>{
         this.id = id;
     }
 
-    public String getComment() {
-        return text;
-    }
-
-    public void setComment(String text) {
-        this.text = text;
-    }
-
     public SmallUserTransfer getUser() {
         return user;
     }
@@ -72,5 +67,13 @@ public class CommonCommentTransfer implements Comparable<CommonCommentTransfer>{
 
     public void setRating(long rating) {
         this.rating = rating;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }

@@ -1,5 +1,6 @@
 package ru.projects.prog_ja.model.entity.support;
 
+import org.hibernate.annotations.Type;
 import ru.projects.prog_ja.model.entity.user.UserInfo;
 
 import javax.persistence.*;
@@ -19,10 +20,15 @@ public class UserForumAnswer {
     private UserInfo user;
 
     @Column(name = "text", nullable = false)
+    @Type(type = "org.hibernate.type.TextType")
     private String text;
 
     @Column(name = "createDate", nullable = false)
     private Date createDate;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "user_question_id", foreignKey = @ForeignKey(name = "user_forum_question_fk"), nullable = false, unique = true)
+    private UserQuestion forumQuestion;
 
     public UserForumAnswer() {
     }
@@ -62,5 +68,13 @@ public class UserForumAnswer {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public UserQuestion getForumQuestion() {
+        return forumQuestion;
+    }
+
+    public void setForumQuestion(UserQuestion forumQuestion) {
+        this.forumQuestion = forumQuestion;
     }
 }

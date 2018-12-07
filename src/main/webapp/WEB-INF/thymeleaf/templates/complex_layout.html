@@ -8,6 +8,7 @@
     <th:block th:replace="templates/meta :: headStyles"/>
     <link rel="stylesheet" th:href="@{/resources/css/right-panel.css}"/>
     <link rel="stylesheet" th:href="@{/resources/css/function_panel.css}"/>
+    <link rel="stylesheet" th:href="@{/resources/css/entity_pages.css}"/>
 </head>
 <body>
 
@@ -31,7 +32,7 @@
     <div th:replace="templates/footer :: footer"></div>
 
     <th:block th:replace="templates/meta :: footerJS"/>
-    <script th:src="@{/resources/js/right-panel.js}"></script>
+    <script th:src="@{/resources/js/right_panel.js}"></script>
     <script th:src="@{/resources/js/function_panel.js}"></script>
     <th:block layout:fragment="js">
 

@@ -11,7 +11,7 @@ public class CheckDTO {
 
     @NotNull
     @Size(min = 1, max = 100)
-    @Pattern(regexp = "^[\\w|\\s]+$")
+    @Pattern(regexp = "^[А-я| |0-9|A-z|\\-|_]+$")
     private String value;
 
     public CheckDTO() {

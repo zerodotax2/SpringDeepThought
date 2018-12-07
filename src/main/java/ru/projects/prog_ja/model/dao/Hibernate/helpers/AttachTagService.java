@@ -21,7 +21,7 @@ import java.util.Set;
 @Repository
 @Transactional(propagation = Propagation.REQUIRED)
 @Scope("prototype")
-public class AttachTagService<TT> extends GenericDAO {
+public class AttachTagService<TT, E> extends GenericDAO {
 
     @Autowired
     public AttachTagService(SessionFactory sessionFactory) {
@@ -30,22 +30,26 @@ public class AttachTagService<TT> extends GenericDAO {
 
     public <T extends TagsContainer>  void attachTags(Map<Long, T> entities, String idColumn, String entitiesName){
 
+        if(entities.size() <= 0)
+            return;
+
         Session session = session();
 
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Object[]> query = cb.createQuery(Object[].class);
         Root<Tags> root = query.from(Tags.class);
 
-        Join<Tags, TT> entityJoin = root.join(entitiesName, JoinType.LEFT);
+        Join<Tags, TT> entityJoinMapping = root.join(entitiesName, JoinType.LEFT);
+        Join<TT, E> entityJoin = entityJoinMapping.join(idColumn, JoinType.LEFT);
         Set<Long> entitiesIDS = entities.keySet();
 
         query.multiselect(entityJoin.get(idColumn), root.get("tagId"), root.get("name"), root.get("color"));
         query.where(entityJoin.get(idColumn).in(entitiesIDS));
-        query.groupBy(entityJoin.get(idColumn), root.get("tagId"));
+
 
         List<Object[]> rows = session.createQuery(query).getResultList();
         for(Object[] row : rows){
-            entities.get((long) row[0]).getTags().add(new SmallTagTransfer(
+            entities.get(row[0]).getTags().add(new SmallTagTransfer(
                     (long) row[1], (String) row[2], (String) row[3]
             ));
         }

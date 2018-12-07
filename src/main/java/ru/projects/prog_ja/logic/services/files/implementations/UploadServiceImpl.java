@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.projects.prog_ja.dto.UserDTO;
 import ru.projects.prog_ja.logic.services.files.interfaces.FileService;
 import ru.projects.prog_ja.logic.services.files.interfaces.UploadService;
 import ru.projects.prog_ja.logic.services.simple.implementations.HashType;
@@ -14,8 +13,12 @@ import ru.projects.prog_ja.logic.services.simple.interfaces.HashService;
 import ru.projects.prog_ja.services.files.FileResponseMessages;
 
 import java.io.File;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 @Service
 @Scope("prototype")
@@ -37,10 +40,10 @@ public class UploadServiceImpl extends FileResponseMessages implements UploadSer
                             new FileSize(1280, 700, "path")
                     ));
     }};
+    private static final Pattern DOCS = Pattern.compile("\\.(docs?|xls|xlsn)$");
+    private static final Pattern IMGS = Pattern.compile("\\.(gif|jpe?g|png|tiff)$");
 
-    @Value("${path.file.upload}")
     private static String uploadPath;
-
     private HashService hashService;
 
     @Autowired
@@ -51,27 +54,34 @@ public class UploadServiceImpl extends FileResponseMessages implements UploadSer
     @Override
     public ResponseEntity<?> uploadFile(MultipartFile file, String uploadType) {
 
-        String originalName = file.getOriginalFilename();
-        String ext = getExtension(originalName);
+        try {
+            String originalName = file.getOriginalFilename();
+            String ext = getExtension(originalName);
 
-        StringBuilder hash = new StringBuilder(hashService.hash(
-                originalName + new Date() , HashType.SHA_256));
+            StringBuilder hash = new StringBuilder(hashService.hash(
+                    originalName + new Date() , HashType.SHA_256));
 
-        StringBuilder result = new StringBuilder();
-        result.append(hash.subSequence(0, 2)).append("/")
-                .append(hash.subSequence(2, 4)).append("/")
-                .append(hash.subSequence(4, 6)).append("/");
+            StringBuilder result = new StringBuilder();
+            result  .append("files/")
+                    .append(hash.subSequence(0, 2)).append("/")
+                    .append(hash.subSequence(2, 4)).append("/")
+                    .append(hash.subSequence(4, 6)).append("/");
 
-        if(!createDirectory(result.insert(0, uploadPath).toString()))
-            return serverError();
 
-        result.append(hash.subSequence(6, hash.length()));
+            if(!createDirectory(uploadPath + result.toString())) {
+                return serverError();
+            }
 
-        FileService service = getServise(ext, uploadType);
-        if(service == null)
-            return incorrectUploadType();
+            result.append(hash.subSequence(6, hash.length()));
 
-        return service.upload(file, uploadPath, result.toString(), ext);
+            FileService service = getServise(ext, uploadType);
+            if(service == null)
+                return incorrectUploadType();
+
+            return service.upload(file, uploadPath, result.toString(), ext);
+        }catch (Exception e){
+            return null;
+        }
     }
 
     private boolean createDirectory(String path){
@@ -84,18 +94,23 @@ public class UploadServiceImpl extends FileResponseMessages implements UploadSer
 
     private String getExtension(String fileName){
 
-        return fileName.substring(fileName.lastIndexOf(".")+1, fileName.length());
+        return fileName.substring(fileName.lastIndexOf("."), fileName.length());
     }
 
     private FileService getServise(String ext, String type){
 
-        if(ext.matches("\\.(gif|jpe?g|png|tiff)$")){
+        if(IMGS.matcher(ext).matches()){
             return new ImageUploadService(sizes.get(type));
         }
-        else if(ext.matches("\\.(docs?|xls|xlsn)$")){
+        else if(DOCS.matcher(ext).matches()){
             return new DocsUploadService();
         }
 
         return null;
+    }
+
+    @Value("${path.file.upload}")
+    private void setUploadPath(String path){
+        uploadPath = path;
     }
 }

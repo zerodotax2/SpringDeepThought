@@ -1,11 +1,12 @@
 package ru.projects.prog_ja.model.dao;
 
 
-
-import ru.projects.prog_ja.dto.commons.CommonArticleTransfer;
+import ru.projects.prog_ja.dto.NoticeCommentTemplateDTO;
+import ru.projects.prog_ja.dto.NoticeEntityTemplateDTO;
 import ru.projects.prog_ja.dto.commons.CommonCommentTransfer;
+import ru.projects.prog_ja.dto.dao.PageableEntity;
 import ru.projects.prog_ja.dto.full.FullArticleTransfer;
-import ru.projects.prog_ja.dto.smalls.SmallArticleTransfer;
+import ru.projects.prog_ja.dto.smalls.SmallTagTransfer;
 
 import java.util.List;
 
@@ -21,25 +22,33 @@ public interface ArticleDAO {
      * @param sort
     */
 
-    List<CommonArticleTransfer> getArticles(int start, int size, String orderField, int sort);
+    String getTitle(long articleId);
+
+    PageableEntity getArticles(int start, int size, String orderField, int sort);
+
+    NoticeEntityTemplateDTO getArticleNoticeTemplate(long articleId);
+
+    NoticeCommentTemplateDTO getCommentNoticeTemplate(long commentId);
 
 
-    List<SmallArticleTransfer> getSmallArticles(int start, int size, String orderField, int sort);
+    PageableEntity getSmallArticles(int start, int size, String orderField, int sort);
 
-    List<SmallArticleTransfer> getSmallArticlesByUser(int start, int size, long userId, String orderField, int sort);
+    PageableEntity getSmallArticlesByUser(int start, int size, long userId, String query, String orderField, int sort);
+
+    PageableEntity getCommonArticlesByUser(int start, int size, long userId, String query, String orderField, int sort);
     /**
      * @return common articles by search string
      */
-    List<CommonArticleTransfer> findArticles(int start,  int size, String search, String orderField, int sort);
+    PageableEntity findArticles(int start,  int size, String search, String orderField, int sort);
 
     /**
      * @return small articles by search string
      */
-    List<SmallArticleTransfer> findSmallArticles(int start, int size, String search, String orderField, int sort);
+    PageableEntity findSmallArticles(int start, int size, String search, String orderField, int sort);
 
-    List<SmallArticleTransfer> getSmallArticlesByTag(int start, int size, long tagID, String orderField, int sort);
+    PageableEntity getSmallArticlesByTag(int start, int size, long tagID, String query, String orderField, int sort);
 
-    List<CommonArticleTransfer> getCommonArticlesByTag(int start, int size, long tagID, String orderField, int sort);
+    PageableEntity getCommonArticlesByTag(int start, int size, long tagID, String query, String orderField, int sort);
     /**
      * @return post by id
      */
@@ -73,6 +82,15 @@ public interface ArticleDAO {
     boolean updateComment(long commentId, String comment, long userId);
 
     boolean changeCommentRate(long commentId, int rate, long userId);
+
+    List<CommonCommentTransfer> getArticleComments(long articleId);
+    List<SmallTagTransfer> getSmallArticleTags(long articleId);
+
+    List<Long> getTagsByArticle(long articleId);
+
+    boolean isArticleVoted(long articleId, long userId);
+
+    boolean isArticleCommentVoted(long articleCommentId, long userId);
 
     long getArticlesNum();
 }

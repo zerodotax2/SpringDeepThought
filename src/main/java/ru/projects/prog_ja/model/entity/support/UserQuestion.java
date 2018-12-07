@@ -1,5 +1,8 @@
 package ru.projects.prog_ja.model.entity.support;
 
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
+import org.hibernate.annotations.Type;
 import ru.projects.prog_ja.model.entity.user.UserInfo;
 
 import javax.persistence.*;
@@ -7,45 +10,39 @@ import java.util.Date;
 
 @Entity
 @Table(name = "user_questions")
-@org.hibernate.annotations.NamedQueries({
-        @org.hibernate.annotations.NamedQuery(name = "getUserQuestion", query = "select new ru.projects.prog_ja.dto.smalls.SmallUserQuestionTransfer( " +
+@NamedQueries({
+        @NamedQuery(name = "getUserForumQuestion", query = "select new ru.projects.prog_ja.dto.smalls.SmallUserQuestionTransfer( " +
                 " uq.userQuestionId, uq.text, uq.createDate, u.userId, u.login, u.smallImagePath, u.rating " +
                 " ) from UserQuestion uq" +
                 " left join uq.user u" +
                 " where uq.userQuestionId = : id"),
-        @org.hibernate.annotations.NamedQuery(name = "getEntityUserQuestion", query = " select uq from UserQuestion uq" +
+        @NamedQuery(name = "getEntityUserQuestion", query = " select uq from UserQuestion uq" +
                 " left join fetch uq.user u" +
                 " where uq.userQuestionId = : id"),
-        @org.hibernate.annotations.NamedQuery(name = "getUserQuestions", query = "select new ru.projects.prog_ja.dto.smalls.SmallUserQuestionTransfer( " +
+        @NamedQuery(name = "getUserForumQuestions", query = "select new ru.projects.prog_ja.dto.smalls.SmallUserQuestionTransfer( " +
                 " uq.userQuestionId, uq.text, uq.createDate, u.userId, u.login, u.smallImagePath, u.rating " +
                 " ) from UserQuestion uq" +
                 " left join uq.user u" +
                 " order by uq.createDate desc"),
-        @org.hibernate.annotations.NamedQuery(name = "getNonAnsweredUserQuestions", query = "select new ru.projects.prog_ja.dto.smalls.SmallUserQuestionTransfer( " +
+        @NamedQuery(name = "getNonAnsweredUserQuestions", query = "select new ru.projects.prog_ja.dto.smalls.SmallUserQuestionTransfer( " +
                 " uq.userQuestionId, uq.text, uq.createDate, u.userId, u.login, u.smallImagePath, u.rating " +
                 " ) from UserQuestion uq" +
                 " left join uq.user u " +
                 " where uq.answer is null " +
                 " order by uq.createDate desc "),
-        @org.hibernate.annotations.NamedQuery(name = "getForumAnswer", query = "select new ru.projects.prog_ja.dto.smalls.SmallAnswerTransfer(" +
+        @NamedQuery(name = "getForumAnswer", query = "select new ru.projects.prog_ja.dto.smalls.SmallForumAnswer(" +
                 " a.userForumAnswerId, a.text, a.createDate, u.userId, u.login, u.smallImagePath, u.rating " +
                 ") from UserQuestion uq" +
                 " left join uq.answer a " +
                 " left join a.user u " +
                 " where uq.answer is not null and uq.userQuestionId = :id"),
-        @org.hibernate.annotations.NamedQuery(name = "removeForumAnswer", query = "delete from UserForumAnswer where userForumAnswerId = :id and user = :user"),
-        @org.hibernate.annotations.NamedQuery(name = "removeForumQuestion", query = "delete from UserQuestion where userQuestionId = :id and user = :user")
+        @NamedQuery(name = "removeForumAnswer", query = "delete from UserForumAnswer where userForumAnswerId = :id and user = :user"),
+        @NamedQuery(name = "removeForumQuestion", query = "delete from UserQuestion where userQuestionId = :id and user = :user"),
+        @NamedQuery(name = "getUserQuestionNoticeTemplate", query = "select new ru.projects.prog_ja.dto.NoticeEntityTemplateDTO(" +
+                " u.userId, uq.text " +
+                " ) from UserQuestion uq left join uq.answer a left join a.user u where uq.userQuestionId = :id and uq.answer is not null")
 })
 public class UserQuestion {
-
-    public static final String GET_USER_QUESTIONS = "getUserQuestions";
-    public static final String GET_ENTITY_USER_QUESTION = "getEntityUserQuestion";
-    public static final String GET_NON_ANSWERED_USER_QUESTIONS = "getNonAnsweredUserQuestions";
-    public static final String GET_USER_QUESTION = "getUserQuestion";
-    public static final String GET_FORUM_ANSWER = "getForumAnswer";
-    public static final String REMOVE_FORUM_QUESTION = "removeForumAnswer";
-    public static final String REMOVE_FORUM_ANSWER = "removeForumQuestion";
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,6 +50,7 @@ public class UserQuestion {
     private long userQuestionId;
 
     @Column(name = "text")
+    @Type(type = "org.hibernate.type.TextType")
     private String text;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade =  {CascadeType.MERGE, CascadeType.PERSIST}, optional = false)
@@ -62,8 +60,7 @@ public class UserQuestion {
     @Column(name = "createDate")
     private Date createDate;
 
-    @Column(name = "answered")
-    @JoinColumn(name = "user_forum_answer_id", unique = true, foreignKey = @ForeignKey(name = "user_forum_answer_fk"))
+    @OneToOne(mappedBy = "forumQuestion", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true, fetch = FetchType.LAZY)
     private UserForumAnswer answer;
 
     public UserQuestion() {

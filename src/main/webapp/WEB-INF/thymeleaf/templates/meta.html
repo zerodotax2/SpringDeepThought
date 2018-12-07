@@ -28,7 +28,9 @@
         <!-- default header name is X-CSRF-TOKEN -->
         <meta id="_csrf_header" th:content="${_csrf.headerName}"/>
         <!--file server location-->
-        <!--<meta id="fileServerLocation" th:content="#{fileServerLocation}" />-->
+        <meta id="fileServerLocation" th:content="${@properties['fileServerLocation']}" />
+        <!--User id-->
+        <meta  id="user_id" th:content="${session.user == null ? '-1' : session.user.id}"/>
     </th:block>
 
     <th:block th:fragment="footerJS">

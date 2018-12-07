@@ -6,6 +6,7 @@
 <head>
     <title>Статьи</title>
     <link rel="stylesheet" th:href="@{/resources/css/articles.css}"/>
+    <meta th:if="${specialView!=null}" id="special_sort" th:name="${specialView.name}" th:path="${specialView.path}">
 </head>
 <body>
 
@@ -57,29 +58,45 @@
                     </div>
                 </div>
             </div>
-
+            <div th:if="${#lists.isEmpty(articles)}" class="col s12 no-content">
+                По вашему запросу ничего не найдено
+            </div>
             <div id="articles_container">
                 <div th:each="article : ${articles}" class='card hoverable col z-depth-2 s12'>
                     <div class='card-image row' >
-                        <a th:href="@{/articles/${article.id}}"><img class="articleImage" th:src="@{${article.articleImage}}"/></a>
+                        <a th:href="@{'/articles/'+${article.id}}"><img class="articleImage" th:src="'/'+${article.articleImage}"/></a>
                     </div>
                     <div class='card-content'>
                         <h5 class='card-title grey-text text-darken-2' th:text="${article.title}"></h5>
                         <div class="tags">
-                            <a th:each="tag : ${article.tags}" th:href="@{/tags/${tag.id}}" class="chip" th:style="'background: '+tag.color+';'" th:text="${tag.name}"></a>
+                            <a th:each="tag : ${article.tags}" th:href="@{'/tags/'+${tag.id}}" class="chip" th:style="'background: '+${tag.color}+';'" th:text="${tag.name}"></a>
                         </div>
                     </div>
                     <div class="card-action">
                         <div class='views action-stat'>
                             <h6 class="grey-text" th:text="${article.views}"></h6>
-                            <svg  role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#adb5bd" d="M569.354 231.631C512.97 135.949 407.81 72 288 72 168.14 72 63.004 135.994 6.646 231.631a47.999 47.999 0 0 0 0 48.739C63.031 376.051 168.19 440 288 440c119.86 0 224.996-63.994 281.354-159.631a47.997 47.997 0 0 0 0-48.738zM288 392c-102.556 0-192.091-54.701-240-136 44.157-74.933 123.677-127.27 216.162-135.007C273.958 131.078 280 144.83 280 160c0 30.928-25.072 56-56 56s-56-25.072-56-56l.001-.042C157.794 179.043 152 200.844 152 224c0 75.111 60.889 136 136 136s136-60.889 136-136c0-31.031-10.4-59.629-27.895-82.515C451.704 164.638 498.009 205.106 528 256c-47.908 81.299-137.444 136-240 136z"></path></svg>
+                            <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#adb5bd" d="M569.354 231.631C512.97 135.949 407.81 72 288 72 168.14 72 63.004 135.994 6.646 231.631a47.999 47.999 0 0 0 0 48.739C63.031 376.051 168.19 440 288 440c119.86 0 224.996-63.994 281.354-159.631a47.997 47.997 0 0 0 0-48.738zM288 392c-102.556 0-192.091-54.701-240-136 44.157-74.933 123.677-127.27 216.162-135.007C273.958 131.078 280 144.83 280 160c0 30.928-25.072 56-56 56s-56-25.072-56-56l.001-.042C157.794 179.043 152 200.844 152 224c0 75.111 60.889 136 136 136s136-60.889 136-136c0-31.031-10.4-59.629-27.895-82.515C451.704 164.638 498.009 205.106 528 256c-47.908 81.299-137.444 136-240 136z"></path></svg>
                         </div>
-                        <!--<div class='comments action-stat'>-->
-                            <!--<h6 class="grey-text">0</h6>-->
-                            <!--<svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#adb5bd" d="M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z"></path></svg>-->
-                        <!--</div>-->
-                        <a th:href='@{/articles/${article.id}}' class='btn col s5 l3 red waves-effect waves-light'>Читать</a>
+                        <div class='views action-stat'>
+                            <h6 class="grey-text" th:text="${article.rating}"></h6>
+                            <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#adb5bd" d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"></path></svg>
+                        </div>
+                        <a th:href="@{'/articles/'+${article.id}}" class='btn col s5 l3 red waves-effect waves-light'>Читать</a>
                     </div>
+                </div>
+            </div>
+            <div th:if="${pages.last > 1}" th:with="baseUrl=(${#request.getRequestURI()})" class="pagination col s12">
+                <div class="content">
+                    <a th:if="${pages.current!=1}" th:href="@{${baseUrl}(page=${pages.current-1},type=${#request.getParameter('type')},sort=${#request.getParameter('sort')},q=${#request.getParameter('q')})}" class="previous elem act">Назад</a>
+                    <div class="center">
+                        <a th:each="p:${#numbers.sequence(pages.first, pages.last)}" th:href="@{${baseUrl}(page=${p},type=${#request.getParameter('type')},sort=${#request.getParameter('sort')},q=${#request.getParameter('q')})}"
+                           th:class="'elem '+${p==pages.current?'active':''}" th:text="${p}"></a>
+                        <div th:if="${pages.current+2<pages.total}" class="all-pages">
+                            <span class="divide">...</span>
+                            <a th:href="@{${baseUrl}(page=${pages.total},type=${#request.getParameter('type')},sort=${#request.getParameter('sort')},q=${#request.getParameter('q')})}" class="elem" th:text="${pages.total}"></a>
+                        </div>
+                    </div>
+                    <a th:if="${pages.current!=total}" th:href="@{${baseUrl}(page=${pages.current+1},type=${#request.getParameter('type')},sort=${#request.getParameter('sort')},q=${#request.getParameter('q')})}" class="next elem act">Далее</a>
                 </div>
             </div>
         </div>

@@ -49,4 +49,14 @@ public class CommonTagTransfer extends SmallTagTransfer {
     public void setProblems(long problems) {
         this.problems = problems;
     }
+
+    @Override
+    public String toString() {
+        return "CommonTagTransfer{" +
+                "description='" + description + "\n" +
+                ", articles=" + articles +"\n"+
+                ", questions=" + questions+ "\n"+
+                ", problems=" + problems +"\n"+
+                '}';
+    }
 }

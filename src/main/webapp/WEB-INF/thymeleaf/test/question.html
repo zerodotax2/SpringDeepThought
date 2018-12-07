@@ -19,8 +19,9 @@
     <meta id="fileServerLocation" content="http://localhost:80"/>
     <meta id="_csrf_header" content="csrf"/>
     <meta id="_csrf" content="0"/>
-    <meta id="user_id" content="1"/>
+    <meta id="user_id" content="-1"/>
     <meta id="owner" content="true" answer="0"/>
+    <meta id="owner_id" content="-1"/>
     <!--Top icon-->
     <link rel="shortcut icon" href="../../../resources/images/icon2.ico" type="image/x-icon"/>
     <meta charset="UTF-8">
@@ -47,6 +48,19 @@
                     <li id="questionElement"><a class="white-text" href="/questions">ВОПРОСЫ</a></li>
                     <li id="problemsElement"><a class="white-text" href="/problems">ЗАДАЧИ</a></li>
                     <li id="supportElement"><a class="white-text" href="/support">ПОМОЩЬ</a></li>
+                    <!--<li class="user-notifications">-->
+                        <!--<div class="action">-->
+                            <!--<svg role="img" xmlns="http://www.w3.org/2000/svg" fill="#EEEEEE" viewBox="0 0 448 512"><path d="M224 512c35.32 0 63.97-28.65 63.97-64H160.03c0 35.35 28.65 64 63.97 64zm215.39-149.71c-19.32-20.76-55.47-51.99-55.47-154.29 0-77.7-54.48-139.9-127.94-155.16V32c0-17.67-14.32-32-31.98-32s-31.98 14.33-31.98 32v20.84C118.56 68.1 64.08 130.3 64.08 208c0 102.3-36.15 133.53-55.47 154.29-6 6.45-8.66 14.16-8.61 21.71.11 16.4 12.98 32 32.1 32h383.8c19.12 0 32-15.6 32.1-32 .05-7.55-2.61-15.27-8.61-21.71z"></path></svg>-->
+                            <!--<div class="nums">10</div>-->
+                        <!--</div>-->
+                        <!--<div class="panel" style="display: none;">-->
+                            <!--<div class="loader">-->
+                                <!--<div class="lds-dual-ring"></div>-->
+                            <!--</div>-->
+                            <!--<div class="empty" style="display: none;">Нет уведомлений</div>-->
+                            <!--<div class="error" style="display: none;">Ошибка при загрузке уведомлений</div> <a href="/settings/user" class="more">Смотреть всё</a>                            <a href="/settings/user" class="more">Смотреть всё</a>-->
+                        <!--</div>-->
+                    <!--</li>-->
                     <!--<li class="user-account">-->
                         <!--<div class="user">-->
                             <!--<div class="info">-->
@@ -180,13 +194,16 @@
                                             </div>
                                         </div>
                                     </a>
-                                    <div class="send-btn">Отправить</div>
+                                    <div class="btns">
+                                        <div class="send-btn">Отправить</div>
+                                        <div class="cancel" style="display: none;">Отмена</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="answers-container col s12">
-                        <div class="answer" user="1" id="answer-1">
+                        <div class="answer" user="-1" id="answer-1">
                             <div class="content-wrapper">
                                 <div class="e-line">
                                     <!--<i class="e-elem edit"><svg  role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#E5E8EA" d="M290.74 93.24l128.02 128.02-277.99 277.99-114.14 12.6C11.35 513.54-1.56 500.62.14 485.34l12.7-114.22 277.9-277.88zm207.2-19.06l-60.11-60.11c-18.75-18.75-49.16-18.75-67.91 0l-56.55 56.55 128.02 128.02 56.55-56.55c18.75-18.76 18.75-49.16 0-67.91z"></path></svg></i>-->

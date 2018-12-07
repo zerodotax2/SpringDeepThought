@@ -1,3 +1,5 @@
+'use strict';
+
 window.xhr = {
 
     file: function (path, file, callback) {
@@ -5,7 +7,8 @@ window.xhr = {
         let formData = new FormData();
         formData.append("file", file);
 
-        xhr.request({path: path, method: "POST", content: formData}, function(response, error){
+        xhr.request({path: path, method: "POST",
+            content: formData}, function(response, error){
             if(error){
                 callback(response)
             }else if(response){
@@ -18,18 +21,22 @@ window.xhr = {
         ajax.onreadystatechange = function (e) {
             if (ajax.readyState !== 4) {
                 return;
-            } else if (ajax.status >= 400) {
-                callback(undefined, ajax.responseText);
+            }if (ajax.status >= 400) {
+                callback(undefined, ajax.responseText, ajax.status);
+                return;
             }
 
-            callback(ajax.responseText);
+            callback(ajax.responseText, undefined, ajax.status);
         };
         ajax.open(options.method || "GET", options.path || "/", true);
         ajax.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         ajax.setRequestHeader(appConf.csrfHeader, appConf.csrfToken);
+
+
         if(options.headers){
-            for(let header in options.headers){
-                ajax.setRequestHeader(header.name, header.value)
+            let headers = Object.keys(options.headers);
+            for(let i = 0; i < headers.length; i++){
+                ajax.setRequestHeader(headers[i], options.headers[headers[i]]);
             }
         }
         ajax.send(options.content || null);

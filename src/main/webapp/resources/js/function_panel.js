@@ -1,5 +1,4 @@
-
-
+'use strict';
 let params = window.get_parameters();
 
 function initCategories() {
@@ -13,11 +12,15 @@ function initCategories() {
         const contentPanel = document.getElementById(contentId),
              elementNodes = contentPanel.getElementsByClassName("category-select");
 
-        Array.forEach(elementNodes, function (element) {
+        for(let i = 0; i < elementNodes.length; i++) {
+
+            let element = elementNodes[i];
 
             if(element.getAttribute("content") === params[element.getAttribute("datatype")])
             {
-                element.classList.add("active-category");
+                element.innerHTML =
+                    '<svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#4CAF50" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"></path></svg>'
+                    + element.innerHTML;
                 contentPanel.getElementsByTagName("input")[0].value = element.getAttribute("content");
             }
 
@@ -39,7 +42,7 @@ function initCategories() {
                     }
                 }
             });
-        });
+        };
     }
 
     /*
@@ -49,7 +52,8 @@ function initCategories() {
     * */
     let current = undefined,
         categoryBtns = document.getElementsByClassName("category-btn");
-    Array.forEach(categoryBtns, function (categoryBtn) {
+    for(let i = 0; i < categoryBtns.length; i++) {
+        let categoryBtn = categoryBtns[i];
         categoryBtn.addEventListener("click", function (e) {
             const target = e.currentTarget,
                 id = target.getAttribute("content");
@@ -81,7 +85,7 @@ function initCategories() {
                 }
             }
         })
-    });
+    };
     /*
     * При любом клике вне кнопки закрываем панель
     * */
@@ -115,11 +119,14 @@ const smallHelpers = {
         if(params[param] === ""){
             return;
         }
-        let helper = document.createElement("div");
+        let content = getNameByTypeAndValue(param, params[param]),
+            helper = document.createElement("div");
+        if(content === null)
+            return;
 
         helper.classList.add("small-helper", "blue");
         helper.setAttribute("content", param);
-        helper.innerHTML = getNameByTypeAndValue(param, params[param]);
+        helper.innerHTML = content;
 
         helper.addEventListener("click", function (event) {
             delete_get(this.getAttribute("content"));
@@ -140,10 +147,10 @@ const smallHelpers = {
                 "0" : "По возрастанию"
             },
             "difficult": {
-                "easy": "Легкие",
-                "normal": "Средние",
-                "hard": "Сложные",
-                "hell": "Невозможные"
+                "EASY": "Легкие",
+                "NORMAL": "Средние",
+                "HARD": "Сложные",
+                "HELL": "Невозможные"
             }
         };
 
@@ -151,17 +158,20 @@ const smallHelpers = {
             return value;
         }
         else{
-            return typeNames[type][value];
+            if(typeNames[type] === undefined)
+                return null;
+            return typeNames[type][value] || null;
         }
     }
 
 function removeEmptyFields(event) {
     const inputs = document.querySelectorAll(".sort-form input");
-    Array.forEach(inputs, function (input) {
+    for(let i = 0; i < inputs.length; i++){
+        let input = inputs[i];
         if(input.value === undefined || input.value === ""){
             input.setAttribute("disabled", "disabled")
         }
-    });
+    }
 }
 
 function initSpecialSorted(){

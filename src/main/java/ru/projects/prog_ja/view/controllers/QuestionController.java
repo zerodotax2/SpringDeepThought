@@ -1,25 +1,22 @@
 package ru.projects.prog_ja.view.controllers;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.projects.prog_ja.dto.Role;
-import ru.projects.prog_ja.dto.UserDTO;
+import ru.projects.prog_ja.dto.auth.UserDTO;
 import ru.projects.prog_ja.dto.full.FullQuestionTransfer;
-import ru.projects.prog_ja.dto.smalls.SmallQuestionTransfer;
-import ru.projects.prog_ja.dto.smalls.SmallUserTransfer;
-import ru.projects.prog_ja.exceptions.*;
-import ru.projects.prog_ja.logic.services.transactional.interfaces.FactsReadService;
-import ru.projects.prog_ja.logic.services.transactional.interfaces.QuestionReadService;
+import ru.projects.prog_ja.dto.view.PageableContainer;
+import ru.projects.prog_ja.dto.view.SpecialView;
 import ru.projects.prog_ja.dto.view.create.CreateQuestionDTO;
+import ru.projects.prog_ja.exceptions.*;
+import ru.projects.prog_ja.logic.services.transactional.interfaces.QuestionReadService;
+import ru.projects.prog_ja.logic.services.transactional.interfaces.TagsReadService;
+import ru.projects.prog_ja.logic.services.transactional.interfaces.UserReadService;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequestMapping("/questions")
@@ -28,11 +25,20 @@ public class QuestionController {
     public static final String CREATE_QUESTION_DTO_NAME = "createQuestionDTO";
     public static final String QUESTIONS_LIST_NAME = "questions";
     public static final String QUESTION_EDIT_NAME = "questionEdit";
+    public static final String QUESTION_DTO_NAME = "fullQuestionDTO";
+    public static final String PAGES_NAME = "pages";
 
     private final QuestionReadService questionReadService;
+    private final TagsReadService tagsReadService;
+    private final UserReadService userReadService;
 
-    public QuestionController(@Autowired QuestionReadService questionReadService){
+    @Autowired
+    public QuestionController(QuestionReadService questionReadService,
+                              TagsReadService tagsReadService,
+                              UserReadService userReadService){
         this.questionReadService = questionReadService;
+        this.tagsReadService = tagsReadService;
+        this.userReadService = userReadService;
     }
 
     /*
@@ -40,27 +46,87 @@ public class QuestionController {
     * */
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView getQuestions(@RequestParam(name = "q", required = false) String query,
-                                     @RequestParam(name = "type", required = false, defaultValue = "rating") String type,
-                                     @RequestParam(name = "sort", required = false, defaultValue = "1") String sort) throws InternalServerException {
+                                     @RequestParam(name = "type", required = false) String type,
+                                     @RequestParam(name = "sort", required = false) String sort,
+                                     @RequestParam(name = "page", required = false) String page) throws InternalServerException {
 
-        List<SmallQuestionTransfer> questions = questionReadService.getSmallQuestions(0, query, type, sort);
-        if(questions == null){
-            throw new InternalServerException();
-        }
+        PageableContainer container
+                = questionReadService.getSmallQuestions(page, query, type, sort);
 
-        return new ModelAndView("questions/questions", QUESTIONS_LIST_NAME, questions);
+        ModelAndView model = new ModelAndView("questions/questions");
+        model.addObject(QUESTIONS_LIST_NAME, container.getList());
+        model.addObject(PAGES_NAME, container.getPages());
+
+        return model;
+    }
+
+    @RequestMapping(value = "/tag/{id}",method = RequestMethod.GET)
+    public ModelAndView getQuestionsByTag(@PathVariable("id") long id,
+                                     @RequestParam(name = "size", defaultValue = "10") String size,
+                                     @RequestParam(name = "q", required = false) String query,
+                                     @RequestParam(name = "type", required = false) String type,
+                                     @RequestParam(name = "sort", required = false) String sort,
+                                     @RequestParam(name = "page", required = false) String page) throws InternalServerException {
+
+        PageableContainer container
+                = questionReadService.getQuestionsByTag(page, size,id, query, type, sort);
+
+        ModelAndView model = new ModelAndView("questions/questions");
+        model.addObject("specialView", new SpecialView(tagsReadService.getName(id),
+                "/services/questions/tag/"+id));
+        model.addObject(QUESTIONS_LIST_NAME, container.getList());
+        model.addObject(PAGES_NAME, container.getPages());
+
+        return model;
+    }
+
+    @RequestMapping(value = "/user/{id}",method = RequestMethod.GET)
+    public ModelAndView getQuestionsByUser(@PathVariable("id") long id,
+                                     @RequestParam(name = "size", defaultValue = "10") String size,
+                                     @RequestParam(name = "q", required = false) String query,
+                                     @RequestParam(name = "type", required = false) String type,
+                                     @RequestParam(name = "sort", required = false) String sort,
+                                     @RequestParam(name = "page", required = false) String page) throws InternalServerException {
+
+        PageableContainer container =
+                questionReadService.getQuestionsByUser(page, size,id, query, type, sort);
+
+        ModelAndView model = new ModelAndView("questions/questions");
+        model.addObject("specialView", new SpecialView(userReadService.getUsername(id),
+                "/services/questions/user/"+id));
+        model.addObject(QUESTIONS_LIST_NAME, container.getList());
+        model.addObject(PAGES_NAME, container.getPages());
+
+        return model;
+    }
+
+    @RequestMapping(value = "/user/answers/{id}",method = RequestMethod.GET)
+    public ModelAndView getAnswersByUser(@PathVariable("id") long id,
+                                     @RequestParam(name = "size", defaultValue = "10") String size,
+                                     @RequestParam(name = "q", required = false) String query,
+                                     @RequestParam(name = "type", required = false) String type,
+                                     @RequestParam(name = "sort", required = false) String sort) throws InternalServerException {
+
+        ModelAndView model = new ModelAndView("questions/questions");
+        model.addObject("specialView", new SpecialView(userReadService.getUsername(id),
+                "/services/questions/user/answers/"+id));
+        model.addObject(QUESTIONS_LIST_NAME,
+                questionReadService.getAnswersByUser(0, size,id, query, type, sort));
+
+        return model;
     }
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ModelAndView getQuestion(@PathVariable("id") long id) throws BadRequestException, NotFoundException{
+    public ModelAndView getQuestion(@PathVariable("id") long id,
+                                    @SessionAttribute(name = "user", required = false) UserDTO userDTO) throws BadRequestException, NotFoundException{
 
-        FullQuestionTransfer questionTransfer = questionReadService.getOneQuestion(id);
+        FullQuestionTransfer questionTransfer = questionReadService.getOneQuestion(id, userDTO);
         if(questionTransfer == null){
             throw  new NotFoundException();
         }
 
-        return new ModelAndView("questions/question", "question", questionTransfer);
+        return new ModelAndView("questions/question", QUESTION_DTO_NAME, questionTransfer);
     }
 
     @RequestMapping(value = "/ask", method = RequestMethod.GET)
@@ -71,13 +137,13 @@ public class QuestionController {
 
     @RequestMapping(value = "/{id}/edit")
     public ModelAndView editQuestion(@PathVariable("id") long id,
-                                     @SessionAttribute("user") UserDTO userDTO) throws AccessDeniedException, NotFoundException, NonAuthorizedException {
+                                     @SessionAttribute(name = "user", required = false) UserDTO userDTO) throws AccessDeniedException, NotFoundException, NonAuthorizedException {
 
         if(userDTO == null || userDTO.getId() == -1){
             throw new NonAuthorizedException();
         }
 
-        FullQuestionTransfer fullQuestionTransfer = questionReadService.getOneQuestion(id);
+        FullQuestionTransfer fullQuestionTransfer = questionReadService.getOneQuestion(id, userDTO);
         if(fullQuestionTransfer == null){
             throw new NotFoundException();
         }
@@ -94,23 +160,13 @@ public class QuestionController {
     @Deprecated
 //    @RequestMapping(value = "/write", method = RequestMethod.POST)
     public ModelAndView createQuestion(@Valid @ModelAttribute(CREATE_QUESTION_DTO_NAME) CreateQuestionDTO createQuestionDTO, BindingResult bindingResult,
-                                       @SessionAttribute("user") SmallUserTransfer user){
+                                       @SessionAttribute(name = "user", required = false) UserDTO user) throws BadRequestException {
 
         if(bindingResult.hasErrors()){
             return new ModelAndView("questions/write");
         }
-
-        if(createQuestionDTO.getUserId() != user.getId()){
-            return new ModelAndView("questions/write");
-        }
-
-        List<Long> tagsIDs = new ArrayList<>();
-        String[] tags = createQuestionDTO.getTagsSTR().split(" ");
-        for(String tag : tags){
-            if(!tag.matches("^\\d+$") || tag.length() > 64)
-                return new ModelAndView("questions/write");
-
-            tagsIDs.add(Long.parseLong(tag));
+        if(user == null || user.getId() == -1){
+            throw new BadRequestException();
         }
 
 //        questionReadService.createQuestion(createQuestionDTO.getTitle(), tagsIDs, createQuestionDTO.getHtmlContent(), user.getId());

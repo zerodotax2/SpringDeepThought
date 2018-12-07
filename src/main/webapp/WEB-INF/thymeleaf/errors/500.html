@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html layout:decorate="~{templates/layout}"
+<html layout:decorate="~{templates/simple_layout}"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       th:charset="UTF-8">
 <head>
     <title>Ошибка сервера</title>
+    <link rel="stylesheet" th:href="@{/resources/css/500.css}"/>
 </head>
 <body>
 
     <div layout:fragment="content">
-
+        <div class="content">
+            <div class="header">Ой, кажется что-то пошло не так</div>
+            <div class="text">Не ругайте нас пожалуйста</div>
+            <div class="action">
+                <a th:href="@{/articles}">На главную</a>
+            </div>
+        </div>
     </div>
 
 </body>

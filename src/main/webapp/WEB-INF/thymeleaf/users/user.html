@@ -5,132 +5,113 @@
       th:charset="UTF-8">
 <head>
     <link rel="stylesheet" th:href="@{/resources/css/user.css}"/>
-    <title th:title="${user.login}"></title>
+    <meta id="owner_id" th:content="${fullUserDTO.id}"/>
+    <title th:text="'Пользователь | '+${fullUserDTO.login}"></title>
 </head>
 <body>
 
 <div layout:fragment="content">
-    <div class="top-panel center-align" th:style="'background: url('${#{fileServerLocation}.concat(user.bgImage)}') no-repeat top / cover;'">
-
-    </div>
-    <div class="main" id="main" style="margin-top: -200px;">
+    <div class="main" id="main">
         <div class="container">
-
             <div class="row">
-
-                <div class="col s12 l5">
-                    <div class="card hoverable basic-profile" >
-                        <div class="card-title">
-                            Профиль пользователя
-                        </div>
-                        <div class="card-content" >
-                            <div class="profile-image">
-                                <img th:src="${#{fileServerLocation}.concat(user.userImage)}"/>
-                            </div>
-                            <div class="profile-info">
-                                <div class="profile-title">
-                                    <div>
-                                        <img th:src="@{/resources/images/user-regular.svg}" style="width: 15px;height: 15px;margin: 5px;"/>
-                                    </div>
-                                    <div>
-                                        <h5 th:text="${user.login}"></h5>
-                                        <h6 th:text="'ID: ' + ${user.id}"></h6>
-                                        <meta id="user_id" th:content="${user.id}"/>
-                                    </div>
-                                </div>
-                                <div class="rating-line">
-                                    <img th:src="@{/resources/images/cup.png}" />
-                                    <span th:text="${user.rating}"></span>
-                                </div>
-                                <div class="soc-refs" style="margin-top: 20px;display: flex;justify-content: space-around">
-                                    <a href="#"><img th:src="@{/resources/images/vk.svg}" style="width: 40px;height: 32px;"/></a>
-                                    <a href="#"><img th:src="@{/resources/images/facebook.svg}" style="width: 40px;height: 32px;"/></a>
-                                    <a href="#"><img th:src="@{/resources/images/twitter.svg}" style="width: 40px;height: 32px;"/></a>
-                                    <a href="#"><img th:src="@{/resources/images/instagram.svg}" style="width: 40px;height: 32px;color: grey"/></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card about hoverable">
-                        <div class="card-title">
-                            О пользователе
-                        </div>
+                <div class="col s12">
+                    <div class="card user-card z-depth-3">
                         <div class="card-content">
-                            <p th:text="${user.about}"></p>
-                        </div>
-                    </div>
-                    <div class="card hoverable interests center">
-                        <div class="card-title"> Интересы </div>
-                        <div class="card-content">
-                            <a th:each="tag : ${user.interests}" th:href="@{/tags/${tag.id}}"><div th:text="${tag.name}" class="chip" th:style="'background: ' + ${tag.color}" ></div></a>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="col s12 l7 right-panel">
-
-                    <div class="card hoverable best">
-                        <div class="card-title" style="border-radius: 10px 10px 0 0">
-                            <a class="tab-element active-tab" id="article-tab" content="articles"><img th:src="@{/resources/images/pen2.svg}" /><span>Статьи</span></a>
-                            <a class="tab-element" id="questions-tab" content="questions"><img th:src="@{/resources/images/question-solid.svg}" /><span>Вопросы</span></a>
-                            <a class="tab-element" id="problems-tab" content="problems"><img th:src="@{/resources/images/puzzle.svg}" /><span>Задачи</span></a>
-                        </div>
-                        <div class="card-content" style="padding: 0;">
-                            <div id="articles">
-                                <div class="collection" style="border: none">
-                                    <div th:each="article : ${user.commonArticles}" class='collection-item' style='display: flex;'>
-                                        <img th:src='${#{fileServerLocation}.concat(article.articleImage)}'/>
-                                        <div class='article-text'>
-                                            <span class='title grey-text text-darken-2' th:text="${article.title}"></span>
-                                            <div class='chips-line' style='margin-top: 5px;'>
-                                                <a th:each="tag : ${article.tags}" th:href="@{/tags/${tag.id}}"><div th:style="'background: ' + ${tag.color}" class="chip" th:text="${tag.name}"></div></a>
-                                            </div>
+                            <div class="row">
+                                <div class="col s12 l4 left" >
+                                    <div class="card user-image z-depth-3">
+                                        <div class="card-content">
+                                            <img th:src="@{'/'+${fullUserDTO.userImage}}"/>
+                                            <div class="share z-depth-1" >Поделиться <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#16576d" d="M352 320c-22.608 0-43.387 7.819-59.79 20.895l-102.486-64.054a96.551 96.551 0 0 0 0-41.683l102.486-64.054C308.613 184.181 329.392 192 352 192c53.019 0 96-42.981 96-96S405.019 0 352 0s-96 42.981-96 96c0 7.158.79 14.13 2.276 20.841L155.79 180.895C139.387 167.819 118.608 160 96 160c-53.019 0-96 42.981-96 96s42.981 96 96 96c22.608 0 43.387-7.819 59.79-20.895l102.486 64.054A96.301 96.301 0 0 0 256 416c0 53.019 42.981 96 96 96s96-42.981 96-96-42.981-96-96-96z"></path></svg> </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div id="questions" style="display: none">
-                            </div>
-                            <div id="problems" style="display: none">
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="card hoverable stats ">
-                        <div class="card-title"> Статистика </div>
-                        <div class="card-content">
-                            <div class="stat-element">
-                                <div class="half-stat">Постов написано</div><div class="half-stat"><span class="stat-number" th:text="${user.articles}"></span></div>
+                                <div class="col s12 l8 right">
+                                    <div class="name-line">
+                                        <div class="name" th:text="${fullUserDTO.firstName}+' ' +${fullUserDTO.lastName}">
+
+                                        </div>
+                                        <div class="rating blue" th:text="${#numbers.formatDecimal(fullUserDTO.rating,0,'WHITESPACE',0,'POINT')}">
+
+                                        </div>
+                                    </div>
+                                    <a th:if="${session.user != null && fullUserDTO.id == session.user.id}" th:href="@{/settings/user}" class="settings">
+                                        Редактировать
+                                    </a>
+                                    <div class="about" >
+                                        <div class="text" th:text="${fullUserDTO.about}">
+
+                                        </div>
+                                        <div th:if="${fullUserDTO.about.equals('')}" class="empty">
+                                            Нет информации
+                                        </div>
+                                    </div>
+                                    <div th:if="${#lists.size(fullUserDTO.interests) != 0}" class="interests">
+                                        <a th:each="tag : ${fullUserDTO.interests}" th:href="@{'/tags/'+${tag.id}}" class="interest" th:text="${tag.name}"></a>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="stat-element">
-                                <div class="half-stat">Вопросов задано</div><div class="half-stat"><span class="stat-number" th:text="${user.questions}"></span></div>
-                            </div>
-                            <div class="stat-element">
-                                <div class="half-stat">Сделано ответов</div><div class="half-stat"><span class="stat-number" th:text="${user.answers}"></span></div>
-                            </div>
-                            <div class="stat-element">
-                                <div class="half-stat">Придумано задач</div><div class="half-stat"><span class="stat-number" th:text="${user.problems}"></span></div>
-                            </div>
-                            <div class="stat-element">
-                                <div class="half-stat">Решено задач</div><div class="half-stat"><span class="stat-number" th:text="${user.decided}"></span></div>
-                            </div>
-                            <div class="stat-element">
-                                <div class="half-stat">Отправлено фактов</div><div class="half-stat"><span class="stat-number" th:text="${user.facts}"></span></div>
-                            </div>
-                            <div class="stat-element">
-                                <div class="half-stat">Создано тегов</div><div class="half-stat"><span class="stat-number" th:text="${user.tags}"></span></div>
-                            </div>
+
                         </div>
                     </div>
                 </div>
+            </div>
 
+            <div class="row">
+                <div class="col s12 stats">
+                    <div class="stat" content="article-panel">
+                        <div class="head">Статей написано</div>
+                        <div class="num" th:text="${fullUserDTO.articles}">0</div>
+                    </div>
+                    <div class="stat" content="question-panel">
+                        <div class="head">Вопросов задано</div>
+                        <div class="num" th:text="${fullUserDTO.questions}">0</div>
+                    </div>
+                    <div class="stat" content="answer-panel">
+                        <div class="head">Ответов</div>
+                        <div class="num" th:text="${fullUserDTO.answers}">0</div>
+                    </div>
+                    <div class="stat" content="problems-created">
+                        <div class="head">Задач придумано</div>
+                        <div class="num" th:text="${fullUserDTO.problems}">0</div>
+                    </div>
+                    <div class="stat" content="problems-solved">
+                        <div class="head">Задач решено</div>
+                        <div class="num" th:text="${fullUserDTO.decided}">0</div>
+                    </div>
+                    <div class="stat" content="tag-panel">
+                        <div class="head">Тегов создано</div>
+                        <div class="num" th:text="${fullUserDTO.tags}">0</div>
+                    </div>
+                    <div class="stat" content="fact-panel">
+                        <div class="head">Фактов найдено</div>
+                        <div class="num" th:text="${fullUserDTO.facts}">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-panels">
+                <div id="article-panel" style="display: none;">
+                </div>
+                <div id="question-panel" style="display: none;">
+                </div>
+                <div id="answer-panel" style="display: none;">
+                </div>
+                <div id="problems-created" class="problem-container" style="display: none;">
+                </div>
+                <div id="problems-solved" class="problem-container" style="display: none;">
+                </div>
+                <div id="tag-panel" style="display: none;">
+                </div>
+                <div id="fact-panel" style="display: none;">
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<th:block layout:fragment="footerJS">
+<th:block layout:fragment="js">
     <script th:src="@{/resources/js/user.js}"></script>
 </th:block>
 

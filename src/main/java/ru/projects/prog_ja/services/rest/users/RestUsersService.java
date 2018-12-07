@@ -2,46 +2,43 @@ package ru.projects.prog_ja.services.rest.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.projects.prog_ja.dto.smalls.SmallUserTransfer;
-import ru.projects.prog_ja.dto.view.RenderDTO;
-import ru.projects.prog_ja.dto.view.SearchDTO;
+import ru.projects.prog_ja.dto.auth.UserDTO;
+import ru.projects.prog_ja.logic.services.transactional.interfaces.NoticeService;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.UserReadService;
 import ru.projects.prog_ja.services.AbstractRestService;
 
-import javax.validation.Valid;
-import java.util.List;
-
 @RestController
-@RequestMapping("/services/user")
+@RequestMapping("/services/users")
 public class RestUsersService extends AbstractRestService {
 
     private final UserReadService userReadService;
+    private final NoticeService noticeService;
 
-    public RestUsersService(@Autowired UserReadService userReadService){
+    @Autowired
+    public RestUsersService(UserReadService userReadService,
+                            NoticeService noticeService){
         this.userReadService = userReadService;
+        this.noticeService = noticeService;
     }
 
     @GetMapping
-    public ResponseEntity<?> getUsers(@RequestParam(value = "q", required = false) String q,
-                                      @RequestParam(value = "sort", defaultValue = "1") String sort,
-                                      @RequestParam(value = "start") String start,
-                                      @RequestParam(value = "type", defaultValue = "rating") String type){
+    public ResponseEntity<?> getUsers(@RequestParam(name = "q", required = false) String q,
+                                      @RequestParam(name = "sort", defaultValue = "1") String sort,
+                                      @RequestParam(name = "page", defaultValue = "1") String page,
+                                      @RequestParam(name = "type", defaultValue = "rating") String type){
 
-        if(start == null || start.equals(""))
+        return found(userReadService.getUsers(page, q, type, sort));
+    }
 
+    @GetMapping("/notices/{id}")
+    public ResponseEntity<?> getNotices(@PathVariable("id") long id,
+                                        @SessionAttribute("user") UserDTO user){
+
+        if(user == null || user.getId() == -1 || user.getId() != id){
             return badRequest();
-        else if(!start.matches("^\\d+$") || start.length() > 32){
-
-            return incorrectFormat();
-        }else{
-            List<SmallUserTransfer> users = userReadService.getUsers(Integer.parseInt(start), q, type, sort);
-            if(users == null){
-                return serverError();
-            }
-
-            return found(users);
         }
+        user.setNotices(0);
+        return found(noticeService.getLastNotices(id));
     }
 }

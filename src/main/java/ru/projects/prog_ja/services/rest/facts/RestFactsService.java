@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.projects.prog_ja.dto.UserDTO;
+import ru.projects.prog_ja.dto.auth.UserDTO;
 import ru.projects.prog_ja.dto.commons.CommonFactTransfer;
 import ru.projects.prog_ja.dto.view.create.CreateFactDTO;
 import ru.projects.prog_ja.dto.view.update.UpdateFactDTO;
@@ -13,7 +13,6 @@ import ru.projects.prog_ja.logic.services.transactional.interfaces.FactsWriteSer
 import ru.projects.prog_ja.services.AbstractRestService;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/services/facts")
@@ -30,30 +29,18 @@ public class RestFactsService extends AbstractRestService {
     }
 
     @GetMapping
-    public ResponseEntity<?> getFacts(@RequestParam(value = "q", required = false) String q,
-                                          @RequestParam(value = "sort", defaultValue = "1") String sort,
-                                          @RequestParam(value = "start") String start,
-                                          @RequestParam(value = "type", defaultValue = "rating") String type){
+    public ResponseEntity<?> getFacts(@RequestParam(name = "q", required = false) String q,
+                                          @RequestParam(name = "sort", defaultValue = "1") String sort,
+                                          @RequestParam(name = "page", defaultValue = "1") String page,
+                                          @RequestParam(name = "type", defaultValue = "rating") String type){
 
-        if(start == null || start.equals(""))
-            return badRequest();
-        else if(!start.matches("^\\d+&") || start.length() > 32)
-            return incorrectFormat();
-
-        List<CommonFactTransfer> facts = factsReadService.getFacts(Integer.parseInt(start),
-                q, type, sort);
-        if(facts == null || facts.size() == 0){
-            return notFound();
-        }
-
-        return found(facts);
-
+        return found(factsReadService.getFacts(page, q, type, sort));
     }
     
     @GetMapping("/random")
-    public ResponseEntity<?> getRandomFact(@RequestParam(value = "rate", defaultValue = "0") String rate,
-                                           @RequestParam(value = "fact", required = false) String factId,
-                                           @SessionAttribute("user") UserDTO userDTO){
+    public ResponseEntity<?> getRandomFact(@RequestParam(name = "rate", defaultValue = "0") String rate,
+                                           @RequestParam(name = "fact", required = false) String factId,
+                                           @SessionAttribute(name = "user", required = false) UserDTO userDTO){
 
         CommonFactTransfer factTransfer = factsReadService.getNextFact(factId, rate, userDTO);
         if(factTransfer == null){
@@ -65,8 +52,10 @@ public class RestFactsService extends AbstractRestService {
 
     @PostMapping
     public ResponseEntity<?> addFact(@Valid @RequestBody CreateFactDTO createFactDTO, BindingResult bindingResult,
-                                     @SessionAttribute("user")UserDTO userDTO){
-        
+                                     @SessionAttribute(name = "user", required = false)UserDTO userDTO){
+        if(bindingResult.hasErrors())
+            return badRequest();
+
         if(userDTO == null || userDTO.getId() == -1)
             return accessDenied();
 
@@ -80,7 +69,7 @@ public class RestFactsService extends AbstractRestService {
     
     @PutMapping
     public ResponseEntity<?> updateFact(@Valid @RequestBody UpdateFactDTO updateFactDTO, BindingResult bindingResult,
-                                        @SessionAttribute("user")UserDTO userDTO){
+                                        @SessionAttribute(name = "user", required = false)UserDTO userDTO){
         
         if(userDTO == null || userDTO.getId() == -1)
             return accessDenied();

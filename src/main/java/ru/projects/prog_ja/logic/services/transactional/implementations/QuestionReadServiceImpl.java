@@ -6,14 +6,15 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.projects.prog_ja.dto.commons.CommonAnswerTransfer;
-import ru.projects.prog_ja.dto.commons.CommonQuestionTransfer;
+import ru.projects.prog_ja.dto.auth.UserDTO;
+import ru.projects.prog_ja.dto.dao.PageableEntity;
 import ru.projects.prog_ja.dto.full.FullQuestionTransfer;
-import ru.projects.prog_ja.dto.smalls.SmallQuestionTransfer;
-import ru.projects.prog_ja.dto.smalls.SmallUserTransfer;
-import ru.projects.prog_ja.dto.view.BySomethingContainer;
+import ru.projects.prog_ja.dto.view.PageableContainer;
+import ru.projects.prog_ja.dto.view.PagesDTO;
 import ru.projects.prog_ja.dto.view.ViewAnswerTransfer;
-import ru.projects.prog_ja.exceptions.BadRequestException;
+import ru.projects.prog_ja.logic.queues.views.ViewsQueue;
+import ru.projects.prog_ja.logic.services.simple.implementations.RegexUtil;
+import ru.projects.prog_ja.logic.services.simple.interfaces.ValuesParser;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.QuestionReadService;
 import ru.projects.prog_ja.model.dao.QuestionsDAO;
 
@@ -24,117 +25,140 @@ import java.util.List;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class QuestionReadServiceImpl implements QuestionReadService {
 
-    @Value("${questions.small.show.size}")
     private static int smallQuestionsSize;
-
-    @Value("${questions.answers.small.size}")
     private static int smallAnswersSize;
-
-    @Value("${questions.common.show.size}")
     private static int commonQuestionsSize;
-
-    @Value("{entities.max.size}")
     private static int maxEntitiesSize;
 
-    private QuestionsDAO questionsDAO;
+    private final QuestionsDAO questionsDAO;
+    private final ViewsQueue viewsQueue;
+    private final ValuesParser parser;
 
-    public QuestionReadServiceImpl(@Autowired QuestionsDAO questionsDAO){
+    @Autowired
+    public QuestionReadServiceImpl(QuestionsDAO questionsDAO,
+                                   ViewsQueue viewsQueue,
+                                   ValuesParser parser){
         this.questionsDAO = questionsDAO;
+        this.viewsQueue = viewsQueue;
+        this.parser = parser;
     }
 
     @Override
-    public List<CommonQuestionTransfer> getQuestions(int start, String query, String type, String sort) {
+    public PageableContainer getQuestions(String page, String query, String type, String sort) {
         if(query == null || "".equals(query)){
-            return getDefaultQuestions(start, type, sort);
+            return getDefaultQuestions(page, type, sort);
         }else{
-            return findCommonQuestions(start, query, type, sort);
+            return findCommonQuestions(page, query, type, sort);
         }
     }
 
-    public List<CommonQuestionTransfer> getDefaultQuestions(int start, String type, String sort){
+    public PageableContainer getDefaultQuestions(String page, String type, String sort){
 
-        return questionsDAO.getQuestions(start, commonQuestionsSize, getOrderField(type), getSort(sort));
+        int parsedPage = parser.getPage(page);
+        PageableEntity pageable =
+                questionsDAO.getQuestions((parsedPage-1)*commonQuestionsSize, commonQuestionsSize, getOrderField(type), parser.getSort(sort));
+
+        return new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), commonQuestionsSize));
     }
 
     @Override
-    public List<CommonQuestionTransfer> findCommonQuestions(int start, String search, String type, String sort)  {
-        if(search.matches("^[\\w|\\s]+$"))
-            return getDefaultQuestions(start, type, sort);
+    public PageableContainer findCommonQuestions(String page, String search, String type, String sort)  {
+        if(search == null || !RegexUtil.string(search).matches())
+            return getDefaultQuestions(page, type, sort);
 
-        return questionsDAO.findQuestions(start, commonQuestionsSize, search,  getOrderField(type), getSort(sort));
+        int parsedPage = parser.getPage(page);
+        PageableEntity pageable =
+                questionsDAO.findQuestions((parsedPage-1)*commonQuestionsSize, commonQuestionsSize, search,  getOrderField(type), parser.getSort(sort));
+
+        return new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), commonQuestionsSize));
     }
 
     @Override
-    public List<SmallQuestionTransfer> findSmallQuestions(int start, String search, String type, String sort)  {
-        if(search.matches("^[\\w|\\s]+$"))
-            return getDefaultSmallQuestions(start, type, sort);
+    public PageableContainer findSmallQuestions(String page, String search, String type, String sort)  {
+        if(search == null || !RegexUtil.string(search).matches())
+            return getDefaultSmallQuestions(page, type, sort);
 
-        return questionsDAO.findSmallQuestions(start, smallQuestionsSize, search, getOrderField(type), getSort(sort));
+        int parsedPage = parser.getPage(page);
+        PageableEntity pageable =
+                questionsDAO.findSmallQuestions((parsedPage-1)*smallQuestionsSize, smallQuestionsSize, search, getOrderField(type), parser.getSort(sort));
+
+        return new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), smallQuestionsSize));
     }
 
     @Override
-    public FullQuestionTransfer getOneQuestion(long id) {
+    public FullQuestionTransfer getOneQuestion(long id, UserDTO userDTO) {
 
-        return questionsDAO.getFullQuestion(id);
+        FullQuestionTransfer fullQuestionTransfer =  questionsDAO.getFullQuestion(id);
+        if(fullQuestionTransfer != null && userDTO != null && fullQuestionTransfer.getUser().getId() != userDTO.getId()){
+            viewsQueue.addQuestionView(id);
+        }
+
+        return fullQuestionTransfer;
     }
 
     @Override
-    public List<SmallQuestionTransfer> getSmallQuestions(int start, String query, String type, String sort) {
+    public PageableContainer getSmallQuestions(String page, String query, String type, String sort) {
         if(query == null || "".equals(query)){
-            return getDefaultSmallQuestions(start, type, sort);
+            return getDefaultSmallQuestions(page, type, sort);
         }else{
-            return findSmallQuestions(start, query, type, sort);
+            return findSmallQuestions(page, query, type, sort);
         }
     }
 
     @Override
-    public List<SmallQuestionTransfer> getDefaultSmallQuestions(int start, String type, String sort){
-        return questionsDAO.getSmallQuestions(start, smallQuestionsSize, getOrderField(type), getSort(sort));
+    public PageableContainer getDefaultSmallQuestions(String page, String type, String sort){
+
+        int parsedPage = parser.getPage(page);
+        PageableEntity pageable =
+                questionsDAO.getSmallQuestions((parsedPage-1)*smallQuestionsSize, smallQuestionsSize, getOrderField(type), parser.getSort(sort));
+
+        return new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), smallQuestionsSize));
     }
 
 
     @Override
-    public BySomethingContainer getQuestionsByUser(int start, String size, long userId, String type, String sort) {
-        int parsedSize = getSize(size);
-        List<SmallQuestionTransfer> questions = questionsDAO.getSmallQuestionsByUser(start, parsedSize+1,
-                userId, getOrderField(type), getSort(sort));
+    public PageableContainer getQuestionsByUser(String page, String size, long userId, String query, String type, String sort) {
 
-        return questions != null ? new BySomethingContainer(questions.size() > parsedSize, questions) : null;
+        int parsedSize = parser.getSize(size),
+            parsedPage = parser.getPage(page);
+        PageableEntity pageable = questionsDAO.getSmallQuestionsByUser((parsedPage-1)*parsedSize, parsedSize+1,
+                userId, parser.getQuery(query  ), getOrderField(type), parser.getSort(sort));
+
+        return new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), parsedSize));
     }
 
     @Override
-    public BySomethingContainer getQuestionsByTag(int start, String  size, long tagId, String type, String sort) {
-        int parsedSize = getSize(size);
-        List<SmallQuestionTransfer> questions = questionsDAO.getSmallQuestionsByTag(start, parsedSize+1,
-                tagId, getOrderField(type), getSort(sort));
+    public PageableContainer getQuestionsByTag(String page, String  size, long tagId, String q, String type, String sort) {
 
-        return questions != null ? new BySomethingContainer(questions.size() > parsedSize, questions) : null;
+        int parsedSize = parser.getSize(size),
+                parsedPage = parser.getPage(page);
+        PageableEntity pageable = questionsDAO.getSmallQuestionsByTag((parsedPage-1)*parsedSize, parsedSize+1,
+                tagId, parser.getQuery(q), getOrderField(type), parser.getSort(sort));
+
+        return new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), parsedSize));
     }
 
     @Override
-    public BySomethingContainer getAnswersByUser(int start, String size, long userId, String type, String sort){
+    public PageableContainer getAnswersByUser(int start, String size, long userId, String q, String type, String sort){
 
-        int parsedSize = getSize(size);
+        int parsedSize = parser.getSize(size);
         List<ViewAnswerTransfer> answers = questionsDAO.getSmallAnswersByUser(start, parsedSize+1,
-                userId, getOrderField(type), getSort(sort));
+                userId,parser.getQuery(q), getOrderField(type), parser.getSort(sort));
 
-        return answers != null ? new BySomethingContainer(answers.size() > parsedSize, answers) : null;
-    }
-
-    private int getSize(String s){
-        try {
-            int i = Math.abs(Integer.parseInt(s));
-            return i > maxEntitiesSize ? 6 : i;
-        }catch (NumberFormatException e){
-            return 6;
-        }
+        return new PageableContainer(answers, new PagesDTO(0,0,0,0));
     }
     
-    private int getSort(String sort){
-        return "0".equals(sort) ? 0 : 1;
-    }
 
     private String getOrderField(String type){
+        if(type == null)
+            return "rating";
+
         switch (type) {
             case "rating":
                 return "rating";
@@ -145,5 +169,25 @@ public class QuestionReadServiceImpl implements QuestionReadService {
             default:
                 return "rating";
         }
+    }
+
+    @Value("${questions.small.show.size}")
+    public  void setSmallQuestionsSize(int size) {
+        smallQuestionsSize = size;
+    }
+
+    @Value("${questions.answers.small.size}")
+    public  void setSmallAnswersSize(int size) {
+        smallAnswersSize = size;
+    }
+
+    @Value("${questions.common.show.size}")
+    public  void setCommonQuestionsSize(int size) {
+        commonQuestionsSize = size;
+    }
+
+    @Value("${entities.max.size}")
+    public  void setMaxEntitiesSize(int size) {
+        maxEntitiesSize = size;
     }
 }

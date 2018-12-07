@@ -1,22 +1,18 @@
 package ru.projects.prog_ja.dto.view.create;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 public class CreateTagDTO {
 
-    @NotNull
     @Size(min = 3, max = 32)
-    @Pattern(regexp = "^[А-я|\\s]+$")
+    @Pattern(regexp = "^[А-я|\\s|\\w]+$")
     private String name;
 
-    @NotNull
     @Size(min = 100, max = 1000)
-    @Pattern(regexp = "^[\\w|\\s]+$")
+    @Pattern(regexp = "^[А-я|ё|\\w|\\s|\\d|\\p{Punct}]+$")
     private String description;
 
-    @NotNull
     @Size(max = 7, min = 7)
     @Pattern(regexp = "^#[a-f|A-F|0-9]+$")
     private String color;

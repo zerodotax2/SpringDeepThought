@@ -1,10 +1,11 @@
 package ru.projects.prog_ja.model.dao;
 
 
-
+import ru.projects.prog_ja.dto.NoticeEntityTemplateDTO;
 import ru.projects.prog_ja.dto.commons.CommonFactTransfer;
+import ru.projects.prog_ja.dto.dao.PageableEntity;
 import ru.projects.prog_ja.dto.full.FullFactTransfer;
-import ru.projects.prog_ja.dto.smalls.SmallArticleTransfer;
+import ru.projects.prog_ja.dto.smalls.SmallTagTransfer;
 
 import java.util.List;
 
@@ -21,6 +22,10 @@ public interface FactsDAO {
     */
     CommonFactTransfer addFact(String fact, List<Long> tags, long userId);
 
+    String getText(long factId);
+
+    NoticeEntityTemplateDTO getNoticeTemplate(long factId);
+
     /**
      * @param id - delete fact with this id
      */
@@ -36,21 +41,20 @@ public interface FactsDAO {
      *
      * @return random facts from Database
      */
-    List<CommonFactTransfer> getFacts(int start, int size, String orderField, int sort);
+    PageableEntity getFacts(int start, int size, String orderField, int sort);
 
-    List<CommonFactTransfer> findFacts(int start, int size, String query, String orderField, int sort);
+    PageableEntity findFacts(int start, int size, String query, String orderField, int sort);
 
-    List<CommonFactTransfer> getFactsByTag(int start, int size, long tagID, String orderField, int sort);
+    PageableEntity  getFactsByTag(int start, int size, long tagID, String query, String orderField, int sort);
 
-    List<CommonFactTransfer> findFactsByTag(int start, int size, long tagID, String query, String orderField, int sort);
+    PageableEntity getFactsByUser(int start, int size, long userId, String query, String orderField, int sort);
 
-    List<CommonFactTransfer> getFactsByUser(int start, int size, long userId, String orderField, int sort);
-
-    List<CommonFactTransfer> findFactsByUser(int start, int size, long userId, String query, String orderField, int sort);
     /**
     * @return all tags that exists in database
     * */
     List<CommonFactTransfer> getAllFacts();
+
+    List<Long> getTagsByFact(long factId);
 
     long getFactsNum();
 
@@ -59,6 +63,8 @@ public interface FactsDAO {
     CommonFactTransfer getFact(long factId);
 
     FullFactTransfer getFullFact(long factId);
+
+    List<SmallTagTransfer> getTagsByFactID(long factId);
 
     CommonFactTransfer getFactByTag(long tagID, long offset);
 }

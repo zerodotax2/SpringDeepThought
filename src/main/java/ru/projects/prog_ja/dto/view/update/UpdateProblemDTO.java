@@ -12,11 +12,11 @@ public class UpdateProblemDTO {
 
     @NotNull
     @Size(min = 10, max = 100)
-    @Pattern(regexp = "^[\\w|\\s]+$")
+    @Pattern(regexp = "^[А-я|\\s|\\d|\\w]+$")
     private String title;
 
     @NotNull
-    @Pattern(regexp = "^[\\w]+$")
+    @Pattern(regexp = "^[A-z]+$")
     private String difficult;
 
     @NotNull

@@ -1,15 +1,26 @@
 <!DOCTYPE html>
-<html layout:decorate="~{templates/layout}"
+<html layout:decorate="~{templates/simple_layout}"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       th:charset="UTF-8">
 <head>
     <title>Страница не найдена</title>
+    <link rel="stylesheet" th:href="@{/resources/css/404.css}"/>
 </head>
 <body>
 
     <div layout:fragment="content">
-
+        <div class="content">
+            <div class="image">
+                <img th:src="@{/resources/images/catsleep2.jpg}"/>
+            </div>
+            <div class="text">
+                Мы слишком устали, чтобы сделать ещё и эту страницу (404)
+            </div>
+            <div class="action">
+                <a th:href="@{/articles}">На главную</a>
+            </div>
+        </div>
     </div>
 
 </body>

@@ -4,20 +4,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.projects.prog_ja.dto.UserDTO;
+import ru.projects.prog_ja.dto.auth.UserDTO;
 import ru.projects.prog_ja.dto.full.FullProblemTransfer;
-import ru.projects.prog_ja.dto.smalls.SmallProblemTransfer;
 import ru.projects.prog_ja.dto.view.CheckDTO;
 import ru.projects.prog_ja.dto.view.CheckResult;
+import ru.projects.prog_ja.dto.view.FeedbackDTO;
 import ru.projects.prog_ja.dto.view.create.CreateProblemDTO;
 import ru.projects.prog_ja.dto.view.update.UpdateProblemDTO;
 import ru.projects.prog_ja.dto.view.update.UpdateRatingDTO;
+import ru.projects.prog_ja.exceptions.AlreadyExistException;
+import ru.projects.prog_ja.exceptions.RepeatVotedException;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.ProblemReadService;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.ProblemWriteService;
 import ru.projects.prog_ja.services.AbstractRestService;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/services/problems")
@@ -36,31 +37,21 @@ public class RestProblemsService extends AbstractRestService {
 
 
     @GetMapping
-    public ResponseEntity<?> getProblems(@RequestParam(value = "q", required = false) String q,
-                                          @RequestParam(value = "sort", defaultValue = "1") String sort,
-                                          @RequestParam(value = "start") String start,
-                                          @RequestParam(value = "type", defaultValue = "rating") String type,
-                                         @RequestParam(value = "difficult", required = false) String difficult){
+    public ResponseEntity<?> getProblems(@RequestParam(name = "q", required = false) String q,
+                                          @RequestParam(name = "sort", defaultValue = "1") String sort,
+                                          @RequestParam(name = "page", defaultValue = "1") String page,
+                                          @RequestParam(name = "type", defaultValue = "rating") String type,
+                                         @RequestParam(name = "difficult", required = false) String difficult){
 
-        if(start == null || start.equals(""))
-            return badRequest();
-        else if(!start.matches("^\\d+&") || start.length() > 32)
-            return incorrectFormat();
-
-        List<SmallProblemTransfer> questions = problemReadService.getProblems(Integer.parseInt(start),difficult,
-                q, type, sort);
-        if(questions == null || questions.size() == 0){
-            return notFound();
-        }
-
-        return found(questions);
+        return found(problemReadService.getProblems(page,difficult,
+                q, type, sort));
 
     }
     
 
     @PostMapping
     public ResponseEntity<?> createProblem(@Valid @RequestBody CreateProblemDTO createProblemDTO, BindingResult bindingResult,
-                                           @SessionAttribute("user")UserDTO userDTO){
+                                           @SessionAttribute(name = "user", required = false)UserDTO userDTO){
 
         if(bindingResult.hasErrors()){
             return badRequest();
@@ -82,7 +73,7 @@ public class RestProblemsService extends AbstractRestService {
     
     @PutMapping
     public ResponseEntity<?> updateProblem(@Valid @RequestBody UpdateProblemDTO updateProblemDTO, BindingResult bindingResult,
-                                           @SessionAttribute("user")UserDTO userDTO){
+                                           @SessionAttribute(name = "user", required = false) UserDTO userDTO){
 
         if(bindingResult.hasErrors()){
             return badRequest();
@@ -105,7 +96,7 @@ public class RestProblemsService extends AbstractRestService {
     @PostMapping("/rating")
     public ResponseEntity<?> updateRate(@Valid @RequestBody UpdateRatingDTO updateRatingDTO,
                                         BindingResult bindingResult,
-                                        @SessionAttribute("user") UserDTO userDTO){
+                                        @SessionAttribute(name = "user", required = false) UserDTO userDTO){
         if(bindingResult.hasErrors()){
             return badRequest();
         }
@@ -114,8 +105,12 @@ public class RestProblemsService extends AbstractRestService {
             return accessDenied();
         }
 
-        if(problemWriteService.changeRate(updateRatingDTO.getId(), updateRatingDTO.getRate(), userDTO.getId())){
-            return ok();
+        try{
+            if(problemWriteService.changeRate(updateRatingDTO.getId(), updateRatingDTO.getRate(), userDTO.getId())){
+                return ok();
+            }
+        }catch (RepeatVotedException e){
+            return already();
         }
 
         return serverError();
@@ -123,7 +118,7 @@ public class RestProblemsService extends AbstractRestService {
 
     @PostMapping("/check")
     public ResponseEntity<?> checkAnswer(@Valid @RequestBody CheckDTO checkDTO, BindingResult bindingResult,
-                                         @SessionAttribute("user") UserDTO userDTO){
+                                         @SessionAttribute(name = "user", required = false) UserDTO userDTO){
         if(bindingResult.hasErrors()){
             return badRequest();
         }
@@ -132,7 +127,29 @@ public class RestProblemsService extends AbstractRestService {
             return accessDenied();
         }
 
-        return found(new CheckResult(
-                problemWriteService.checkAnswer(checkDTO.getId() ,checkDTO.getValue(), userDTO.getId())));
+        boolean right = false;
+
+        try{
+           right = problemWriteService.checkAnswer(checkDTO.getId() ,checkDTO.getValue(), userDTO.getId());
+        }catch (AlreadyExistException e) {
+            return already();
+        }
+
+        return found(new CheckResult(right));
+    }
+
+    @PostMapping("/feedback")
+    public ResponseEntity<?> sendFeedback(@Valid @RequestBody FeedbackDTO feedbackDTO, BindingResult bindingResult,
+                                          @SessionAttribute(name = "user", required = false) UserDTO userDTO){
+        if(bindingResult.hasErrors())
+            return badRequest();
+        if(userDTO == null || userDTO.getId() == -1)
+            return accessDenied();
+
+        if(problemWriteService.sendFeedback(feedbackDTO.getId(),feedbackDTO.getText(), userDTO.getId())){
+            return ok();
+        }
+
+        return serverError();
     }
 }

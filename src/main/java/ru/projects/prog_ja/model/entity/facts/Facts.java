@@ -1,21 +1,23 @@
 package ru.projects.prog_ja.model.entity.facts;
 
 
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
-import org.springframework.stereotype.Controller;
 import ru.projects.prog_ja.model.entity.user.UserInfo;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.Table;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "Facts")
-@org.hibernate.annotations.NamedQueries({
+@NamedQueries({
         @NamedQuery(name = "deleteFact", query = "delete from Facts f where f.factId = :id"),
         @NamedQuery(name = "getFact", query = "select f from Facts f" +
                 " left join fetch f.tags t " +
@@ -36,19 +38,22 @@ import java.util.Set;
         @NamedQuery(name = "getFactByTag", query = "select f from Facts f " +
                 " left join fetch f.tags t " +
                 " left join fetch t.tagId " +
-                " where t.tagId = :tag ")
+                " where t.tagId = :tag "),
+        @NamedQuery(name = "getFactText", query = "select f.text from Facts f where f.factId = :id"),
+        @NamedQuery(name = "updateFactOwnerRate", query = "update UserInfo set rating = rating + :rate " +
+                " where :fact in elements(facts)"),
+        @NamedQuery(name = "getFactNoticeTemplate", query = "select new ru.projects.prog_ja.dto.NoticeEntityTemplateDTO(" +
+                " c.userId, f.text " +
+                " ) from Facts f left join f.creator c where f.factId = :id"),
+        @NamedQuery(name = "getTagsByFact", query = "select t.tagId from Facts f left join f.tags ft left join ft.tagId t where f.factId = :id"),
+        @NamedQuery(name = "getUpdateFactEntity", query = "select f from Facts f " +
+                " left join fetch f.tags " +
+                " where f.factId = :id"),
+        @NamedQuery(name = "removeFactTags", query = "delete from FactsTags where tagId in (:tags)"),
+        @NamedQuery(name = "getTagsByFactId", query = "select new ru.projects.prog_ja.dto.smalls.SmallTagTransfer(t.tagId, t.name, t.color)" +
+                " from Tags t left join t.facts f where f.factId = :fact")
 })
 public class Facts {
-
-    public static final String DELETE_FACT = "deleteFact";
-    public static final String UPDATE_FACT_RATE = "updateFactRate";
-    public static final String GET_FACT = "getFact";
-    public static final String GET_FULL_FACT = "getFullFact";
-    public static final String GET_FACTS = "getFacts";
-    public static final String GET_COMMON_FACTS = "getCommonFacts";
-    public static final String COUNT_FACTS = "countFacts";
-    public static final String COUNT_FACTS_BY_TAG = "countFactsByTag";
-    public static final String GET_FACT_BY_TAG = "getFactByTag";
 
     private String text;
     private long factId;
@@ -61,6 +66,7 @@ public class Facts {
     private boolean activated = false;
 
     @Column(name = "text")
+    @Type(type = "org.hibernate.type.TextType")
     public String getText() {
         return text;
     }
@@ -112,7 +118,7 @@ public class Facts {
 
     @Fetch(FetchMode.SELECT)
     @BatchSize(size = 10)
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "factId")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "factId", cascade = CascadeType.ALL)
     public Set<FactsTags> getTags() {
         return tags;
     }

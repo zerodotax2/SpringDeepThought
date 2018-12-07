@@ -11,12 +11,12 @@ public class UpdateTagDTO {
 
     @NotNull
     @Size(min = 3, max = 32)
-    @Pattern(regexp = "^[А-я|\\s]+$")
+    @Pattern(regexp = "^[А-я|\\s|\\w|\\d]+$")
     private String name;
 
     @NotNull
     @Size(min = 100, max = 1000)
-    @Pattern(regexp = "^[\\w|\\s]+$")
+    @Pattern(regexp = "^[А-я|ё|\\w|\\s|\\d|\\p{Punct}]+$")
     private String description;
 
     @NotNull

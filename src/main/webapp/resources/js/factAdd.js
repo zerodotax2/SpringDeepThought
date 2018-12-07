@@ -1,6 +1,4 @@
-
-const factId = document.getElementById("fact_id").getAttribute("content");
-
+'use strict';
 const editor = {
     area: document.getElementById('describeInput'),
     counter: document.querySelector('.content .describe .counter span'),
@@ -36,16 +34,18 @@ function create(){
            xhr.request({
                path: '/services/facts',
                method: 'PUT',
+               headers: {
+                   'Content-Type':'application/json'
+               },
                content: JSON.stringify({
-                   factId: factId,
+                   factId: editor.factId,
                    tags: tagsIDS,
                    text: describe
                })
            }, function (response, error) {
                if(response){
-                   let href = window.location.href,
-                       fact = JSON.parse(response);
-                   window.location.href = href.substring(0, href.lastIndexOf('add')) + fact.id;
+                   let href = window.location.href;
+                   window.location.href = href.substring(0, href.lastIndexOf('facts')+('facts'.length));
                }else if(error){
                    modal.error('Не удалось обновить факт');
                }
@@ -56,6 +56,9 @@ function create(){
            xhr.request({
                path: '/services/facts',
                method: 'POST',
+               headers: {
+                   'Content-Type':'application/json'
+               },
                content: JSON.stringify({
                    tags: tagsIDS,
                    text: describe
@@ -64,7 +67,7 @@ function create(){
                if(response){
                    let href = window.location.href,
                        fact = JSON.parse(response);
-                   window.location.href = href.substring(0, href.lastIndexOf('add')) + fact.id;
+                   window.location.href = href.substring(0, href.lastIndexOf('add'));
                }else if(error){
                    modal.error('Не удалось создать факт');
                }
@@ -81,9 +84,11 @@ function initIfEdit(){
      }
      editor.edit = true;
      const textEdit = document.getElementById('text_edit'),
-            tagsEdit = document.getElementById("tags_edit");
-     Array.forEach(tagsEdit.children, function (metaTag) {
-         let selectedTag = document.createElement('div'),
+            tagsEdit = document.getElementById("tags_edit"),
+            tagsChild = tagsEdit.children;
+     for(let i = 0; i < tagsChild.length; i++){
+         let metaTag = tagsChild[i],
+             selectedTag = document.createElement('div'),
              name = metaTag.getAttribute('name'),
              color = metaTag.getAttribute('color'),
              id = metaTag.getAttribute('content');
@@ -92,12 +97,14 @@ function initIfEdit(){
          selectedTag.innerText = name;
          selectedTag.style.color = '#ffffff';
          selectedTag.setAttribute('content', id);
-         selectedTag.onclick = deleteTagOnClick;
+         selectedTag.addEventListener('click', deleteTagOnClick);
          tags.tagsCount[id] = 1;
          tags.tagsInputContainer.insertBefore(selectedTag, tags.tagInput);
-     });
+     }
      upPlaceholder();
      editor.area.value = textEdit.getAttribute('content').trim();
+
+     editor.factId = document.getElementById("fact_id").getAttribute("content");
 
      textEdit.parentNode.removeChild(textEdit);
      tagsEdit.parentNode.removeChild(tagsEdit);

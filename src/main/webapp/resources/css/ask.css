@@ -159,7 +159,10 @@
 .last-questions .question:hover{
     color: #008f9f;
 }
-
+.user-notifications{
+    display: flex;
+    align-items: center;
+}
 @media (max-device-width: 600px) {
     .main .container{
         display: block;

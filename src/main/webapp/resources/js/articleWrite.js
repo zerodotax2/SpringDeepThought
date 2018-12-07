@@ -1,5 +1,4 @@
-const articleId = document.getElementById("article_id").getAttribute("content");
-
+'use strict';
 const articleEditor = document.querySelector('#article-editor'),
     quill = new Quill(articleEditor, {
         theme: 'bubble',
@@ -16,6 +15,13 @@ const articleEditor = document.querySelector('#article-editor'),
         }
     });
 
+    const images = {
+
+        imageHover:  document.querySelector('#image-hover'),
+        topImageSection: document.querySelector('.head-info .card-image'),
+        uploadMainImage: document.querySelector('#uploadMainImage'),
+
+    };
     const inputs = {
         titleInput: document.querySelector('#title'),
         subtitleInput: document.querySelector('#subtitle'),
@@ -30,6 +36,7 @@ const articleEditor = document.querySelector('#article-editor'),
             inputs.edit = false;
             return;
         }
+        inputs.articleId = document.getElementById("article_id").getAttribute("content")
 
         let titleEdit = document.getElementById('title_edit'),
             subtitleEdit = document.getElementById('subtitle_edit'),
@@ -40,8 +47,13 @@ const articleEditor = document.querySelector('#article-editor'),
 
         inputs.titleInput.value = titleEdit.innerText;
         inputs.subtitleInput.value = subtitleEdit.innerText;
-        Array.forEach(tagsEditChilds, function (tag) {
-            let selectedTag = document.createElement('div'),
+        if(tagsEditChilds.length>0){
+            tags.tagLabel.style.top = '-14px';
+            tags.tagLabel.style.fontSize = '12px';
+        }
+        for(let i = 0; i < tagsEditChilds.length; i++){
+            let tag = tagsEditChilds[i],
+                selectedTag = document.createElement('div'),
                 name = tag.getAttribute('name'),
                 color = tag.getAttribute('color'),
                 id = tag.getAttribute('content');
@@ -50,13 +62,16 @@ const articleEditor = document.querySelector('#article-editor'),
             selectedTag.innerText = name;
             selectedTag.style.color = '#ffffff';
             selectedTag.setAttribute('content', id);
-            selectedTag.onclick = deleteTagOnClick;
+            selectedTag.addEventListener('click', deleteTagOnClick);
             tags.tagsCount[id] = 1;
             tags.tagsInputContainer.insertBefore(selectedTag, tags.tagsInputContainer.lastElementChild);
-        });
-        upPlaceholder();
+        }
         inputs.qlEditor.innerHTML = articleEdit.innerHTML.trim();
-        inputs.mainImage.src = appConf.fileServerLocation + imageEdit.getAttribute('largeImagePath');
+        inputs.mainImage.src = '/'+imageEdit.getAttribute('largeImagePath');
+
+        images.smallImagePath = imageEdit.getAttribute('smallImagePath');
+        images.middleImagePath = imageEdit.getAttribute('middleImagePath');
+        images.largeImagePath = imageEdit.getAttribute('largeImagePath');
 
         titleEdit.parentNode.removeChild(titleEdit);
         subtitleEdit.parentNode.removeChild(subtitleEdit);
@@ -99,24 +114,17 @@ function initEditor() {
     editor.qlToolbarWidth = qlToolbar.clientWidth;
     qlToolbar.classList.add("ql-hidden");
 
-    articleEditor.onclick = function (e) {
+    articleEditor.addEventListener('click', function (e) {
         if(editor.isShow){
             editor.hideToolbar();
         }else{
             editor.showToolbar(e.clientX, e.clientY);
         }
-    };
-    qlToolbar.onclick = function (e) {
+    });
+    qlToolbar.addEventListener('click', function (e) {
         e.stopPropagation();
-    }
+    });
 }
-const images = {
-
-    imageHover:  document.querySelector('#image-hover'),
-    topImageSection: document.querySelector('.head-info .card-image'),
-    uploadMainImage: document.querySelector('#uploadMainImage'),
-
-};
 function initImageManager() {
 
     images.topImageSection.onmouseenter = function (e) {
@@ -126,19 +134,30 @@ function initImageManager() {
         images.imageHover.style.display = 'none';
     };
     images.uploadMainImage.onchange = function (e) {
-        xhr.file('/upload', images.uploadMainImage.files[0], function (response, error) {
-            if(response){
-                let result = JSON.parse(response);
 
-                images.smallImagePath = result.smallImagePath;
-                images.middleImagePath = result.middleImagePath;
-                images.largeImagePath = result.largeImagePath;
+        let file = new FormData();
+        file.append('file',images.uploadMainImage.files[0]);
 
-                inputs.mainImage.src = result.fileServerLocation + result.largeImagePath;
-            }else if(error){
+        xhr.request({
+                path:'/upload',
+                method:'POST',
+                headers:{
+                    'Upload-Type':'article.main'
+                },
+                content: file
+            }, function (response, error) {
+                if(response){
+                    let result = JSON.parse(response);
 
-            }
-        });
+                    images.smallImagePath = result.small;
+                    images.middleImagePath = result.middle;
+                    images.largeImagePath = result.large;
+
+                    inputs.mainImage.src = '/'+result.large;
+                }else if (error){
+                    modal.error('Не удалось загрузить файл');
+                }
+            });
     }
 }
 
@@ -147,7 +166,7 @@ function initCreate() {
 
     const createButton = document.querySelector('.create-article');
 
-    createButton.onclick = function (e) {
+    createButton.addEventListener('click', function (e) {
         if(creating){
             return;
         }
@@ -171,7 +190,7 @@ function initCreate() {
             modal.error('Не удалось загрузить изображение');
             return;
         }
-        creator.creating = true;
+        creating = true;
         const article = {
             title: inputs.titleInput.value,
             subtitle: inputs.subtitleInput.value,
@@ -181,45 +200,51 @@ function initCreate() {
             middleImagePath: images.middleImagePath,
             largeImagePath: images.largeImagePath
         };
+
         if(!inputs.edit){
             createArticle(article);
         }else{
             updateArticle(article);
         }
-    }
+    });
 }
 
     function createArticle(article){
+        modal.load('Идёт создание статьи...');
         xhr.request({
             path: '/services/articles',
             method: 'POST',
+            headers: {
+                'Content-Type':'application/json'
+            },
             content: JSON.stringify(article)
         }, function (result, error) {
             if(result){
                 let obj = JSON.parse(result);
-                window.location.href = 'http://localhost:8080/articles/' + obj.id;
+                window.location.href = 'http://localhost/articles/' + obj.id;
             }else if(error){
                 modal.error('Не удалось создать статью');
             }
         });
-        modal.load('Идёт создание статьи...');
     }
 
     function updateArticle(article){
-        article.articleId = articleId;
+        article.articleId = inputs.articleId;
+        modal.load('Идёт обновление статьи...');
         xhr.request({
             path: '/services/articles',
             method: 'PUT',
+            headers: {
+                'Content-Type':'application/json'
+            },
             content: JSON.stringify(article)
         }, function (result, error) {
             if(result){
-                let obj = JSON.parse(result);
-                window.location.href = 'http://localhost:8080/articles/' + obj.id;
+                window.location.href = 'http://localhost:80/articles/' + inputs.articleId;
             }else if(error){
                 modal.error('Не удалось обновить статью');
             }
         });
-        modal.load('Идёт обновление статьи...');
     }
 /*
 * Init functions

@@ -4,11 +4,12 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       th:charset="UTF-8">
 <head>
-    <title th:title="${question.title}"></title>
+    <title th:text="${fullQuestionDTO.title}"></title>
     <link rel="stylesheet" th:href="@{/resources/css/quill.snow.css}"/>
     <link rel="stylesheet" th:href="@{/resources/css/question.css}"/>
-    <meta id="user_id" th:content="${user==null?-1:user.id}"/>
-    <meta id="owner" th:content="${user.id==fullQuestionDTO.user.id}" th:answer="${fullQuestionDTO.right}"/>
+    <meta id="user_id" th:content="${session.user==null?-1:session.user.id}"/>
+    <meta id="owner" th:content="${session.user.id==fullQuestionDTO.user.id}" th:answer="${fullQuestionDTO.right}"/>
+    <meta id="owner_id" th:content="${fullQuestionDTO.user.id}"/>
 </head>
 <body>
 
@@ -34,12 +35,12 @@
         <div class="question-container col s12">
             <div class="question">
                 <div class="question-top">
-                    <a th:href="@{/users/${fullQuestionDTO.user.id}}" class="user-avatar ">
-                        <img th:src="@{${fullQuestionDTO.user.userImage}}" alt=""/><br>
-                        <span class="user-login">zerodotax2</span>
+                    <a th:href="@{'/users/'+${fullQuestionDTO.user.id}}" class="user-avatar ">
+                        <img th:src="@{'/'+${fullQuestionDTO.user.userImage}}" alt=""/><br>
+                        <span class="user-login" th:text="${fullQuestionDTO.user.login}"></span>
                         <div class="user-rating">
                             <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#ffcb05" d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"></path></svg>
-                            <span th:text="${#numbers.formatDecimal(fullQuestionDTO.user.rating, 1, 3, 'WHITESPACE')}"></span>
+                            <span th:text="${#numbers.formatDecimal(fullQuestionDTO.user.rating,0,'WHITESPACE',0,'POINT')}"></span>
                         </div>
                     </a>
                     <div class="question-header ">
@@ -54,17 +55,17 @@
                                         <span th:text="${fullQuestionDTO.views}"></span> <span class="hide-on-med-and-down">просмотра</span></div>
                                     <div class="stat">
                                         <svg  role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#adb5bd" d="M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z"></path></svg>
-                                        <span th:text="${fullQuestionDTO.answers.size}"></span> <span class="hide-on-med-and-down">ответа</span></div>
+                                        <span th:text="${#lists.size(fullQuestionDTO.answers)}"></span> <span class="hide-on-med-and-down">ответа</span></div>
                                 </div>
-                                <a th:if="${user!=null && user.id==fullQuestionDTO.user.id}" class="edit-question stat" th:href="@{/questions/${fullQuestionDTO.id}/edit}">
+                                <a th:if="${session.user!=null && session.user.id==fullQuestionDTO.user.id}" class="edit-question stat" th:href="@{'/questions/'+${fullQuestionDTO.id}+'/edit'}">
                                     <svg role="img" fill="#ADB5BD" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M290.74 93.24l128.02 128.02-277.99 277.99-114.14 12.6C11.35 513.54-1.56 500.62.14 485.34l12.7-114.22 277.9-277.88zm207.2-19.06l-60.11-60.11c-18.75-18.75-49.16-18.75-67.91 0l-56.55 56.55 128.02 128.02 56.55-56.55c18.75-18.76 18.75-49.16 0-67.91z"></path></svg>
                                 </a>
                             </div>
-                            <h5 >Зачем бекенд разработчику учить Angular JS?</h5>
+                            <h5 th:text="${fullQuestionDTO.title}"></h5>
                         </div>
                         <div class="question-info">
                             <div class="tags">
-                                <a th:each="tag : ${fullQuestionDTO.tags}" th:href="@{/tags/${tag.id}}" th:style="'background: '+${tag.color}+';'" class="chip" th:text="${tag.name}"></a>
+                                <a th:each="tag : ${fullQuestionDTO.tags}" th:href="@{'/tags/'+${tag.id}}" th:style="'background: '+${tag.color}+';'" class="chip" th:text="${tag.name}"></a>
                             </div>
                         </div>
                     </div>
@@ -76,26 +77,29 @@
         </div>
         <div class="row answers">
             <div class="col s12">
-                <div class="answers-title grey-text text-darken-2">Ответы <span class="blue" th:text="${fullQuestionDTO.answers.size}"></span></div>
+                <div class="answers-title grey-text text-darken-2">Ответы <span class="blue" th:text="${#lists.size(fullQuestionDTO.answers)}"></span></div>
             </div>
-            <div th:if="${user!=null}" class="edit-wrapper">
+            <div th:if="${session.user!=null}" class="edit-wrapper">
                 <div class="add-answer">
                     <div class="add-content">
                         <div class="answer-editor">
 
                         </div>
                         <div class="add-actions">
-                            <a th:href="@{/users/${user.id}}" class="answer-user">
-                                <img th:src="@{${user.userImage}}"/>
+                            <a th:href="@{'/users/'+${session.user.id}}" class="answer-user">
+                                <img th:src="@{'/'+${session.user.userImage}}"/>
                                 <div class="info">
-                                    <span class="login" th:text="${user.login}"></span>
+                                    <span class="login" th:text="${session.user.login}"></span>
                                     <div class="rating">
                                         <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#ffcb05" d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"></path></svg>
-                                        <span th:text="${#numbers.formatDecimal(user.rating, 1, 3, 'WHITESPACE')}"></span>
+                                        <span th:text="${#numbers.formatDecimal(session.user.rating,0,'WHITESPACE',0,'POINT')}"></span>
                                     </div>
                                 </div>
                             </a>
-                            <div class="send-btn">Отправить</div>
+                            <div class="btns">
+                                <div class="send-btn">Отправить</div>
+                                <div class="cancel" style="display: none;">Отмена</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -115,17 +119,17 @@
                                     <svg role="img" class="answer-rate-btn" th:content="${answer.id}+':-1'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path></svg>
                                 </div>
                             </div>
-                            <div class="right-side" th:text="${answer.htmlContent}">
+                            <div class="right-side" th:utext="${answer.htmlContent}">
                             </div>
                         </div>
                         <div class="action">
-                            <a th:href="@{/users/${answer.user.id}}" class="answer-user">
-                                <img th:src="@{${answer.user.userImage}}"/>
+                            <a th:href="@{'/users/'+${answer.user.id}}" class="answer-user">
+                                <img th:src="@{'/'+${answer.user.userImage}}"/>
                                 <div class="info">
                                     <span class="login" th:text="${answer.user.login}"></span>
                                     <div class="rating">
                                         <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#ffcb05" d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"></path></svg>
-                                        <span th:text="${#numbers.formatDecimal(answer.user.rating, 1, 3, 'WHITESPACE')}"></span>
+                                        <span th:text="${#numbers.formatDecimal(answer.user.rating,0,'WHITESPACE',0,'POINT')}"></span>
                                     </div>
                                 </div>
                             </a>

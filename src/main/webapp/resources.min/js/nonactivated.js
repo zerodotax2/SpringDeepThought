@@ -1,0 +1,1 @@
+"use strict";const send=document.getElementById("send");function initSend(){send.addEventListener("click",function(){modal.load("Идёт отправка письма"),xhr.request({method:"POST",path:"/services/register/email"},function(e,n){e?modal.info("Email был успешно отправлен на "+e.email):n&&modal.error("Не удалось отправить email")})})}initSend();

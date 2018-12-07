@@ -3,8 +3,8 @@ package ru.projects.prog_ja.dto.commons;
 import ru.projects.prog_ja.dto.smalls.SmallTagTransfer;
 import ru.projects.prog_ja.dto.smalls.SmallUserTransfer;
 
+import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class SettingsUserTransfer extends SmallUserTransfer {
@@ -18,11 +18,11 @@ public class SettingsUserTransfer extends SmallUserTransfer {
     public SettingsUserTransfer(){}
 
     public SettingsUserTransfer(long id, String login, String userImage, long rating,
-                                String firstName, String lastName, String about, Date birthDate) {
+                                String firstName, String lastName, String about, java.util.Date birthDate) {
         super(id, login, userImage, rating);
         this.firstName = firstName;
         this.lastName = lastName;
-        this.birthDate = birthDate;
+        this.birthDate = new Date(birthDate.getTime() + 1000);
         this.about = about;
         this.interests = new ArrayList<>();
     }

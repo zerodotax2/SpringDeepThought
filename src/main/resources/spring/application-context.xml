@@ -4,20 +4,22 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/context  http://www.springframework.org/schema/cache/spring-context.xsd
+       http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <import resource="servlet-context.xml"/>
     <import resource="hibernate-beans.xml"/>
     <import resource="security-config.xml"/>
     <import resource="async-context.xml"/>
+    <import resource="mail-config.xml"/>
 
-    <context:annotation-config />
+    <context:annotation-config/>
     <context:component-scan base-package="ru.projects.prog_ja"/>
 
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 
-    <bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    <bean name="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <!--10 mb max size-->
         <property name="maxUploadSize" value="10485760"/>
         <property name="maxUploadSizePerFile" value="10485760"/>

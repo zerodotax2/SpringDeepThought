@@ -1,5 +1,7 @@
 package ru.projects.prog_ja.model.entity.articles;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -9,6 +11,7 @@ public class ArticleContent {
     private long articleId;
     private String htmlContent;
     private String subtitle;
+    private ArticleInfo article;
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "article_content_id")
@@ -20,8 +23,8 @@ public class ArticleContent {
         this.articleId = articleId;
     }
 
-    @Basic
     @Column(name = "htmlContent")
+    @Type(type = "org.hibernate.type.TextType")
     public String getHtmlContent() {
         return this.htmlContent;
     }
@@ -62,4 +65,13 @@ public class ArticleContent {
         return Objects.hash(articleId, subtitle);
     }
 
+    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "article_id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "article_content_fk"))
+    public ArticleInfo getArticle() {
+        return article;
+    }
+
+    public void setArticle(ArticleInfo article) {
+        this.article = article;
+    }
 }

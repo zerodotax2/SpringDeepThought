@@ -1,5 +1,6 @@
 package ru.projects.prog_ja.model.dao;
 
+import ru.projects.prog_ja.dto.NoticeEntityTemplateDTO;
 import ru.projects.prog_ja.dto.full.FullForumAnswer;
 import ru.projects.prog_ja.dto.smalls.SmallForumAnswer;
 import ru.projects.prog_ja.dto.smalls.SmallUserQuestionTransfer;
@@ -25,4 +26,6 @@ public interface SupportDAO {
     SmallForumAnswer getSmallAnswer(long id);
 
     FullForumAnswer getOneQuestion(long id);
+
+    NoticeEntityTemplateDTO getNoticeTemplate(long answerId);
 }

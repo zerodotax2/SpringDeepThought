@@ -4,9 +4,11 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import ru.projects.prog_ja.dto.NoticeEntityTemplateDTO;
 import ru.projects.prog_ja.dto.full.FullForumAnswer;
 import ru.projects.prog_ja.dto.smalls.SmallForumAnswer;
 import ru.projects.prog_ja.dto.smalls.SmallUserQuestionTransfer;
+import ru.projects.prog_ja.model.dao.Hibernate.queries.ForumQuestionsQueries;
 import ru.projects.prog_ja.model.dao.SupportDAO;
 import ru.projects.prog_ja.model.entity.support.UserForumAnswer;
 import ru.projects.prog_ja.model.entity.support.UserQuestion;
@@ -30,13 +32,13 @@ public class HibernateSupportDAOImpl extends GenericDAO implements SupportDAO {
             Session session = session();
 
             UserInfo user = session.load(UserInfo.class, userID);
-            if(user == null)
-                return null;
 
             UserQuestion userQuestion = new UserQuestion(text, new Date());
             userQuestion.setUser(user);
 
-            return new FullForumAnswer(getSmallQuestion((long) session.save(userQuestion)),null);
+            long id = (long) session.save(userQuestion);
+
+            return new FullForumAnswer(getSmallQuestion(id),null);
         }catch (Exception e){
             return null;
         }
@@ -45,7 +47,7 @@ public class HibernateSupportDAOImpl extends GenericDAO implements SupportDAO {
     @Override
     public List<SmallUserQuestionTransfer> getForumQuestions(int start, int size) {
 
-        return session().createNamedQuery(UserQuestion.GET_USER_QUESTIONS, SmallUserQuestionTransfer.class)
+        return session().createNamedQuery(ForumQuestionsQueries.GET_USER_QUESTIONS, SmallUserQuestionTransfer.class)
                 .setFirstResult(start)
                 .setMaxResults(size)
                 .getResultList();
@@ -54,7 +56,7 @@ public class HibernateSupportDAOImpl extends GenericDAO implements SupportDAO {
     @Override
     public List<SmallUserQuestionTransfer> getNonAnsweredForumQuestions(int start, int size) {
 
-        return session().createNamedQuery(UserQuestion.GET_NON_ANSWERED_USER_QUESTIONS, SmallUserQuestionTransfer.class)
+        return session().createNamedQuery(ForumQuestionsQueries.GET_NON_ANSWERED_USER_QUESTIONS, SmallUserQuestionTransfer.class)
                 .setFirstResult(start)
                 .setMaxResults(size)
                 .getResultList();
@@ -66,8 +68,6 @@ public class HibernateSupportDAOImpl extends GenericDAO implements SupportDAO {
             Session session = session();
 
             UserInfo user = session.load(UserInfo.class, userId);
-            if(user == null)
-                return false;
 
             UserQuestion userQuestion = getEntityQuestion(userQuestionId);
             if(userQuestion == null)
@@ -75,6 +75,7 @@ public class HibernateSupportDAOImpl extends GenericDAO implements SupportDAO {
 
             UserForumAnswer userForumAnswer = new UserForumAnswer(text, new Date());
             userForumAnswer.setUser(user);
+            userForumAnswer.setForumQuestion(userQuestion);
 
             userQuestion.setAnswer(userForumAnswer);
 
@@ -91,10 +92,8 @@ public class HibernateSupportDAOImpl extends GenericDAO implements SupportDAO {
             Session session = session();
 
             UserInfo user = session.load(UserInfo.class, userId);
-            if(user == null)
-                return false;
 
-           return session.createNamedQuery(UserQuestion.REMOVE_FORUM_QUESTION)
+           return session.createNamedQuery(ForumQuestionsQueries.REMOVE_FORUM_QUESTION)
                    .setParameter("id", id)
                    .setParameter("user", user)
                    .executeUpdate() != 0;
@@ -109,10 +108,8 @@ public class HibernateSupportDAOImpl extends GenericDAO implements SupportDAO {
             Session session = session();
 
             UserInfo user = session.load(UserInfo.class, userId);
-            if(user == null)
-                return false;
 
-           return session.createNamedQuery(UserQuestion.REMOVE_FORUM_ANSWER)
+           return session.createNamedQuery(ForumQuestionsQueries.REMOVE_FORUM_ANSWER)
                    .setParameter("id", id)
                    .setParameter("user", user)
                    .executeUpdate() != 0;
@@ -122,7 +119,7 @@ public class HibernateSupportDAOImpl extends GenericDAO implements SupportDAO {
     }
 
     private UserQuestion getEntityQuestion(long id){
-        return session().createNamedQuery(UserQuestion.GET_ENTITY_USER_QUESTION, UserQuestion.class)
+        return session().createNamedQuery(ForumQuestionsQueries.GET_ENTITY_USER_QUESTION, UserQuestion.class)
                 .setParameter("id", id)
                 .getResultList().stream().findFirst().orElse(null);
     }
@@ -130,7 +127,7 @@ public class HibernateSupportDAOImpl extends GenericDAO implements SupportDAO {
     @Override
     public SmallUserQuestionTransfer getSmallQuestion(long id) {
 
-        return session().createNamedQuery(UserQuestion.GET_USER_QUESTION, SmallUserQuestionTransfer.class)
+        return session().createNamedQuery(ForumQuestionsQueries.GET_USER_QUESTION, SmallUserQuestionTransfer.class)
                 .setParameter("id", id)
                 .setMaxResults(1)
                 .getResultList().stream().findFirst().orElse(null);
@@ -138,7 +135,7 @@ public class HibernateSupportDAOImpl extends GenericDAO implements SupportDAO {
 
     @Override
     public SmallForumAnswer getSmallAnswer(long id) {
-        return session().createNamedQuery(UserQuestion.GET_FORUM_ANSWER, SmallForumAnswer.class)
+        return session().createNamedQuery(ForumQuestionsQueries.GET_FORUM_ANSWER, SmallForumAnswer.class)
                 .setParameter("id", id)
                 .getResultList().stream().findFirst().orElse(null);
     }
@@ -149,5 +146,11 @@ public class HibernateSupportDAOImpl extends GenericDAO implements SupportDAO {
         return new FullForumAnswer(getSmallQuestion(id), getSmallAnswer(id));
     }
 
+    @Override
+    public NoticeEntityTemplateDTO getNoticeTemplate(long questionId) {
 
+        return session().createNamedQuery(ForumQuestionsQueries.GET_NOTICE_TEMPLATE, NoticeEntityTemplateDTO.class)
+                .setParameter("id", questionId)
+                .getResultList().stream().findFirst().orElse(null);
+    }
 }

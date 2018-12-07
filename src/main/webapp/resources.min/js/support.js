@@ -1,0 +1,1 @@
+"use strict";function initAsk(){document.querySelector(".ask").addEventListener("click",function(){let e=document.createElement("div");e.classList.add("helper"),e.innerText="Отвёт придёт к вам в уведомления",modal.feedback("Задать вопрос",modal.loadColor,"/services/support/ask"),modal.content.insertBefore(e,modal.content.firstElementChild)})}initAsk();

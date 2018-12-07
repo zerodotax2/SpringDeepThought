@@ -19,5 +19,4 @@ public interface UserWriteService {
     boolean updateUserImage(long id, List<String> mainImages);
 
     boolean updateBirthDate(long id, String date);
-    
 }

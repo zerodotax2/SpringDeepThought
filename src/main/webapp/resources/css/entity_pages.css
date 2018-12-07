@@ -1,0 +1,105 @@
+.top-panel{
+    min-height: 300px;
+    background: #0F2027;
+    background: -webkit-linear-gradient(to top, #2C5364, #203A43, #0F2027);
+    background: linear-gradient(to top, #2C5364, #203A43, #0F2027);
+    display: flex;
+    align-items: center;
+    flex-flow: column;
+    justify-content: start;
+}
+.top-panel .text-panel{
+    color: white;
+    text-align: center;
+}
+.top-panel .text-panel h1{
+    margin: 20px 0 0 0;
+}
+.top-panel .create{
+    padding: 10px 40px;
+    margin-top: 15px;
+    border-radius: 20px;
+    transition-duration: 0.3s;
+    border: 2px solid white;
+    color: white;
+}
+.top-panel .create:hover{
+    background: white;
+    color: #006564;
+    box-shadow: 0 0 10px #014948;
+    transform: translateY(-5px);
+}
+.no-content{
+    color: lightgray;
+    font-size: 30px;
+    text-align: center;
+    padding: 20px 0 !important;
+    font-weight: 100;
+}
+.pagination {
+    margin: 10px 0;
+    padding: 0 !important;
+}
+.pagination .content{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.pagination .content .center{
+    display: flex;
+}
+.pagination .content .elem{
+    border-radius: 20px;
+    padding: 7px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #00b0ff;
+    box-shadow: 0 0 15px #aeaeae;
+    margin: 0 5px;
+}
+.pagination .content .elem:hover{
+    background: whitesmoke;
+}
+.pagination .content .active:hover{
+    background-color: rgba(0, 174, 255, 0.81);
+}
+.pagination .content .active{
+    background-color: #00b0ff;
+    color: #fff;
+}
+.pagination .content .act{
+    padding: 7px 20px;
+    color: #fff;
+    background: #00b0ff;
+}
+.pagination .content .act:hover{
+    background-color: rgba(0, 174, 255, 0.81);
+}
+.pagination .content .elem:first-of-type{
+    border-left: none;
+}
+.pagination .content .all-pages{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.pagination .content .divide{
+    margin: 0 3px;
+}
+@media (max-device-width: 600px) {
+    .top-panel h1{
+        margin-top: 30px !important;
+        font-size: 50px;
+    }
+    .top-panel h4{
+        font-size: 20px;
+    }
+    .pagination .content{
+        flex-flow: column;
+    }
+    .pagination .act{
+        width: 100%;
+        text-align: center;
+        margin: 20px 0 !important;
+    }
+}

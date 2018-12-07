@@ -3,8 +3,6 @@ package ru.projects.prog_ja.model.entity.problems;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.Set;
-import java.util.TreeSet;
 
 @Entity
 @Table(name = "ProblemSolution")
@@ -15,12 +13,16 @@ public class ProblemSolution {
     @Column(name = "problem_solution_id")
     private long problemSolutionId;
 
-    @Type(type = "TextType")
     @Column(name = "solution", nullable = false)
+    @Type(type = "org.hibernate.type.TextType")
     private String solution;
 
     @Column(name = "answer", nullable = false, length = 256)
     private String answer;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "problem_id", nullable = false, unique = true,foreignKey = @ForeignKey(name = "problem_solution_fk"))
+    private Problem problem;
 
 
     public ProblemSolution(){}
@@ -52,5 +54,13 @@ public class ProblemSolution {
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    public Problem getProblem() {
+        return problem;
+    }
+
+    public void setProblem(Problem problem) {
+        this.problem = problem;
     }
 }

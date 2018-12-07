@@ -10,11 +10,11 @@ public class CreateProblemDTO {
 
     @NotNull
     @Size(min = 10, max = 100)
-    @Pattern(regexp = "^[\\w|\\s]+$")
+    @Pattern(regexp = "^[А-я|ё|\\w|\\s|\\d|\\p{Punct}]+$")
     private String title;
 
     @NotNull
-    @Pattern(regexp = "^[\\w]+$")
+    @Pattern(regexp = "^[A-z]+$")
     private String difficult;
 
     @NotNull

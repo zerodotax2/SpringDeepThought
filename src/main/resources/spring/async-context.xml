@@ -3,16 +3,12 @@
        xmlns:beans="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-                             http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd ">
+                             http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd "
+    default-lazy-init="false" >
 
-    <beans:bean name="threadExecutor"
-                class="org.springframework.core.task.SimpleAsyncTaskExecutor">
-    <beans:property name="concurrencyLimit" value="10"/>
-    </beans:bean>
-
-
-    <executor id="threadPoolTaskExecutor" pool-size="10"/>
-    <annotation-driven executor="threadPoolTaskExecutor"/>
+    <scheduler id="taskScheduler" pool-size="15"/>
+    <executor id="taskExecutor" pool-size="15"/>
+    <annotation-driven scheduler="taskScheduler" executor="taskExecutor"/>
 
 
 </beans:beans>

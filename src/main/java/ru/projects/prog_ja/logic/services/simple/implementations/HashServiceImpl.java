@@ -58,7 +58,7 @@ public class HashServiceImpl implements HashService {
         byte[] saltBytes = new byte[length];
         new SecureRandom().nextBytes(saltBytes);
 
-        return DatatypeConverter.printHexBinary(saltBytes);
+        return DatatypeConverter.printHexBinary(saltBytes).substring(0, length);
     }
 
     private MessageDigest getCrypter(HashType type){

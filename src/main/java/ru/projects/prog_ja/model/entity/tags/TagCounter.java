@@ -8,7 +8,7 @@ public class TagCounter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tag_counter_id", unique = true, nullable = false, length = 32)
+    @Column(name = "tag_counter_id", unique = true, nullable = false)
     private long tagCounterId;
 
     @Column(name = "facts", length = 20)
@@ -25,6 +25,13 @@ public class TagCounter {
 
     @Column(name = "users", length = 20)
     private long users = 0;
+
+    @Column(name = "uses", length = 20)
+    private long uses = 0;
+
+    @OneToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "tag_id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "tag_counter_fk"))
+    private Tags tag;
 
     public TagCounter() {
     }
@@ -83,5 +90,21 @@ public class TagCounter {
 
     public void setUsers(long users) {
         this.users = users;
+    }
+
+    public long getUses() {
+        return uses;
+    }
+
+    public void setUses(long uses) {
+        this.uses = uses;
+    }
+
+    public Tags getTag() {
+        return tag;
+    }
+
+    public void setTag(Tags tag) {
+        this.tag = tag;
     }
 }

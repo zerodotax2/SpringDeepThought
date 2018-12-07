@@ -2,21 +2,25 @@ package ru.projects.prog_ja.model.entity.articles;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Type;
 import ru.projects.prog_ja.model.entity.user.UserInfo;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "ArticleComments")
 public class ArticleComments implements Comparable<ArticleComments>{
+
     private String comment;
     private long postCommentId;
     private UserInfo userInfo;
     private Date createDate;
     private ArticleInfo articleInfo;
     private long rating;
+    private List<ArticleCommentVoters> voters;
 
 
 
@@ -30,8 +34,8 @@ public class ArticleComments implements Comparable<ArticleComments>{
         rating = 0;
     }
 
-    @Basic
     @Column(name = "comment")
+    @Type(type = "org.hibernate.type.TextType")
     public String getComment() {
         return comment;
     }
@@ -108,5 +112,14 @@ public class ArticleComments implements Comparable<ArticleComments>{
     @Override
     public int compareTo(ArticleComments o) {
         return createDate.after(o.createDate) ? 1 : -1;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "comment")
+    public List<ArticleCommentVoters> getVoters() {
+        return voters;
+    }
+
+    public void setVoters(List<ArticleCommentVoters> voters) {
+        this.voters = voters;
     }
 }

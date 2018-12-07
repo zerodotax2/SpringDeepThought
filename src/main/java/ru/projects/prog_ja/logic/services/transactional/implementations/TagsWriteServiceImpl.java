@@ -1,12 +1,14 @@
 package ru.projects.prog_ja.logic.services.transactional.implementations;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.projects.prog_ja.dto.commons.CommonTagTransfer;
-import ru.projects.prog_ja.logic.caches.interfaces.TagsCache;
+import ru.projects.prog_ja.logic.queues.stats.services.UserCounter;
+import ru.projects.prog_ja.logic.services.transactional.interfaces.RatingService;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.TagsWriteService;
 import ru.projects.prog_ja.model.dao.TagsDAO;
 
@@ -15,24 +17,31 @@ import ru.projects.prog_ja.model.dao.TagsDAO;
 @Transactional(propagation = Propagation.REQUIRED)
 public class TagsWriteServiceImpl implements TagsWriteService {
 
+    private static int RATE_tagCreate;
+    private static int RATE_tagUser;
 
+    private final RatingService ratingService;
     private final TagsDAO tagsDAO;
-    private final TagsCache tagsCache;
+    private final UserCounter userCounter;
 
     @Autowired
-    public TagsWriteServiceImpl(TagsDAO tagsDAO, TagsCache tagsCache) {
+    public TagsWriteServiceImpl(TagsDAO tagsDAO,
+                                RatingService ratingService,
+                                UserCounter userCounter) {
         this.tagsDAO = tagsDAO;
-        this.tagsCache = tagsCache;
+        this.ratingService = ratingService;
+        this.userCounter = userCounter;
     }
 
     @Override
     public CommonTagTransfer createTag(String name, String description, String color, long userId) {
 
         CommonTagTransfer tag = tagsDAO.createTag(name, description, color, userId);
-        if(tag == null){
-            return null;
+        if(tag != null){
+
+            userCounter.incrementTags(userId, 1);
+            ratingService.updateUserRate(userId, RATE_tagCreate);
         }
-        tagsCache.putTag(tag);
 
         return tag;
     }
@@ -46,6 +55,21 @@ public class TagsWriteServiceImpl implements TagsWriteService {
     @Override
     public boolean removeTag(long tagId, long userId) {
 
-        return tagsDAO.removeTag(tagId, userId);
+        if(tagsDAO.removeTag(tagId, userId)){
+
+            userCounter.incrementTags(userId, -1);
+            return true;
+        }
+        return false;
+    }
+
+    @Value("${tag.create}")
+    public  void setRATE_tagCreate(int rate) {
+        RATE_tagCreate = rate;
+    }
+
+    @Value("${tag.use}")
+    public  void setRATE_tagUser(int rate) {
+        RATE_tagUser = rate;
     }
 }

@@ -9,7 +9,7 @@ public class CommonArticleTransfer extends SmallArticleTransfer {
     protected Date createDate;
     protected long views;
 
-    public CommonArticleTransfer(long id, String title, String middleImage, Date createDate, int views, long rating){
+    public CommonArticleTransfer(long id, String title, String middleImage, Date createDate, long views, long rating){
         super(id, title, middleImage, rating);
         this.createDate = createDate;
         this.views = views;
@@ -17,8 +17,7 @@ public class CommonArticleTransfer extends SmallArticleTransfer {
 
     @Override
     public String toString() {
-        String result = "Имя:" + title + "\n Теги: \n";
-        return result;
+        return "\nЗаголовок:" + title + "\n Теги: \n" + tags;
 
     }
     public Date getCreateDate() {

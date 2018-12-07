@@ -6,13 +6,15 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.projects.prog_ja.dto.UserDTO;
+import ru.projects.prog_ja.dto.auth.UserDTO;
 import ru.projects.prog_ja.dto.commons.CommonFactTransfer;
+import ru.projects.prog_ja.dto.dao.PageableEntity;
 import ru.projects.prog_ja.dto.full.FullFactTransfer;
-import ru.projects.prog_ja.dto.smalls.SmallQuestionTransfer;
-import ru.projects.prog_ja.dto.view.BySomethingContainer;
-import ru.projects.prog_ja.logic.services.transactional.interfaces.FactsReadService;
+import ru.projects.prog_ja.dto.view.PageableContainer;
 import ru.projects.prog_ja.logic.caches.interfaces.FactsCache;
+import ru.projects.prog_ja.logic.services.simple.implementations.RegexUtil;
+import ru.projects.prog_ja.logic.services.simple.interfaces.ValuesParser;
+import ru.projects.prog_ja.logic.services.transactional.interfaces.FactsReadService;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.FactsWriteService;
 import ru.projects.prog_ja.model.dao.FactsDAO;
 
@@ -27,22 +29,22 @@ public class FactsReadServiceImpl implements FactsReadService {
     private final FactsDAO factsDAO;
     private final FactsWriteService factsWriteService;
     private final FactsCache factsCache;
+    private final ValuesParser parser;
 
     private final static Random random = new Random();
 
-    @Value("{facts.common.show.size}")
     private static int commonFactsSize;
-
-    @Value("{entities.max.size}")
     private static int maxEntitiesSize;
 
     @Autowired
     public FactsReadServiceImpl(FactsDAO factsDAO,
                                 FactsCache factsCache,
-                                FactsWriteService factsWriteService) {
+                                FactsWriteService factsWriteService,
+                                ValuesParser parser) {
         this.factsDAO = factsDAO;
         this.factsCache = factsCache;
         this.factsWriteService = factsWriteService;
+        this.parser = parser;
     }
 
     @Override
@@ -61,13 +63,13 @@ public class FactsReadServiceImpl implements FactsReadService {
 
         long count = factsDAO.getFactsNum();
 
-        return factsDAO.getFact(random.nextInt((int) count));
+        return count > 0 ? factsDAO.getFact(random.nextInt((int) count)) : null;
     }
 
     @Override
     public CommonFactTransfer getNextFact(String fact, String rate, UserDTO userDTO){
 
-        if(fact == null || fact.equals("") || rate == null || rate.equals("")
+        if(fact == null || fact.equals("") || fact.equals("-1") || rate == null || rate.equals("") || rate.equals("0")
                 || userDTO == null || userDTO.getId() == -1)
             return getRandomFact();
 
@@ -127,59 +129,71 @@ public class FactsReadServiceImpl implements FactsReadService {
     }
 
     @Override
-    public BySomethingContainer getFactsByTag(int start, String size, long tagID, String type, String sort) {
+    public PageableContainer getFactsByTag(String page, String size, long tagID, String q, String type, String sort) {
 
-        int parsedSize = getSize(size);
-        List<CommonFactTransfer> facts = factsDAO.getFactsByTag(start, parsedSize+1,
-                tagID, getOrderField(type), getSort(sort));
+        int parsedSize = parser.getSize(size),
+            parsedPage = parser.getPage(page);
 
-        return facts != null ? new BySomethingContainer(facts.size() > parsedSize, facts) : null;
+        PageableEntity pageable = factsDAO.getFactsByTag((parsedPage - 1) * parsedSize, parsedSize+1,
+                tagID,parser.getQuery(q), getOrderField(type), parser.getSort(sort));
+
+        return new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), parsedSize));
     }
 
     @Override
-    public BySomethingContainer getFactsByUser(int start, String size, long userId, String type, String sort) {
+    public PageableContainer getFactsByUser(String page, String size, long userId, String q, String type, String sort) {
 
-        int parsedSize = getSize(size);
-        List<CommonFactTransfer> facts = factsDAO.getFactsByUser(start, parsedSize+1,
-                userId, getOrderField(type), getSort(sort));
+        int parsedSize = parser.getSize(size),
+            parsedPage = parser.getPage(page);
 
-        return facts != null ? new BySomethingContainer(facts.size() > parsedSize, facts) : null;
+        PageableEntity pageable = factsDAO.getFactsByUser((parsedPage-1)*parsedSize, parsedSize+1,
+                userId,parser.getQuery(q), getOrderField(type), parser.getSort(sort));
+
+        return new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), parsedSize));
     }
 
     @Override
-    public List<CommonFactTransfer> getFacts(int start, String query, String type, String sort) {
-        if(query != null && !query.equals("") && query.matches("^[\\w|\\s]+$")){
+    public PageableContainer getFacts(String page, String query, String type, String sort) {
 
-            return factsDAO.findFacts(start, commonFactsSize, query, getOrderField(type), getSort(sort));
+        PageableEntity pageable;
+        int parsedPage = parser.getPage(page);
+
+        if(query != null && RegexUtil.string(query).matches()){
+            pageable = factsDAO.findFacts((parsedPage-1)*commonFactsSize, commonFactsSize, query, getOrderField(type), parser.getSort(sort));
         }else{
-
-            return factsDAO.getFacts(start, commonFactsSize, getOrderField(type), getSort(sort));
+            pageable = factsDAO.getFacts((parsedPage-1)*commonFactsSize, commonFactsSize, getOrderField(type), parser.getSort(sort));
         }
-    }
 
-
-    private int getSize(String s){
-        try {
-            int i = Math.abs(Integer.parseInt(s));
-            return i > maxEntitiesSize ? 6 : i;
-        }catch (NumberFormatException e){
-            return 6;
-        }
-    }
-
-    private int getSort(String sort){
-        return "0".equals(sort) ? 0 : 1;
+        return new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), commonFactsSize));
     }
 
     private String getOrderField(String type){
 
+        if(type == null)
+            return "rating";
+
         switch (type){
+            case "rating":
+                return type;
+
             case "date":
                 return "createDate";
 
             default:
-                return "createDate";
+                return "rating";
         }
 
+    }
+
+    @Value("${facts.common.show.size}")
+    public void setCommonFactsSize(int size) {
+        commonFactsSize = size;
+    }
+    @Value("${entities.max.size}")
+    public void setMaxEntitiesSize(int size) {
+        maxEntitiesSize = size;
     }
 }

@@ -17,7 +17,7 @@ public class SmallArticleTransfer extends TagsContainer {
 
     @Override
     public String toString(){
-        StringBuilder sb = new StringBuilder("Small post ").append(id).append(": \n");
+        StringBuilder sb = new StringBuilder("\nSmall post ").append(id).append("\n title: ").append(title).append(": \n");
         for(SmallTagTransfer tag : tags){
             sb.append(tag);
         }

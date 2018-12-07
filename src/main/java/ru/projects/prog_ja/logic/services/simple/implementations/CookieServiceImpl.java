@@ -1,13 +1,8 @@
 package ru.projects.prog_ja.logic.services.simple.implementations;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import ru.projects.prog_ja.dto.UserDTO;
-import ru.projects.prog_ja.dto.smalls.SmallUserTransfer;
 import ru.projects.prog_ja.logic.services.simple.interfaces.CookieService;
-import ru.projects.prog_ja.logic.services.transactional.interfaces.AuthService;
-import ru.projects.prog_ja.logic.services.transactional.interfaces.UserReadService;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -22,12 +17,6 @@ import java.util.Set;
 public class CookieServiceImpl implements CookieService {
 
 
-    private final AuthService authService;
-
-    @Autowired
-    public CookieServiceImpl(AuthService authService){
-        this.authService = authService;
-    }
 
     @Override
     public boolean removeCookies(HttpServletRequest request, HttpServletResponse response) {
@@ -83,22 +72,6 @@ public class CookieServiceImpl implements CookieService {
         return cookieMap;
     }
 
-    /**
-     * checking if mail_h and pass_h in cookies exist
-     * if yes then check user with this mail_g and pass_h
-     * and return founded
-     * */
-    @Override
-    public UserDTO getUserByCookies(HttpServletRequest request) {
-
-        Map<String, String> cookieMap = findCookies(request);
-
-        if(!cookieMap.containsKey("login") || !cookieMap.containsKey("password_h"))
-            return null;
-
-        return authService.checkUser(cookieMap.get("login"),
-                cookieMap.get("password_h"), false, null);
-    }
 
     /**
      * adding email_h and pass_h in cookies

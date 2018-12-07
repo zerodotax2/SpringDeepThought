@@ -26,16 +26,18 @@ public class ArticleConverter {
         FullArticleTransfer fullArticleTransfer = new FullArticleTransfer(
                 article.getArticleId(), article.getTitle(), article.getLargeImagePath(), article.getCreateDate(), article.getViews(), article.getRating(),
                 new SmallUserTransfer(user.getUserId(), user.getLogin(), user.getSmallImagePath(), user.getRating()),
-                content.getSubtitle(), content.getHtmlContent()
+                content.getSubtitle(), content.getHtmlContent(), article.getSmallImagePath(), article.getMiddleImagePath()
         );
 
         Set<CommonCommentTransfer> commentsTransfers = new TreeSet<>();
-        for(ArticleComments comment : comments){
-            UserInfo commenter = comment.getUserInfo();
-            commentsTransfers.add(new CommonCommentTransfer(
-                    comment.getPostCommentId(), comment.getComment(), comment.getRating(), comment.getCreateDate(),
-                    new SmallUserTransfer(commenter.getUserId(), commenter.getLogin(), commenter.getSmallImagePath(), commenter.getRating())
-            ));
+        if(comments != null){
+            for(ArticleComments comment : comments){
+                UserInfo commenter = comment.getUserInfo();
+                commentsTransfers.add(new CommonCommentTransfer(
+                        comment.getPostCommentId(), comment.getComment(), comment.getRating(), comment.getCreateDate(),
+                        new SmallUserTransfer(commenter.getUserId(), commenter.getLogin(), commenter.getSmallImagePath(), commenter.getRating())
+                ));
+            }
         }
         fullArticleTransfer.setComments(commentsTransfers);
 

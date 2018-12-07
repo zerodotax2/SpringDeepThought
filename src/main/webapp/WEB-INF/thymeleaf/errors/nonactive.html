@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html layout:decorate="~{templates/simple_layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:charset="UTF-8">
+<head>
+    <title>Аккаунт не активирован</title>
+    <link rel="stylesheet" th:href="@{/resources/css/nonactivated.css}"/>
+</head>
+<body>
+
+    <div layout:fragment="content">
+        <div class="header">
+            Ой, кажется ваш аккаунт ещё не активирован
+        </div>
+        <div class="image">
+            <img th:src="@{/resources/images/cathide.jpg}">
+        </div>
+        <div class="suggest">
+            Выслать письмо на почту еще раз? <span id="send">Отправить</span>
+        </div>
+    </div>
+
+    <th:block layout:fragment="js">
+        <script th:src="@{/resources/js/nonactivated.js}"></script>
+    </th:block>
+</body>
+</html>

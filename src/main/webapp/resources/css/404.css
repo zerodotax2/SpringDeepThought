@@ -1,0 +1,35 @@
+.content{
+    text-align: center;
+    color: dimgrey;
+    margin-top: -10px;
+    font-size: 18px;
+}
+.content .header {
+    font-size: 150px;
+}
+.action{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 80px;
+}
+.action a{
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: #ffffff;
+    box-shadow: 0 0 10px #a7a7a7;
+    background: #F44336;
+}
+.action a:hover{
+    background-color: #ff4639;
+}
+.image img{
+    width: 350px;
+    margin-bottom: -50px;
+}
+@media (max-device-width: 600px) {
+    .image img{
+        width: 250px;
+    }
+}

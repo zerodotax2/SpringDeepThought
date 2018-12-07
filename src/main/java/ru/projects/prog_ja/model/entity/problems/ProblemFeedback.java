@@ -1,5 +1,6 @@
 package ru.projects.prog_ja.model.entity.problems;
 
+import org.hibernate.annotations.Type;
 import ru.projects.prog_ja.model.entity.user.UserInfo;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ public class ProblemFeedback {
     private long problemFeedbackId;
 
     @Column(name = "text", nullable = false)
+    @Type(type = "org.hibernate.type.TextType")
     private String text;
 
     @Column(name = "createDate", nullable = false)

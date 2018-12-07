@@ -3,39 +3,50 @@ package ru.projects.prog_ja.services.rest.users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.projects.prog_ja.dto.UserDTO;
+import org.springframework.web.multipart.MultipartFile;
+import ru.projects.prog_ja.dto.auth.UserDTO;
 import ru.projects.prog_ja.dto.view.PasswordDTO;
 import ru.projects.prog_ja.dto.view.TagsContainerDTO;
 import ru.projects.prog_ja.dto.view.UpdateDTO;
+import ru.projects.prog_ja.logic.services.files.interfaces.UploadService;
+import ru.projects.prog_ja.logic.services.simple.implementations.RegexUtil;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.AuthService;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.UserWriteService;
 import ru.projects.prog_ja.services.AbstractRestService;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import java.io.StringReader;
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("/services/user/update")
 public class UserUpdateService extends AbstractRestService {
 
-    private UserWriteService userWriteService;
-    private AuthService authService;
+    private final UserWriteService userWriteService;
+    private final AuthService authService;
+    private final UploadService uploadService;
 
     @Autowired
-    public UserUpdateService(UserWriteService userWriteService, AuthService authService) {
+    public UserUpdateService(UserWriteService userWriteService, AuthService authService, UploadService uploadService) {
         this.userWriteService = userWriteService;
         this.authService = authService;
+        this.uploadService = uploadService;
     }
 
     @PostMapping("/bday")
     public ResponseEntity<?>  changeBirthdate(@RequestBody UpdateDTO updateDTO,
-                                              @SessionAttribute("user")UserDTO userDTO){
+                                              @SessionAttribute(name = "user", required = false)UserDTO userDTO){
 
-        if(userDTO == null || userDTO.getId() != -1)
+        if(userDTO == null || userDTO.getId() == -1)
             return accessDenied();
 
         else if(updateDTO == null || updateDTO.getValue() == null){
            return badRequest();
         }
 
-        else if(!updateDTO.getValue().matches("^[\\d]{2}-[\\d]{2}-[\\d]{4}$"))
+        else if(!updateDTO.getValue().matches("^[\\d]{4}-[\\d]{2}-[\\d]{2}$"))
           return incorrectFormat();
 
         else if(userWriteService.updateBirthDate(userDTO.getId(), updateDTO.getValue())){
@@ -48,14 +59,14 @@ public class UserUpdateService extends AbstractRestService {
 
     @PostMapping("/lname")
     public ResponseEntity<?> updateLastName(@RequestBody UpdateDTO updateDTO,
-                                            @SessionAttribute("user") UserDTO userDTO){
-        if(userDTO == null || userDTO.getId() != -1)
+                                            @SessionAttribute(name = "user", required = false) UserDTO userDTO){
+        if(userDTO == null || userDTO.getId() == -1)
             return accessDenied();
 
         else if(updateDTO == null || updateDTO.getValue() == null)
             return badRequest();
 
-        else if(!updateDTO.getValue().matches("^[А-я]+$") ||
+        else if(!RegexUtil.rusName(updateDTO.getValue()).matches() ||
                 updateDTO.getValue().length() < 3 || updateDTO.getValue().length() > 32)
             return incorrectFormat();
 
@@ -68,14 +79,14 @@ public class UserUpdateService extends AbstractRestService {
 
     @PostMapping("/fname")
     public ResponseEntity<?> updateFirstName(@RequestBody UpdateDTO updateDTO,
-                                            @SessionAttribute("user") UserDTO userDTO){
-        if(userDTO == null || userDTO.getId() != -1)
+                                            @SessionAttribute(name = "user", required = false) UserDTO userDTO){
+        if(userDTO == null || userDTO.getId() == -1)
             return accessDenied();
 
         else if(updateDTO == null || updateDTO.getValue() == null)
             return badRequest();
 
-        else if(!updateDTO.getValue().matches("^[А-я]+$") ||
+        else if(!RegexUtil.rusName(updateDTO.getValue()).matches() ||
                 updateDTO.getValue().length() < 3 || updateDTO.getValue().length() > 32)
             return incorrectFormat();
 
@@ -88,15 +99,15 @@ public class UserUpdateService extends AbstractRestService {
 
     @PostMapping("/about")
     public ResponseEntity<?> updateAbout(@RequestBody UpdateDTO updateDTO,
-                                            @SessionAttribute("user") UserDTO userDTO){
-        if(userDTO == null || userDTO.getId() != -1)
+                                            @SessionAttribute(name = "user", required = false) UserDTO userDTO){
+        if(userDTO == null || userDTO.getId() == -1)
             return accessDenied();
 
         else if(updateDTO == null || updateDTO.getValue() == null)
             return badRequest();
 
         else if(updateDTO.getValue().length() < 10 || updateDTO.getValue().length() > 1000
-                || !updateDTO.getValue().matches("^[\\w|\\s]+$"))
+                || !RegexUtil.string(updateDTO.getValue()).matches())
             return incorrectFormat();
 
         else if(userWriteService.updateAbout(userDTO.getId(), updateDTO.getValue())){
@@ -108,15 +119,15 @@ public class UserUpdateService extends AbstractRestService {
 
     @PostMapping("/email")
     public ResponseEntity<?> updateEmail(@RequestBody UpdateDTO updateDTO,
-                                        @SessionAttribute("user") UserDTO userDTO){
-        if(userDTO == null || userDTO.getId() != -1)
+                                        @SessionAttribute(name = "user", required = false) UserDTO userDTO){
+        if(userDTO == null || userDTO.getId() == -1)
             return accessDenied();
 
         else if(updateDTO == null || updateDTO.getValue() == null)
             return badRequest();
 
         else if(updateDTO.getValue().length() < 5 || updateDTO.getValue().length() > 50
-                || !updateDTO.getValue().matches("^[\\w]+?@[\\w]+?\\.[\\w]+?$"))
+                || !updateDTO.getValue().matches("^[\\w|_|.]+?@[\\w]+?\\.[\\w]+?$"))
             return incorrectFormat();
 
         else if(authService.updateEmail(userDTO.getId(), updateDTO.getValue()))
@@ -126,8 +137,8 @@ public class UserUpdateService extends AbstractRestService {
     }
     @PostMapping("/interests")
     public ResponseEntity<?> updateInterests(@RequestBody TagsContainerDTO tagsContainerDTO,
-                                         @SessionAttribute("user") UserDTO userDTO){
-        if(userDTO == null || userDTO.getId() != -1)
+                                         @SessionAttribute(name = "user", required = false) UserDTO userDTO){
+        if(userDTO == null || userDTO.getId() == -1)
             return accessDenied();
 
         else if(tagsContainerDTO == null || tagsContainerDTO.getTags() == null)
@@ -143,13 +154,13 @@ public class UserUpdateService extends AbstractRestService {
     }
 
     @PostMapping("/password")
-    public ResponseEntity<?> updateInterests(@RequestBody PasswordDTO passwordDTO,
-                                             @SessionAttribute("user") UserDTO userDTO){
-        if(userDTO == null || userDTO.getId() != -1)
+    public ResponseEntity<?> updatePassword(@RequestBody PasswordDTO passwordDTO,
+                                             @SessionAttribute(name = "user", required = false) UserDTO userDTO){
+        if(userDTO == null || userDTO.getId() == -1)
             return accessDenied();
 
         else if(passwordDTO == null || passwordDTO.getOldPassword() == null || passwordDTO.getNewPassword() == null
-                || !passwordDTO.getOldPassword().equals(passwordDTO.getNewPassword()))
+                || !RegexUtil.string(passwordDTO.getNewPassword()).matches())
             return badRequest();
 
         else if(authService.updatePass(passwordDTO.getNewPassword(), userDTO.getId()))
@@ -158,4 +169,27 @@ public class UserUpdateService extends AbstractRestService {
         return serverError();
     }
 
+    @PostMapping("/image")
+    public ResponseEntity<?> updateImage(@RequestParam("file") MultipartFile file,
+                                         @RequestHeader(name = "Upload-Type", defaultValue = "image.default") String uploadType,
+                                         @SessionAttribute(name = "user", required = false) UserDTO userDTO){
+        if(userDTO == null || userDTO.getId() == -1)
+            return badRequest();
+
+        ResponseEntity response = uploadService.uploadFile(file, uploadType);
+        if(response == null || response.getStatusCode().isError()){
+            return serverError();
+	    }
+
+        JsonReader parser = Json.createReader(new StringReader((String) response.getBody()));
+        JsonObject obj = parser.readObject();
+
+        userWriteService.updateUserImage(userDTO.getId(), Arrays.asList(
+                obj.getString("small"), obj.getString("middle"), obj.getString("large")
+        ));
+
+        userDTO.setUserImage(obj.getString("small"));
+
+        return accepted(response.getBody());
+    }
 }

@@ -24,19 +24,21 @@ public class QuestionConverter {
     public FullQuestionTransfer fullQuestion(Questions question, QuestionContent content, List<Answer> answers, Set<QuestionsTags> tags, UserInfo user){
 
         FullQuestionTransfer fullQuestionTransfer = new FullQuestionTransfer(
-                question.getQuestionId(), question.getTitle(), question.getCreateDate(), question.getRating(), question.getViews(),
+                question.getQuestionId(), question.getTitle(), question.getCreateDate(), question.getRating(), question.getViews(), question.getRightId(),
                 new SmallUserTransfer(user.getUserId(), user.getLogin(), user.getSmallImagePath(), user.getRating()),
-                content.getHtmlContent(), question.getRightId()
+                content.getHtmlContent()
         );
 
         Set<CommonAnswerTransfer> answerTransfers = new TreeSet<>();
-        for(Answer answer : answers){
-            UserInfo answerUser = answer.getUserInfo();
+        if(answers != null){
+            for(Answer answer : answers){
+                UserInfo answerUser = answer.getUserInfo();
 
-            answerTransfers.add(new CommonAnswerTransfer(
-                    answer.getAnswerId(), answer.getHtmlContent(), answer.getRating(), answer.isRight(), answer.getCreateDate(),
-                    new SmallUserTransfer(answer.getAnswerId(), answerUser.getLogin(), answerUser.getSmallImagePath(), answerUser.getRating())
-            ));
+                answerTransfers.add(new CommonAnswerTransfer(
+                        answer.getAnswerId(), answer.getHtmlContent(), answer.getRating(), answer.getCreateDate(),
+                        new SmallUserTransfer(answer.getAnswerId(), answerUser.getLogin(), answerUser.getSmallImagePath(), answerUser.getRating())
+                ));
+            }
         }
         fullQuestionTransfer.setAnswers(answerTransfers);
 

@@ -55,6 +55,12 @@ public abstract class ResponseMessages {
                 HttpStatus.BAD_REQUEST);
     }
 
+    protected ResponseEntity<ResponseMessageDTO> error(String error){
+
+        return new ResponseEntity<>(new ResponseMessageDTO(error, MessageType.ERROR),
+                HttpStatus.CONFLICT);
+    }
+
     /**
      * Объект запроса был успещно найден
      * */
@@ -74,9 +80,9 @@ public abstract class ResponseMessages {
     /**
      * Операция выполнена успешно
      * */
-    protected <T> ResponseEntity<T> ok(){
+    protected ResponseEntity ok(){
 
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>("ok", HttpStatus.ACCEPTED);
     }
 
     /**
@@ -88,4 +94,14 @@ public abstract class ResponseMessages {
                 HttpStatus.NOT_FOUND);
     }
 
+    protected ResponseEntity<ResponseMessageDTO> isFree(){
+
+        return new ResponseEntity<>(new ResponseMessageDTO("Не удалось найти ресурс", MessageType.ERROR),
+                HttpStatus.NO_CONTENT);
+    }
+
+    protected ResponseEntity<ResponseMessageDTO> already(){
+        return new ResponseEntity<>(new ResponseMessageDTO("Вы уже делали это действие", MessageType.ERROR),
+                HttpStatus.ALREADY_REPORTED);
+    }
 }

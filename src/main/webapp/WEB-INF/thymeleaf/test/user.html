@@ -17,6 +17,7 @@
 
     <meta id="fileServerLocation" content="http://localhost:80"/>
     <meta id="user_id" content="1"/>
+    <meta id="owner_id" content="-1"/>
     <meta id="_csrf_header" content="csrf"/>
     <meta id="_csrf" content="0"/>
 
@@ -39,12 +40,24 @@
                 </a>
                 <!--Menu icon for mobiles-->
                 <a href="#" data-target="mobile-demo" class="sidenav-trigger" style="font-weight: bold; transform: rotate(90deg)">|||</a>
-    
-                <!--Search div-->
-                <!-- Modal Trigger -->
-                <!--<a class="right modal-trigger" href="#search1" style="padding-top: 7px"><img src="../../../resources/images/search.svg" style="width: 25px; height:25px" /></a>-->
-                <!-- Modal Structure -->
-    
+                <div class="user-notifications" >
+                    <div class="action">
+                        <svg role="img" xmlns="http://www.w3.org/2000/svg" fill="#EEEEEE" viewBox="0 0 448 512"><path d="M224 512c35.32 0 63.97-28.65 63.97-64H160.03c0 35.35 28.65 64 63.97 64zm215.39-149.71c-19.32-20.76-55.47-51.99-55.47-154.29 0-77.7-54.48-139.9-127.94-155.16V32c0-17.67-14.32-32-31.98-32s-31.98 14.33-31.98 32v20.84C118.56 68.1 64.08 130.3 64.08 208c0 102.3-36.15 133.53-55.47 154.29-6 6.45-8.66 14.16-8.61 21.71.11 16.4 12.98 32 32.1 32h383.8c19.12 0 32-15.6 32.1-32 .05-7.55-2.61-15.27-8.61-21.71z"></path></svg>
+                        <div class="nums">10</div>
+                    </div>
+                    <div class="panel" style="display: none;">
+                        <div class="element">Пример нотификации</div>
+                        <div class="element">Пример нотификации</div>
+                        <div class="element">Пример нотификации</div>
+                        <div class="element">Пример нотификации</div>
+                        <div class="loader">
+                            <div class="lds-dual-ring"></div>
+                        </div>
+                        <div class="empty" style="display: none;">Нет уведомлений</div>
+                        <div class="error" style="display: none;">Ошибка при загрузке уведомлений</div>
+                        <a href="/settings/user" class="more">Смотреть всё</a>
+                    </div>
+                </div>
                 <!--Menu div-->
                 <ul id="nav-mobile" class="right hide-on-med-and-down" style="display: flex;">
                     <li id="feedElement">
@@ -82,18 +95,24 @@
                             <!--<a class="btn-flat" href="/register" id="reg-btn">Регистрация</a>-->
                         <!--</li>-->
                 </ul>
-    
                 <!--Для мобилок-->
-                <ul id="mobile-demo" class="sidenav bg-dark-blue center-align">
-                    <!--<div if="${not empty sessionScope.user.firstName}">-->
-                        <img src="../../../resources/images/user.png" style="width: 100px; height: 100px; margin-top: 10px"/>
-                        <li><a class="white-text" href="/profile" >firstName</a></li>
-                    <!--</div>-->
-                    <li><a class="white-text" href="/login">Войти</a></li>
-                    <li><a class="cyan-text text-darken-4" href="/articles">СТАТЬИ</a></li>
-                    <li><a class="cyan-text text-darken-4" href="/questions">ВОПРОСЫ</a></li>
-                    <li><a class="cyan-text text-darken-4" href="/problems">ЗАДАЧИ</a></li>
-                    <li><a class="cyan-text text-darken-4" href="/about">О НАС</a></li>
+                <ul id="mobile-demo" class="sidenav bg-dark-blue center-align collapsible">
+                    <img src="../../../resources/images/ava.jpg" style="width: 100px; height: 100px; margin-top: 10px"/>
+                    <li class="user-mobile-btn" >
+                            <div class="collapsible-header">
+                                <span>admin</span><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#ffffff" d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path></svg>
+                            </div>
+                            <div class="collapsible-body">
+                                <a href="/users/1" class="user-link">Профиль</a>
+                                <a href="/settings/user" class="user-link">Настройки</a>
+                                <a href="/logout" class="user-link">Выход</a>
+                            </div>
+                    </li>
+                    <!--<li><a class="sign" href="/login">Войти</a></li>-->
+                    <li><a class="link" href="/articles">СТАТЬИ</a></li>
+                    <li><a class="link" href="/questions">ВОПРОСЫ</a></li>
+                    <li><a class="link" href="/problems">ЗАДАЧИ</a></li>
+                    <li><a class="link" href="/about">ПОМОЩЬ</a></li>
                 </ul>
             </div>
         </div>
@@ -129,7 +148,12 @@
                                         Редактировать
                                     </a>
                                     <div class="about">
-                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga nam nemo pariatur quasi repellendus sed, sint? Corporis cumque ducimus eaque, ex excepturi explicabo in magnam nam reprehenderit voluptates! Dolorem, impedit?
+                                        <div class="text">
+                                            <!--Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam ducimus enim fuga recusandae sint. Asperiores illo natus officiis quam quo.-->
+                                        </div>
+                                        <div class="empty">
+                                            Нет информации
+                                        </div>
                                     </div>
                                     <div class="interests">
                                         <a href="/tags/1" class="interest">Программирование</a>

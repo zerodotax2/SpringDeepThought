@@ -1,15 +1,14 @@
 package ru.projects.prog_ja.model.entity.user;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "secured_token")
-@org.hibernate.annotations.NamedQueries(
-        @org.hibernate.annotations.NamedQuery(name = "getTokenByUserId", query = "select u.securedToken from UserInfo as u where u.userId = :id")
-)
+@DynamicUpdate
 public class SecuredToken {
 
-    public static final String GET_TOKEN_BY_USER = "getTokenByUserId";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +20,10 @@ public class SecuredToken {
 
     @Column(name = "token", nullable = false, length = 256)
     private String token;
+
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "secured_token_fk"))
+    @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private UserInfo user;
 
     public SecuredToken(){}
 
@@ -51,5 +54,13 @@ public class SecuredToken {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public UserInfo getUser() {
+        return user;
+    }
+
+    public void setUser(UserInfo user) {
+        this.user = user;
     }
 }

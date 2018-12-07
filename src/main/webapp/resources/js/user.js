@@ -1,5 +1,5 @@
-const userId = document.getElementById('user_id').getAttribute('content'),
-    fileServerLocation = appConf.fileServerLocation;
+'use strict';
+const userId = document.getElementById('owner_id').getAttribute('content');
 
 const genericComponents = {
     moreBtn : function (path) {
@@ -15,7 +15,7 @@ const genericComponents = {
     "                        Нет информации" +
     "                    </div>",
     error: "<div class='exception'>" +
-    "                        <svg aria-hidden='true' data-prefix='fas' data-icon='exclamation-triangle' class='svg-inline--fa fa-exclamation-triangle fa-w-18' role='img' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'><path fill='#F44336' d='M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z'></path></svg>" +
+    "                        <svg style='width: 20px;height: 20px;' role='img' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'><path fill='#F44336' d='M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z'></path></svg>" +
     "                        <div class='message red-text'>Произошла ошибка</div>" +
     "                    </div>",
     societyShare: '<div class="modal-container grey-text" style="display: flex;flex-flow: column;justify-content: center;text-align: center;">' +
@@ -63,7 +63,8 @@ function shareBtn() {
     const share = document.querySelector(".share"),
         shareImgPath = share.querySelector('path');
     share.addEventListener('click', function (e) {
-       modal.open(genericComponents.societyShare);
+       modal.info(genericComponents.societyShare);
+       modal.head.innerText = "Социальные сети";
     });
     share.addEventListener("mouseenter", function (evt) {
         shareImgPath.style.fill = '#ffffff';
@@ -81,18 +82,20 @@ const components = {
         container: document.getElementById("article-panel"),
         rendered: false,
         render: function () {
-            const container = this.container;
             if(this.content === undefined){
                 return;
             }
+            const container = this.container,
+                articles = this.content.list;
             container.innerHTML = "";
-            Array.forEach(this.content.arr, function (article) {
+            for(let i = 0; i < articles.length; i++){
+                let article = articles[i];
                 container.innerHTML += "<a href='/articles/"+article.id+"' class='article card'>" +
-                    "                        <div class='card-image'><img src='"+fileServerLocation+article.postImage+"'/></div>" +
+                    "                        <div class='card-image'><img src='/"+article.articleImage+"'/></div>" +
                     "                        <div class='card-content'>"+article.title+"</div>" +
                     "                    </a>";
-            });
-            if(this.content.more){
+            }
+            if(this.content.pages.total > 1){
                 container.appendChild(genericComponents.moreBtn('/articles/user/' + userId));
             }
         }
@@ -102,20 +105,23 @@ const components = {
         container: document.getElementById("question-panel"),
         rendered: false,
         render: function () {
-            const container = this.container;
             if(this.content === undefined){
                 return;
             }
+            const container = this.container,
+                questions = this.content.list;
+
             container.innerHTML = "";
-            Array.forEach(this.content.arr, function(question){
-                let tags = question.tags,
-                    tagsHtml = "";
-                Array.forEach(tags, function(tag){
+            for(let i = 0; i < questions.length; i++){
+                let question = questions[i],
+                    tags = question.tags, tagsHtml = "";
+                for(let j = 0; j < tags.length; j++){
+                    let tag = tags[j];
                     tagsHtml += "<a href='/tags/"+tag.id+"' class='chip' style='background: "+tag.color+"'>"+tag.name+"</a>";
-                });
+                }
                 let right_img = "";
-                if(question.right = true){
-                    right_img = "<svg aria-hidden='true' data-prefix='far' data-icon='check-circle' class='svg-inline--fa fa-check-circle fa-w-16' role='img' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='#4CAF50' d='M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm0 48c110.532 0 200 89.451 200 200 0 110.532-89.451 200-200 200-110.532 0-200-89.451-200-200 0-110.532 89.451-200 200-200m140.204 130.267l-22.536-22.718c-4.667-4.705-12.265-4.736-16.97-.068L215.346 303.697l-59.792-60.277c-4.667-4.705-12.265-4.736-16.97-.069l-22.719 22.536c-4.705 4.667-4.736 12.265-.068 16.971l90.781 91.516c4.667 4.705 12.265 4.736 16.97.068l172.589-171.204c4.704-4.668 4.734-12.266.067-16.971z'></path></svg>";
+                if(question.right !== 0){
+                    right_img = "<svg style='height: 15px; width: 15px' role='img' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='#4CAF50' d='M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm0 48c110.532 0 200 89.451 200 200 0 110.532-89.451 200-200 200-110.532 0-200-89.451-200-200 0-110.532 89.451-200 200-200m140.204 130.267l-22.536-22.718c-4.667-4.705-12.265-4.736-16.97-.068L215.346 303.697l-59.792-60.277c-4.667-4.705-12.265-4.736-16.97-.069l-22.719 22.536c-4.705 4.667-4.736 12.265-.068 16.971l90.781 91.516c4.667 4.705 12.265 4.736 16.97.068l172.589-171.204c4.704-4.668 4.734-12.266.067-16.971z'></path></svg>";
                 }
                 container.innerHTML += "<div class='question '>" +
                     "                        <div class='left-side'>" +
@@ -144,8 +150,8 @@ const components = {
                     "                            </div>" +
                     "                        </div>" +
                     "                    </div>";
-            });
-            if(this.content.more){
+            }
+            if(this.content.pages.total > 1){
                 container.appendChild(genericComponents.moreBtn('/questions/user/' + userId));
             }
         }
@@ -155,15 +161,18 @@ const components = {
         container: document.getElementById("answer-panel"),
         rendered: false,
         render: function () {
-            const container = this.container;
             if(this.content === undefined){
                 return;
             }
+            const container = this.container,
+                answers = this.content.list;
+
             container.innerHTML = "";
-            Array.forEach(this.content.arr, function(answer){
-                let isRightImg = "";
-                if(answer.right = true){
-                    isRightImg = "<svg  aria-hidden='true' data-prefix='far' data-icon='check-circle' class='svg-inline--fa fa-check-circle fa-w-16 is-right-img' role='img' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='#4CAF50' d='M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm0 48c110.532 0 200 89.451 200 200 0 110.532-89.451 200-200 200-110.532 0-200-89.451-200-200 0-110.532 89.451-200 200-200m140.204 130.267l-22.536-22.718c-4.667-4.705-12.265-4.736-16.97-.068L215.346 303.697l-59.792-60.277c-4.667-4.705-12.265-4.736-16.97-.069l-22.719 22.536c-4.705 4.667-4.736 12.265-.068 16.971l90.781 91.516c4.667 4.705 12.265 4.736 16.97.068l172.589-171.204c4.704-4.668 4.734-12.266.067-16.971z'></path></svg>";
+            for(let i = 0; i < answers.length; i++){
+                let answer = answers[i],
+                    isRightImg = "";
+                if(answer.right === true){
+                    isRightImg = "<svg   class='is-right-img' role='img' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='#4CAF50' d='M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm0 48c110.532 0 200 89.451 200 200 0 110.532-89.451 200-200 200-110.532 0-200-89.451-200-200 0-110.532 89.451-200 200-200m140.204 130.267l-22.536-22.718c-4.667-4.705-12.265-4.736-16.97-.068L215.346 303.697l-59.792-60.277c-4.667-4.705-12.265-4.736-16.97-.069l-22.719 22.536c-4.705 4.667-4.736 12.265-.068 16.971l90.781 91.516c4.667 4.705 12.265 4.736 16.97.068l172.589-171.204c4.704-4.668 4.734-12.266.067-16.971z'></path></svg>";
                 }
                 container.innerHTML += "<div class='answer'>" +
                     "                        <div class='left'>" +
@@ -171,7 +180,7 @@ const components = {
                     "                                В ответ на вопрос" +
                     "                            </div>" +
                     "                            <a href='/questions/"+answer.question_id+"' class='title'>" +
-                    answer.question_title +
+                    answer.question.title +
                     isRightImg +
                     "                            </a>" +
                     "                        </div>" +
@@ -185,7 +194,7 @@ const components = {
                     "                            </div>" +
                     "                        </div>" +
                     "                    </div>";
-            });
+            }
         }
     },
     "problems-solved":{
@@ -193,17 +202,20 @@ const components = {
         container: document.getElementById("problems-solved"),
         rendered: false,
         render: function () {
-            const container = this.container;
             if(this.content === undefined){
                 return;
             }
+            const container = this.container,
+                problems = this.content.list;
+
             container.innerHTML = "";
-            Array.forEach(this.content.arr, function(problem){
-                let tags = problem.tags,
-                    tagsHtml = "";
-                Array.forEach(tags, function(tag){
-                    tagsHtml += "<a href='/tags/"+tags[j].id+"' class='chip' style='background: "+tags[j].color+"'>"+tags[j].name+"</a>";
-                });
+            for(let i = 0; i < problems.length; i++){
+                let problem = problems[i],
+                    tags = problem.tags, tagsHtml = "";
+                for(let j = 0; j < tags.length; j++){
+                    let tag = tags[j];
+                    tagsHtml += "<a href='/tags/"+tag.id+"' class='chip' style='background: "+tag.color+"'>"+tag.name+"</a>";
+                }
                 container.innerHTML += "<div class='problem'>" +
                     "                        <div class='left-side'>" +
                     "                            <a href='/problems/"+problem.id+"' class='title'>"+problem.title+"</a>" +
@@ -219,8 +231,8 @@ const components = {
                     "                            </div>" +
                     "                        </div>" +
                     "                    </div>";
-            });
-            if(this.content.more){
+            }
+            if(this.content.pages.total > 1){
                 container.appendChild(genericComponents.moreBtn('/problems/user/solved/' + userId));
             }
         }
@@ -230,17 +242,20 @@ const components = {
         container: document.getElementById("problems-created"),
         rendered: false,
         render: function () {
-            const container = this.container;
             if(this.content === undefined){
                 return;
             }
+            const container = this.container,
+                problems = this.content.list;
+
             container.innerHTML = "";
-            Array.forEach(this.content.arr, function(problem){
-                let tags = problem.tags,
-                    tagsHtml = '';
-                Array.forEach(tags, function (tag) {
+            for(let i = 0; i < problems.length; i++){
+                let problem = problems[i],
+                    tags = problem.tags, tagsHtml = '';
+                for(let j = 0; j < tags.length; j++){
+                    let tag = tags[j];
                     tagsHtml += "<a href='/tags/"+tag.id+"' class='chip' style='background: "+tag.color+"'>"+tag.name+"</a>";
-                });
+                };
                 container.innerHTML += "<div class='problem'>" +
                     "                        <div class='left-side'>" +
                     "                            <a href='/problems/"+problem.id+"' class='title'>"+problem.title+"</a>" +
@@ -256,8 +271,8 @@ const components = {
                     "                            </div>" +
                     "                        </div>" +
                     "                    </div>";
-            });
-            if(this.content.more){
+            }
+            if(this.content.pages.total > 1){
                 container.appendChild(genericComponents.moreBtn('/problems/user/created/' + userId));
             }
         }
@@ -267,12 +282,15 @@ const components = {
         container: document.getElementById("tag-panel"),
         rendered: false,
         render: function () {
-            const container = this.container;
             if(this.content === undefined){
                 return;
             }
+            const container = this.container,
+                tags = this.content.list;
+
             container.innerHTML = "";
-            Array.forEach(this.content.arr, function (tag) {
+            for(let i = 0; i < tags.length; i++){
+                let tag = tags[i];
                 container.innerHTML += "<a href='/tags/"+tag.id+"' class='card tag-card hoverable'>" +
                     "                        <div class='card-title' style='background: "+tag.color+";'>" +
                     tag.name +
@@ -293,8 +311,8 @@ const components = {
                     "                        </div>" +
                     "                        </div>" +
                     "                    </a>";
-            });
-            if(this.content.more){
+            }
+            if(this.content.pages.total > 1){
                 container.appendChild(genericComponents.moreBtn('/tags/user/' + userId));
             }
         }
@@ -304,27 +322,30 @@ const components = {
         container: document.getElementById("fact-panel"),
         rendered: false,
         render: function () {
-            const container = this.container;
             if(this.content === undefined){
                 return;
             }
+            const container = this.container,
+                facts = this.content.list;
+
             container.innerHTML = "";
-            Array.forEach(this.content.arr, function (fact) {
-                let tags = fact.tags,
-                    tagsHtml = "";
-                Array.forEach(tags, function (tag) {
+            for(let i = 0; i < facts.length; i++){
+                let fact = facts[i],
+                    tags = fact.tags, tagsHtml = "";
+                for(let j = 0; i < tags.length; j++) {
+                    let tag = tags[j];
                     tagsHtml += "<a href='/tags/"+tag.id+"' class='chip' style='background: "+tag.color+"'>"+tag.name+"</a>";
-                });
+                };
                 container.innerHTML += "<div class='fact z-depth-1-half hoverable'>" +
                     "                        <div class='content'>" +
-                                            fact.text +
+                    fact.text +
                     "                        </div>" +
                     "                        <div class='tags'>" +
-                                            tagsHtml +
+                    tagsHtml +
                     "                        </div>" +
                     "                    </div>"
-            });
-            if(this.content.more){
+            }
+            if(this.content.pages.total > 1){
                 container.appendChild(genericComponents.moreBtn('/facts/user/' + userId));
             }
         }
@@ -343,9 +364,9 @@ function initTabs() {
     components.currentTab.style.display = 'flex';
     loadPanel(tabId);
 
-    Array.forEach(panels, function (panel) {
-        panel.addEventListener("click", clickPanelListener);
-    });
+    for(let i = 0; i < panels.length; i++){
+        panels[i].addEventListener("click", clickPanelListener);
+    }
 
     function clickPanelListener(e){
         const target = e.currentTarget,
@@ -371,12 +392,15 @@ function initTabs() {
         if(panel.content === undefined){
             xhr.request({
                 path: panel.path,
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'Content-Type':'application/json'
+                }
             }, function (response, error) {
                 if(response){
                     panel.content = JSON.parse(response);
                     panel.rendered = true;
-                    if(panel.content !== undefined && panel.content !== ''){
+                    if(panel.content !== undefined && panel.content !== '' && panel.content.list.length > 0){
                         panel.render();
                     }else{
                         panel.container.innerHTML = genericComponents.noContent;

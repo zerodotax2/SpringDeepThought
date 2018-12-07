@@ -13,11 +13,11 @@ public class QuestionsTags implements Comparable<QuestionsTags>{
     @Column(name = "questions_tags_id", unique = true, nullable = false)
     private long questionTagsId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "question_id", nullable = false)
     private Questions questionId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "tag_id", nullable = false)
     private Tags tagId;
 

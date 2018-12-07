@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.projects.prog_ja.logic.queues.stats.services.TagCounter;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.UserWriteService;
 import ru.projects.prog_ja.model.dao.UserDAO;
 
@@ -18,10 +19,13 @@ public class UserWriteServiceImpl implements UserWriteService {
 
 
     private final UserDAO userDAO;
+    private final TagCounter tagCounter;
 
     @Autowired
-    public UserWriteServiceImpl(UserDAO userDAO) {
+    public UserWriteServiceImpl(UserDAO userDAO,
+                                TagCounter tagCounter) {
         this.userDAO = userDAO;
+        this.tagCounter = tagCounter;
     }
 
     /**
@@ -58,7 +62,22 @@ public class UserWriteServiceImpl implements UserWriteService {
 
     @Override
     public boolean updateInterests(long id, List<Long> tags) {
-       return userDAO.updateInterests(id, tags);
+
+        List<Long> oldTags = userDAO.getTagsByUser(id);
+       if(userDAO.updateInterests(id, tags)){
+
+           if(oldTags.size() > 0 && oldTags.get(0) != null) {
+               for (long tagID : oldTags) {
+                   tagCounter.incrementUsers(tagID, -1);
+               }
+           }
+           for(long tagID : tags){
+               tagCounter.incrementUsers(tagID, 1);
+           }
+
+           return true;
+       }
+       return false;
     }
 
     @Override

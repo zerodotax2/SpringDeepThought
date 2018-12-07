@@ -5,8 +5,8 @@
       th:charset="UTF-8">
 <head>
     <title>Пользователи</title>
-    <link rel="stylesheet" th:href="@{/resources/css/function_panel.css}"/>
     <link rel="stylesheet" th:href="@{/resources/css/users.css}"/>
+    <meta th:if="${specialView!=null}" id="special_sort" th:name="${specialView.name}" th:path="${specialView.path}">
 </head>
 <body>
 
@@ -31,7 +31,7 @@
                         <div class="options">
                             <div class="category-element">
                                 <div id="sort-btn" content="sort-content" class="category-btn btn-flat">
-                                    Сортировка<img th:src="@{/resources/images/rate-down2.svg}"/>
+                                    Сортировка<svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path></svg>
                                 </div>
                                 <div id="sort-content" class="category-content z-depth-2">
                                     <div datatype="sort" class="category-select" content="0">По возрастанию</div>
@@ -41,7 +41,7 @@
                             </div>
                             <div class="category-element">
                                 <div id="type-btn" content="type-content" class="category-btn btn-flat">
-                                    Тип<img th:src="@{/resources/images/rate-down2.svg}"/>
+                                    Тип<svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path></svg>
                                 </div>
                                 <div id="type-content" class="category-content z-depth-2">
                                     <div datatype="type" class="category-select" content="rating">Рейтинг</div>
@@ -57,24 +57,38 @@
                 </div>
             </div>
         </div>
-
+        <div th:if="${${#lists.isEmpty(users)}}" class="col s12 no-content">
+            По вашему запросу ничего не найдено
+        </div>
         <div class="users-container">
-            <div th:each="user : ${users}" class="user">
-                <div class="ava"><img th:src="${#{fileServerLocation}.concat(user.userImage)}" /></div>
+            <div th:each="userElement : ${users}" class="user">
+                <div class="ava"><img th:src="@{${userElement.userImage}}" /></div>
                 <div class="info">
-                    <div class="login" th:text="${user.login}"></div>
+                    <div class="login" th:text="${userElement.login}"></div>
                     <div class="rating">
-                        <img th:src="@{/resources/images/star.svg}" />
-                        <span th:text="${user.rating}"></span>
+                        <svg  role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#ffcb05" d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"></path></svg>
+                        <span th:text="${#numbers.formatDecimal(userElement.rating,0,'WHITESPACE',0,'POINT')}"></span>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div th:if="${pages.last > 1}" th:with="baseUrl=(${#request.getRequestURI()})" class="pagination col s12">
+            <div class="content">
+                <a th:if="${pages.current!=1}" th:href="@{${baseUrl}(page=${pages.current-1},type=${#request.getParameter('type')},sort=${#request.getParameter('sort')},q=${#request.getParameter('q')})}" class="previous elem act">Назад</a>
+                <div class="center">
+                    <a th:each="p:${#numbers.sequence(pages.first, pages.last)}" th:href="@{${baseUrl}(page=${p},type=${#request.getParameter('type')},sort=${#request.getParameter('sort')},q=${#request.getParameter('q')})}" th:class="'elem '+${p==pages.current?'active':''}" th:text="${p}"></a>
+                    <div th:if="${pages.current+2<pages.total}" class="all-pages">
+                        <span class="divide">...</span>
+                        <a th:href="@{${baseUrl}(page=${pages.total},type=${#request.getParameter('type')},sort=${#request.getParameter('sort')},q=${#request.getParameter('q')})}" class="elem" th:text="${pages.total}"></a>
+                    </div>
+                </div>
+                <a th:if="${pages.current!=total}" th:href="@{${baseUrl}(page=${pages.current+1},type=${#request.getParameter('type')},sort=${#request.getParameter('sort')},q=${#request.getParameter('q')})}" class="next elem act">Далее</a>
             </div>
         </div>
     </div>
 </div>
 
 <th:block layout:fragment="js">
-    <script th:src="@{/resources/js/function_panel.js}"></script>
     <script th:src="@{/resources/js/users.js}"></script>
 </th:block>
 </body>

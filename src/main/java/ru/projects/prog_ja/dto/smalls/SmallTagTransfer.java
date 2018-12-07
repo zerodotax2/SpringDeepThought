@@ -18,7 +18,12 @@ public class SmallTagTransfer implements Comparable<SmallTagTransfer>{
     @Override
     public int compareTo(SmallTagTransfer secondTag){
 
-        return getId() < secondTag.getId() ? -1 : 1;
+        return Long.compare(getId(), secondTag.getId());
+    }
+
+    @Override
+    public String toString(){
+        return "ID: " +id+", Имя: " + name +", hex: " + color +";\n";
     }
 
     public long getId() {

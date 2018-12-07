@@ -3,26 +3,25 @@ package ru.projects.prog_ja.model.dao.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.projects.prog_ja.dto.Role;
-import ru.projects.prog_ja.dto.UserDTO;
 import ru.projects.prog_ja.dto.commons.CommonUserTransfer;
+import ru.projects.prog_ja.dto.dao.PageableEntity;
 import ru.projects.prog_ja.dto.full.FullUserTransfer;
+import ru.projects.prog_ja.dto.smalls.SmallTagTransfer;
 import ru.projects.prog_ja.dto.smalls.SmallUserTransfer;
 import ru.projects.prog_ja.model.dao.Hibernate.helpers.UserConverter;
+import ru.projects.prog_ja.model.dao.Hibernate.queries.TagQueries;
+import ru.projects.prog_ja.model.dao.Hibernate.queries.UserQueries;
 import ru.projects.prog_ja.model.dao.UserDAO;
 import ru.projects.prog_ja.model.entity.tags.Tags;
 import ru.projects.prog_ja.model.entity.user.*;
 
 import javax.persistence.criteria.*;
 import java.sql.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Repository
@@ -42,13 +41,16 @@ public class HibernateUserDAOImpl extends GenericDAO implements UserDAO {
 
 
     @Override
-    public List<SmallUserTransfer> getSmallUsers(int start, int size, String orderField, int sort){
+    public PageableEntity getSmallUsers(int start, int size, String orderField, int sort){
 
         Session session = session();
 
         CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<SmallUserTransfer> query = cb.createQuery(SmallUserTransfer.class);
+        CriteriaQuery<Object> query = cb.createQuery(Object.class);
         Root<UserInfo> user = query.from(UserInfo.class);
+
+        query.select(cb.count(user.get("userId")));
+        long count = (Long) session.createQuery(query).getResultList().stream().findFirst().orElse((long)0);
 
         query.select(cb.construct(SmallUserTransfer.class, user.get("userId"), user.get("login"), user.get("smallImagePath"), user.get("rating")));
 
@@ -58,20 +60,21 @@ public class HibernateUserDAOImpl extends GenericDAO implements UserDAO {
             query.orderBy(cb.desc(user.get(orderField)));
         }
 
-        return session.createQuery(query).setFirstResult(start).setMaxResults(size).getResultList();
+        return new PageableEntity(session.createQuery(query).setFirstResult(start).setMaxResults(size).getResultList(),
+                count);
     }
 
     @Override
     public CommonUserTransfer getCommonUser(long id){
 
-        return session().createNamedQuery(UserInfo.GET_COMMON_USER, CommonUserTransfer.class)
+        return session().createNamedQuery(UserQueries.GET_COMMON_USER, CommonUserTransfer.class)
                 .setParameter("id", id).stream().findFirst().orElse(null);
     }
 
     @Override
     public FullUserTransfer getFullUser(long id) {
 
-        UserInfo user = session().createNamedQuery(UserInfo.GET_FULL_USER, UserInfo.class)
+        UserInfo user = session().createNamedQuery(UserQueries.GET_FULL_USER, UserInfo.class)
                 .setParameter("id", id).stream().findFirst().orElse(null);
 
         if(user == null){
@@ -82,16 +85,20 @@ public class HibernateUserDAOImpl extends GenericDAO implements UserDAO {
     }
 
     @Override
-    public List<SmallUserTransfer> findUsers(int start, int size, String search, String orderField, int sort) {
+    public PageableEntity findUsers(int start, int size, String search, String orderField, int sort) {
 
         Session session = session();
 
         CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<SmallUserTransfer> query = cb.createQuery(SmallUserTransfer.class);
+        CriteriaQuery<Object> query = cb.createQuery(Object.class);
         Root<UserInfo> user = query.from(UserInfo.class);
+
+        query.where(cb.like(user.get("login"), "%"+search+"%"));
+
+        query.select(cb.count(user.get("userId")));
+        long count = (Long) session.createQuery(query).getResultList().stream().findFirst().orElse((long)0);
 
         query.select(cb.construct(SmallUserTransfer.class, user.get("userId"), user.get("login"), user.get("smallImagePath"), user.get("rating")));
-        query.where(cb.like(user.get("login"), "%"+search+"%"));
 
         if(sort == 0){
             query.orderBy(cb.asc(user.get(orderField)));
@@ -99,41 +106,24 @@ public class HibernateUserDAOImpl extends GenericDAO implements UserDAO {
             query.orderBy(cb.desc(user.get(orderField)));
         }
 
-        return session.createQuery(query).setFirstResult(start).setMaxResults(size).getResultList();
+        return new PageableEntity(session.createQuery(query).setFirstResult(start).setMaxResults(size).getResultList(),
+                count);
     }
 
     @Override
-    public List<CommonUserTransfer> findCommonUsers(int start, int size, String search, String orderField, int sort){
+    public PageableEntity findCommonUsers(int start, int size, String search, String orderField, int sort){
         Session session = session();
 
         CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<CommonUserTransfer> query = cb.createQuery(CommonUserTransfer.class);
+        CriteriaQuery<Object> query = cb.createQuery(Object.class);
         Root<UserInfo> user = query.from(UserInfo.class);
 
         Join<UserInfo, UserExtended> userExtended = user.join("userExtended", JoinType.LEFT);
 
-        query.select(cb.construct(CommonUserTransfer.class, user.get("userId"), user.get("login"), user.get("smallImagePath"), user.get("rating"),
-                userExtended.get("firstName"), userExtended.get("lastName"), userExtended.get("createDate"), userExtended.get("birthDate")));
         query.where(cb.like(user.get("login"), "%"+search+"%"));
 
-        if(sort == 0){
-            query.orderBy(cb.asc(user.get(orderField)));
-        }else{
-            query.orderBy(cb.desc(user.get(orderField)));
-        }
-
-        return session.createQuery(query).setFirstResult(start).setMaxResults(size).getResultList();
-    }
-
-    @Override
-    public List<CommonUserTransfer> getCommonUsers(int start, int size, String orderField, int sort) {
-        Session session = session();
-
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<CommonUserTransfer> query = cb.createQuery(CommonUserTransfer.class);
-        Root<UserInfo> user = query.from(UserInfo.class);
-
-        Join<UserInfo, UserExtended> userExtended = user.join("userExtended", JoinType.LEFT);
+        query.select(cb.count(user.get("userId")));
+        long count = (Long) session.createQuery(query).getResultList().stream().findFirst().orElse((long)0);
 
         query.select(cb.construct(CommonUserTransfer.class, user.get("userId"), user.get("login"), user.get("smallImagePath"), user.get("rating"),
                 userExtended.get("firstName"), userExtended.get("lastName"), userExtended.get("createDate"), userExtended.get("birthDate")));
@@ -144,69 +134,114 @@ public class HibernateUserDAOImpl extends GenericDAO implements UserDAO {
             query.orderBy(cb.desc(user.get(orderField)));
         }
 
-        return session.createQuery(query).setFirstResult(start).setMaxResults(size).getResultList();
+        return new PageableEntity(session.createQuery(query).setFirstResult(start).setMaxResults(size).getResultList(),
+                count);
+    }
+
+    @Override
+    public PageableEntity getCommonUsers(int start, int size, String orderField, int sort) {
+        Session session = session();
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Object> query = cb.createQuery(Object.class);
+        Root<UserInfo> user = query.from(UserInfo.class);
+
+        Join<UserInfo, UserExtended> userExtended = user.join("userExtended", JoinType.LEFT);
+
+        query.select(cb.count(user.get("userId")));
+        long count = (Long) session.createQuery(query).getResultList().stream().findFirst().orElse((long)0);
+
+        query.select(cb.construct(CommonUserTransfer.class, user.get("userId"), user.get("login"), user.get("smallImagePath"), user.get("rating"),
+                userExtended.get("firstName"), userExtended.get("lastName"), userExtended.get("createDate"), userExtended.get("birthDate")));
+
+        if(sort == 0){
+            query.orderBy(cb.asc(user.get(orderField)));
+        }else{
+            query.orderBy(cb.desc(user.get(orderField)));
+        }
+
+        return new PageableEntity(session.createQuery(query).setFirstResult(start).setMaxResults(size).getResultList(),
+                count);
     }
 
 
     @Override
-    public List<SmallUserTransfer> getModers(int start, int size, String orderField, int sort) {
+    public PageableEntity getModers(int start, int size, String orderField, int sort) {
         Session session = session();
 
         CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<SmallUserTransfer> query = cb.createQuery(SmallUserTransfer.class);
+        CriteriaQuery<Object> query = cb.createQuery(Object.class);
         Root<UserInfo> user = query.from(UserInfo.class);
 
         Join<UserInfo, LogInfo> logInfo = user.join("logInfo");
         Join<LogInfo, UserRoles> role = logInfo.join("role");
 
-        query.select(cb.construct(SmallUserTransfer.class, user.get("userId"), user.get("login"), user.get("smallImagePath"), user.get("rating")));
         query.where(cb.or(cb.equal(role.get("role"), Role.ROLE_MODER), cb.equal(role.get("role"), Role.ROLE_ADMIN)));
 
+        query.select(cb.count(user.get("userId")));
+        long count = (Long) session.createQuery(query).getResultList().stream().findFirst().orElse((long)0);
+
+        query.select(cb.construct(SmallUserTransfer.class, user.get("userId"), user.get("login"), user.get("smallImagePath"), user.get("rating")));
+
         if(sort == 0){
             query.orderBy(cb.asc(user.get(orderField)));
         }else{
             query.orderBy(cb.desc(user.get(orderField)));
         }
 
-        return session.createQuery(query).setFirstResult(start).setMaxResults(size).getResultList();
+        return new PageableEntity(session.createQuery(query).setFirstResult(start).setMaxResults(size).getResultList(),
+                count);
     }
 
     @Override
-    public List<SmallUserTransfer> findModers(int start, int size, String search, String orderField,  int sort) {
+    public PageableEntity findModers(int start, int size, String search, String orderField,  int sort) {
         Session session = session();
 
         CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<SmallUserTransfer> query = cb.createQuery(SmallUserTransfer.class);
+        CriteriaQuery<Object> query = cb.createQuery(Object.class);
         Root<UserInfo> user = query.from(UserInfo.class);
 
         Join<UserInfo, LogInfo> logInfo = user.join("logInfo");
         Join<LogInfo, UserRoles> role = logInfo.join("role");
 
-        query.select(cb.construct(SmallUserTransfer.class, user.get("userId"), user.get("login"), user.get("smallImagePath"), user.get("rating")));
         query.where(cb.and(cb.like(user.get("login"), "%"+search+"%"),
                 cb.or(cb.equal(role.get("role"), Role.ROLE_MODER), cb.equal(role.get("role"), Role.ROLE_ADMIN))));
 
+        query.select(cb.count(user.get("userId")));
+        long count = (Long) session.createQuery(query).getResultList().stream().findFirst().orElse((long)0);
+
+        query.select(cb.construct(SmallUserTransfer.class, user.get("userId"), user.get("login"), user.get("smallImagePath"), user.get("rating")));
+
         if(sort == 0){
             query.orderBy(cb.asc(user.get(orderField)));
         }else{
             query.orderBy(cb.desc(user.get(orderField)));
         }
 
-        return session.createQuery(query).setFirstResult(start).setMaxResults(size).getResultList();
+        return new PageableEntity(session.createQuery(query).setFirstResult(start).setMaxResults(size).getResultList(),
+                count);
     }
 
     @Override
-    public List<SmallUserTransfer> getSmallUsersByTag(int start, int size, long tagID, String orderField, int sort) {
+    public PageableEntity getSmallUsersByTag(int start, int size, long tagID, String q, String orderField, int sort) {
         Session session = session();
 
         CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<SmallUserTransfer> query = cb.createQuery(SmallUserTransfer.class);
+        CriteriaQuery<Object> query = cb.createQuery(Object.class);
         Root<UserInfo> user = query.from(UserInfo.class);
 
         Join<UserInfo, UsersTags> tags = user.join("interests");
 
+        if(q != null)
+            query.where(cb.and(cb.equal(tags.get("tagId"), tagID),
+                    cb.like(user.get("login"), "%"+q.replace(" ", "%")+"%")));
+        else
+            query.where(cb.equal(tags.get("tagId"), tagID));
+
+        query.select(cb.count(user.get("userId")));
+        long count = (Long) session.createQuery(query).getResultList().stream().findFirst().orElse((long)0);
+
         query.select(cb.construct(SmallUserTransfer.class, user.get("userId"), user.get("login"), user.get("smallImagePath"), user.get("rating")));
-        query.where(cb.equal(tags.get("tagId"), tagID));
 
         if(sort == 0){
             query.orderBy(cb.asc(user.get(orderField)));
@@ -214,7 +249,8 @@ public class HibernateUserDAOImpl extends GenericDAO implements UserDAO {
             query.orderBy(cb.desc(user.get(orderField)));
         }
 
-        return session.createQuery(query).setFirstResult(start).setMaxResults(size).getResultList();
+        return new PageableEntity(session.createQuery(query).setFirstResult(start).setMaxResults(size).getResultList(),
+                count);
     }
 
     @Override
@@ -223,7 +259,7 @@ public class HibernateUserDAOImpl extends GenericDAO implements UserDAO {
         try{
             Session session = session();
 
-            List<UserInfo> userInfos = session.createNamedQuery(UserInfo.GET_COMMON_USER, UserInfo.class)
+            List<UserInfo> userInfos = session.createNamedQuery(UserQueries.GET_COMMON_USER, UserInfo.class)
                     .setParameter("id", id)
                     .getResultList();
             if(userInfos.size() != 1)
@@ -237,11 +273,9 @@ public class HibernateUserDAOImpl extends GenericDAO implements UserDAO {
             userInfo.getUserExtended().setAbout(about);
             userInfo.getUserExtended().setBgImage(bgImage);
 
-            Set<UsersTags> usersTags = new HashSet<>();
-            session.byMultipleIds(Tags.class).multiLoad(tags).forEach((tag) -> {
-                usersTags.add(new UsersTags(userInfo, tag));
-            });
-            userInfo.setInterests(usersTags);
+            List<Tags> tagsList = session.createNamedQuery(TagQueries.GET_TAGS_BY_IDS, Tags.class)
+                    .setParameterList("tags", tags).getResultList();
+            userInfo.setInterests(updateTags(userInfo, tagsList));
 
             session.save(userInfo);
         }catch (Exception e){
@@ -250,12 +284,61 @@ public class HibernateUserDAOImpl extends GenericDAO implements UserDAO {
         return true;
     }
 
+    private Set<UsersTags> updateTags(UserInfo user, List<Tags> newTags){
+
+        Set<UsersTags> oldTags = user.getInterests();
+
+        if(newTags == null || newTags.size() < 3){
+            return oldTags;
+        }
+
+        /*
+         * Перебираем по новым тегам, если есть совпадение удаляем из старых и новых тегов
+         * */
+        for(Iterator<Tags> i = newTags.iterator(); i.hasNext();){
+
+            Tags t = i.next();
+
+            for(Iterator<UsersTags> j = oldTags.iterator(); j.hasNext();){
+                UsersTags old = j.next();
+                if(old.getTagId().getTagId() == t.getTagId()){
+                    j.remove();
+                    i.remove();
+                    break;
+                }
+            }
+        }
+        /*
+         * Всё что осталось в старых тегах удаляем
+         * */
+        List<Tags> tagsToDelete = new ArrayList<>(oldTags.size());
+        for(UsersTags tag: oldTags)
+            tagsToDelete.add(tag.getTagId());
+        if(oldTags.size() > 0)
+            session().createNamedQuery(UserQueries.REMOVE_USER_TAGS)
+                .setParameterList("tags", tagsToDelete).executeUpdate();
+
+        /*
+         * Всё что осталось в новых тегах добавляем
+         * */
+        Set<UsersTags> tagsToAdd = new HashSet<>(newTags.size());
+        for(int i = 0; i < newTags.size(); i++)
+            tagsToAdd.add(new UsersTags(user, newTags.get(i)));
+
+        return tagsToAdd;
+    }
+
+
     @Override
     public boolean updateBGImage(long id, String imagePath){
         try {
-           return session().createNamedQuery(UserInfo.UPDATE_BGIMAGE)
+            Session session = session();
+
+            UserInfo user = session.load(UserInfo.class, id);
+
+            return session.createNamedQuery(UserQueries.UPDATE_BGIMAGE)
                     .setParameter("image", imagePath)
-                    .setParameter("id", id)
+                    .setParameter("user", user)
                     .executeUpdate() != 0;
         }catch (Exception e){
             return false;
@@ -265,9 +348,13 @@ public class HibernateUserDAOImpl extends GenericDAO implements UserDAO {
     @Override
     public boolean updateFirstName(long id, String firstName) {
         try{
-         return session().createNamedQuery(UserInfo.UPDATE_FIRSTNAME)
+            Session session = session();
+
+            UserInfo user = session.load(UserInfo.class, id);
+
+            return session.createNamedQuery(UserQueries.UPDATE_FIRSTNAME)
                  .setParameter("firstName", firstName)
-                 .setParameter("id", id)
+                 .setParameter("user", user)
                  .executeUpdate() != 0;
         }catch (Exception e){
             return false;
@@ -277,9 +364,13 @@ public class HibernateUserDAOImpl extends GenericDAO implements UserDAO {
     @Override
     public boolean updateLastName(long id, String lastName) {
         try {
-            return session().createNamedQuery(UserInfo.UPDATE_LASTNAME)
+            Session session = session();
+
+            UserInfo user = session.load(UserInfo.class, id);
+
+            return session.createNamedQuery(UserQueries.UPDATE_LASTNAME)
                     .setParameter("lastName", lastName)
-                    .setParameter("id", id)
+                    .setParameter("user", user)
                     .executeUpdate() != 0;
         }catch (Exception e){
             return false;
@@ -290,9 +381,13 @@ public class HibernateUserDAOImpl extends GenericDAO implements UserDAO {
     @Override
     public boolean updateAbout(long id, String about) {
         try {
-         return session().createNamedQuery(UserInfo.UPDATE_ABOUT)
+            Session session = session();
+
+            UserInfo user = session.load(UserInfo.class, id);
+
+            return session.createNamedQuery(UserQueries.UPDATE_ABOUT)
                  .setParameter("about", about)
-                 .setParameter("id", id)
+                 .setParameter("user", user)
                  .executeUpdate() !=0;
         }catch (Exception e){
             return false;
@@ -310,11 +405,9 @@ public class HibernateUserDAOImpl extends GenericDAO implements UserDAO {
                 return false;
             }
 
-            Set<UsersTags> usersTags = new HashSet<>();
-            session.byMultipleIds(Tags.class).multiLoad(tags).forEach((tag) -> {
-                usersTags.add(new UsersTags(userInfo, tag));
-            });
-            userInfo.setInterests(usersTags);
+            List<Tags> tagsList = session.createNamedQuery(TagQueries.GET_TAGS_BY_IDS, Tags.class)
+                    .setParameterList("tags", tags).getResultList();
+            userInfo.setInterests(updateTags(userInfo, tagsList));
 
             session.save(userInfo);
         }catch (Exception e){
@@ -324,17 +417,65 @@ public class HibernateUserDAOImpl extends GenericDAO implements UserDAO {
         return true;
     }
 
+    @Override
+    public boolean updateBirthdate(long id, Date date) {
+        try {
+            Session session = session();
 
+            UserInfo user = session.load(UserInfo.class, id);
 
+            return session.createNamedQuery(UserQueries.UPDATE_BIRTHDATE)
+                    .setParameter("user", user)
+                    .setParameter("date", date)
+                    .executeUpdate() != 0;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateUserRate(long userId, int rate) {
+        try {
+            return session().createNamedQuery(UserQueries.UPDATE_RATE)
+                    .setParameter("id", userId)
+                    .setParameter("rate",(long) rate)
+                    .executeUpdate() != 0;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String getUsername(long userId) {
+        return session().createNamedQuery(UserQueries.GET_USERNAME, String.class)
+                .setParameter("id", userId)
+                .getResultList().stream().findFirst().orElse(null);
+    }
+
+    @Override
+    public List<SmallTagTransfer> getUserInterests(long userId) {
+        return session().createNamedQuery(UserQueries.GET_USER_INTERESTS, SmallTagTransfer.class)
+                .setParameter("id", userId)
+                .getResultList();
+    }
+
+    @Override
+    public List<Long> getTagsByUser(long userId) {
+
+        return session().createNamedQuery(UserQueries.GET_TAGS_BY_USER, Long.class)
+                .setParameter("id", userId).getResultList();
+    }
 
     @Override
     public boolean updateImage(long id, List<String> mainImages){
 
         try {
-            return session().createNamedQuery(UserInfo.UPDATE_IMAGE)
+            return session().createNamedQuery(UserQueries.UPDATE_IMAGE)
                     .setParameter("small", mainImages.get(0))
                     .setParameter("middle", mainImages.get(1))
                     .setParameter("large", mainImages.get(2))
+                    .setParameter("id", id)
                     .executeUpdate() != 0;
         }catch (Exception e){
             return false;
@@ -345,7 +486,7 @@ public class HibernateUserDAOImpl extends GenericDAO implements UserDAO {
     public boolean deleteUser(long id) {
         try {
 
-          return session().createNamedQuery(UserInfo.DELETE_USER)
+          return session().createNamedQuery(UserQueries.DELETE_USER)
                   .setParameter("id", id)
                   .executeUpdate() != 0;
 
@@ -358,7 +499,7 @@ public class HibernateUserDAOImpl extends GenericDAO implements UserDAO {
 
     @Override
     public long getUsersNum() {
-        return (long) session().createNamedQuery(UserInfo.COUNT_USERS, Object.class)
+        return (long) session().createNamedQuery(UserQueries.COUNT_USERS, Object.class)
                 .getSingleResult();
     }
 }

@@ -1,6 +1,8 @@
 package ru.projects.prog_ja.dto.view.update;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 public class UpdateQuestionDTO {
@@ -9,9 +11,8 @@ public class UpdateQuestionDTO {
     private long questionId;
 
     @NotNull
-    @Min(value = 5, message = "Заголовок не может быть меньше 5 символов")
-    @Max(value = 50, message = "Максимальная длина заголовка - 50 символов")
-    @Pattern(regexp = "^[\\w|\\s]+$", message = "Неверный формат названия")
+    @Size(min = 10, max = 50)
+    @Pattern(regexp = "^[А-я|\\w|\\s|\\d]+$", message = "Неверный формат названия")
     private String title;
 
     @NotNull

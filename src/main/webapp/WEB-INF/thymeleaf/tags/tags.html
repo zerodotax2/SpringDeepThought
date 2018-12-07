@@ -5,16 +5,19 @@
       th:charset="UTF-8">
 <head>
     <link rel="stylesheet" th:href="@{/resources/css/tags.css}"/>
+    <meta th:if="${specialView!=null}" id="special_sort" th:name="${specialView.name}" th:path="${specialView.path}">
     <title>Теги</title>
 </head>
 <body>
 
 <th:block layout:fragment="top-panel">
-    <div class="text-panel">
-        <h1>Теги</h1>
-        <h4 class="grey-text text-lighten-3">Ключевые слова сайта</h4>
+    <div class="top-panel">
+        <div class="text-panel">
+            <h1>Теги</h1>
+            <h4 class="grey-text text-lighten-3">Ключевые слова сайта</h4>
+        </div>
+        <a th:href="@{/tags/add}" class="create ">Добавить тег</a>
     </div>
-    <a th:href="@{/tags/add}" class="create ">Добавить тег</a>
 </th:block>
 
 <div layout:fragment="content">
@@ -30,7 +33,7 @@
                                 <div class="options">
                                     <div class="category-element">
                                         <div id="sort-btn" content="sort-content" class="category-btn btn-flat">
-                                            Сортировка<svg aria-hidden="true" data-prefix="fas" data-icon="caret-down" class="svg-inline--fa fa-caret-down fa-w-10" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path></svg>
+                                            Сортировка<svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path></svg>
                                         </div>
                                         <div id="sort-content" class="category-content z-depth-2">
                                             <div datatype="sort" class="category-select" content="0">По возрастанию</div>
@@ -40,7 +43,7 @@
                                     </div>
                                     <div class="category-element">
                                         <div id="type-btn" content="type-content" class="category-btn btn-flat">
-                                            Тип<svg aria-hidden="true" data-prefix="fas" data-icon="caret-down" class="svg-inline--fa fa-caret-down fa-w-10" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path></svg>
+                                            Тип<svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="#A9A9A9" d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path></svg>
                                         </div>
                                         <div id="type-content" class="category-content z-depth-2">
                                             <div datatype="type" class="category-select" content="rating">Рейтинг</div>
@@ -55,10 +58,12 @@
                         </div>
                     </div>
                 </div>
-
+                <div th:if="${#lists.isEmpty(tags)}" class="col s12 no-content">
+                    По вашему запросу ничего не найдено
+                </div>
                 <div id="tags-container">
-                    <a th:each="tag : ${tags}" th:href="@{/tags/${tag.id}}" class="card tag-card hoverable col s12 l4">
-                        <div class="card-title" style="background: #7b1fa2;" th:text="${tag.name}">
+                    <a th:each="tag : ${tags}" th:href="@{'/tags/'+${tag.id}}" class="card tag-card hoverable col s12 l4">
+                        <div class="card-title" th:style="'background:'+${tag.color}+';'" th:text="${tag.name}">
 
                         </div>
                         <div class="card-content" >
@@ -78,7 +83,20 @@
                         </div>
                     </a>
                 </div>
-
+                <div th:if="${pages.last > 1}" th:with="baseUrl=(${#request.getRequestURI()})" class="pagination col s12">
+                    <div class="content">
+                        <a th:if="${pages.current!=1}" th:href="@{${baseUrl}(page=${pages.current-1},type=${#request.getParameter('type')},sort=${#request.getParameter('sort')},q=${#request.getParameter('q')})}" class="previous elem act">Назад</a>
+                        <div class="center">
+                            <a th:each="p:${#numbers.sequence(pages.first, pages.last)}" th:href="@{${baseUrl}(page=${p},type=${#request.getParameter('type')},sort=${#request.getParameter('sort')},q=${#request.getParameter('q')})}"
+                               th:class="'elem '+${p==pages.current?'active':''}" th:text="${p}"></a>
+                            <div th:if="${pages.current+2<pages.total}" class="all-pages">
+                                <span class="divide">...</span>
+                                <a th:href="@{${baseUrl}(page=${pages.total},type=${#request.getParameter('type')},sort=${#request.getParameter('sort')},q=${#request.getParameter('q')})}" class="elem" th:text="${pages.total}"></a>
+                            </div>
+                        </div>
+                        <a th:if="${pages.current!=total}" th:href="@{(${baseUrl}page=${pages.current+1},type=${#request.getParameter('type')},sort=${#request.getParameter('sort')},q=${#request.getParameter('q')})}" class="next elem act">Далее</a>
+                    </div>
+                </div>
             </div>
 </div>
 

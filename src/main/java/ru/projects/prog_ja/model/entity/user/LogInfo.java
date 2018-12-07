@@ -1,41 +1,40 @@
 package ru.projects.prog_ja.model.entity.user;
 
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "logInfo")
-@org.hibernate.annotations.NamedQueries(
-        @org.hibernate.annotations.NamedQuery(name = "updatePassword", query = "update LogInfo set passH = :pass where userId in (select logId from UserInfo where userId = :id) ")
-)
 public class LogInfo {
 
-    public final static String UPDATE_PASSWORD = "updatePassword";
-
-    private long userId;
-    private String logH;
+    private long logId;
+    private String login;
     private String passH;
+    private String email;
     private boolean enable = false;
     private UserRoles role;
+    private UserInfo userInfo;
+    private ActivateTokens token;
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "log_id")
-    public long getUserId() {
-        return userId;
+    @Column(name = "log_id", nullable = false, unique = true)
+    public long getLogId() {
+        return logId;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setLogId(long userId) {
+        this.logId = userId;
     }
 
     @Basic
-    @Column(name = "login_h")
-    public String getLogH() {
-        return this.logH;
+    @Column(name = "login")
+    public String getLogin() {
+        return this.login;
     }
 
-    public void setLogH(String logH) {
-        this.logH = logH;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
     @Basic
@@ -53,23 +52,24 @@ public class LogInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LogInfo logInfo = (LogInfo) o;
-        return userId == logInfo.userId &&
-                Objects.equals(logH, logInfo.logH) &&
+        return logId == logInfo.logId &&
+                Objects.equals(login, logInfo.login) &&
                 Objects.equals(passH, logInfo.passH);
     }
 
     public LogInfo(){}
 
-    public LogInfo(String logH, String passH, boolean enable) {
-        this.logH = logH;
+    public LogInfo(String login, String passH, String email, boolean enable) {
+        this.login = login;
         this.passH = passH;
+        this.email = email;
         this.enable = enable;
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(userId, logH, passH);
+        return Objects.hash(logId, login, passH);
     }
 
 
@@ -90,5 +90,34 @@ public class LogInfo {
 
     public void setRole(UserRoles role) {
         this.role = role;
+    }
+
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "user_id", unique = true, nullable = false, foreignKey = @ForeignKey(name = "log_info_fk"))
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
+
+    @Column(name = "email", unique = true, nullable = false)
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "logInfo")
+    public ActivateTokens getToken() {
+        return token;
+    }
+
+    public void setToken(ActivateTokens token) {
+        this.token = token;
     }
 }

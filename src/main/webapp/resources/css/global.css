@@ -61,7 +61,7 @@ body {
 .chip{
   overflow-x: hidden;
   word-break: break-word;
-  margin: 0 !important;
+  margin: 0 2px !important;
   text-transform: none !important;
   font-size: 11px !important;
   line-height: 25px !important;
@@ -140,6 +140,7 @@ body {
   background: #42A5F5;
   padding: 2px 5px;
   border-radius: 5px;
+  margin-top: 5px;
 }
 #modal-wrapper{
   position: fixed;
@@ -177,7 +178,7 @@ body {
   padding: 10px;
 }
 #modal-wrapper .modal-window .actions .action-btn{
-  padding: 5px 10%;
+  padding: 5px 40px;
   border-radius: 20px;
   color: white;
   cursor: pointer;
@@ -218,6 +219,9 @@ body {
   }
   #modal-wrapper .modal-window{
     width: 80%;
+  }
+  .s-hide{
+    display: none !important;
   }
 }
 @media (min-device-width: 601px) and (max-device-width: 992px) {

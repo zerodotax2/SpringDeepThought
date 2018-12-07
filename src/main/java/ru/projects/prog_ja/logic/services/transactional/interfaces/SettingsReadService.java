@@ -10,5 +10,5 @@ public interface SettingsReadService {
 
     SettingsUserTransfer getUserSettingsTransfer(long userId);
 
-    SettingsNotificationsTransfer getUserNotificationsTransfer(long userId);
+    SettingsNotificationsTransfer getUserNotificationsTransfer(long userId, String page);
 }

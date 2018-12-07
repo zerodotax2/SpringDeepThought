@@ -1,7 +1,7 @@
 package ru.projects.prog_ja.dto.commons;
 
-import ru.projects.prog_ja.dto.smalls.SmallTagTransfer;
 import ru.projects.prog_ja.dto.TagsContainer;
+import ru.projects.prog_ja.dto.smalls.SmallTagTransfer;
 
 import java.util.Set;
 
@@ -36,5 +36,14 @@ public class CommonFactTransfer extends TagsContainer {
 
     public void setTags(Set<SmallTagTransfer> tags) {
         this.tags = tags;
+    }
+
+    @Override
+    public String toString() {
+        return "\n===========================" +
+                "\nCommonFactTransfer" +
+                "\nfactId - " + id +
+                "\ntext - " + text +
+                "\n===========================";
     }
 }

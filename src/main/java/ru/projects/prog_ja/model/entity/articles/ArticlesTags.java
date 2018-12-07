@@ -12,11 +12,11 @@ public class ArticlesTags implements Comparable<ArticlesTags>{
     @Column(name = "articles_tags_id", unique = true, nullable = false)
     private long articlesTagsId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "article_id", nullable = false)
     private ArticleInfo articleId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "tag_id", nullable = false)
     private Tags tagId;
 

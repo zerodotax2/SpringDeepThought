@@ -7,9 +7,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.projects.prog_ja.dto.full.FullForumAnswer;
 import ru.projects.prog_ja.dto.smalls.SmallUserQuestionTransfer;
+import ru.projects.prog_ja.logic.queues.notifications.services.ForumNoticeService;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.SupportService;
 import ru.projects.prog_ja.model.dao.SupportDAO;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -19,10 +21,13 @@ public class SupportServiceImpl implements SupportService {
 
 
     private final SupportDAO supportDAO;
+    private final ForumNoticeService forumNoticeService;
 
     @Autowired
-    public SupportServiceImpl(SupportDAO supportDAO) {
+    public SupportServiceImpl(SupportDAO supportDAO,
+                              ForumNoticeService forumNoticeService) {
         this.supportDAO = supportDAO;
+        this.forumNoticeService = forumNoticeService;
     }
 
     @Override
@@ -34,19 +39,29 @@ public class SupportServiceImpl implements SupportService {
     @Override
     public List<SmallUserQuestionTransfer> getUserQuestions(int start, int size) {
 
-        return supportDAO.getForumQuestions(start, size);
+        List<SmallUserQuestionTransfer> questions
+                = supportDAO.getForumQuestions(start, size);
+
+        return questions == null ? Collections.emptyList() : questions;
     }
 
     @Override
     public List<SmallUserQuestionTransfer> getNonAnsweredQuestions(int start, int size) {
 
-        return supportDAO.getNonAnsweredForumQuestions(start, size);
+        List<SmallUserQuestionTransfer> questions =
+                supportDAO.getNonAnsweredForumQuestions(start, size);
+        return questions == null ? Collections.emptyList() : questions;
     }
 
     @Override
     public boolean answer(long id, String text, long userId) {
 
-        return supportDAO.answerForumQuestion(id, text, userId);
+        if(supportDAO.answerForumQuestion(id, text, userId)){
+
+            forumNoticeService.answerForumQuestion(id, userId);
+            return true;
+        }
+        return false;
     }
 
     @Override

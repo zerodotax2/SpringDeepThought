@@ -5,39 +5,68 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.projects.prog_ja.dto.Role;
-import ru.projects.prog_ja.dto.UserDTO;
-import ru.projects.prog_ja.dto.commons.CommonTagTransfer;
+import ru.projects.prog_ja.dto.auth.UserDTO;
 import ru.projects.prog_ja.dto.full.FullTagTransfer;
+import ru.projects.prog_ja.dto.view.PageableContainer;
+import ru.projects.prog_ja.dto.view.SpecialView;
 import ru.projects.prog_ja.exceptions.*;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.TagsReadService;
-
-import java.util.List;
+import ru.projects.prog_ja.logic.services.transactional.interfaces.UserReadService;
 
 @Controller
 @RequestMapping("/tags")
 public class TagsController {
 
     private final TagsReadService tagsReadService;
+    private final UserReadService userReadService;
 
     private final static String TAGS_LIST_NAME = "tags";
-    private final static String TAG_DTO_NAME = "tag";
+    private final static String TAG_DTO_NAME = "fullTagDTO";
     private final static String TAG_EDIT_NAME = "tagEdit";
+    private final static String PAGES_NAME = "pages";
 
-    public TagsController(@Autowired TagsReadService tagsReadService) {
+    @Autowired
+    public TagsController(TagsReadService tagsReadService,
+                          UserReadService userReadService) {
         this.tagsReadService = tagsReadService;
+        this.userReadService = userReadService;
     }
 
     @GetMapping
     public ModelAndView getTags(@RequestParam(name = "q", required = false) String query,
-                                @RequestParam(name = "type", required = false, defaultValue = "rating") String type,
-                                @RequestParam(name = "sort", required = false, defaultValue = "1") String sort) throws InternalServerException {
+                                @RequestParam(name = "type", required = false) String type,
+                                @RequestParam(name = "sort", required = false) String sort,
+                                @RequestParam(name = "page", required = false) String page) throws InternalServerException {
 
-        List<CommonTagTransfer> commonTagTransfers = tagsReadService.getTags(0, query, type, sort);
-        if(commonTagTransfers == null){
-            throw new InternalServerException();
-        }
+        PageableContainer container =
+                tagsReadService.getTags(page, query, type, sort);
 
-        return new ModelAndView("tags/tags", TAGS_LIST_NAME, commonTagTransfers);
+        ModelAndView model = new ModelAndView("tags/tags");
+        model.addObject(TAGS_LIST_NAME, container.getList());
+        model.addObject(PAGES_NAME, container.getPages());
+
+        return model;
+
+
+    }
+
+    @GetMapping("/user/{id}")
+    public ModelAndView getTagsByUser(@RequestParam(name = "q", required = false) String query,
+                                @RequestParam(name = "type", required = false) String type,
+                                @RequestParam(name = "sort", required = false) String sort,
+                                @RequestParam(name = "page", required = false) String page,
+                                @PathVariable("id") long userId) throws InternalServerException {
+
+        PageableContainer container =
+                tagsReadService.getTagsByUser(page, "10", userId, query, type, sort);
+
+        ModelAndView model = new ModelAndView("tags/tags");
+        model.addObject(TAGS_LIST_NAME, container.getList());
+        model.addObject(PAGES_NAME, container.getPages());
+        model.addObject("specialView", new SpecialView(userReadService.getUsername(userId),
+                "/services/tags/user/" + userId));
+
+        return model;
     }
 
     @GetMapping("/{id}")
@@ -60,7 +89,7 @@ public class TagsController {
 
     @GetMapping("/{id}/edit")
     public ModelAndView editTag(@PathVariable("id") long id,
-                                @SessionAttribute("user")UserDTO userDTO) throws NonAuthorizedException, NotFoundException, AccessDeniedException {
+                                @SessionAttribute(name = "user", required = false)UserDTO userDTO) throws NonAuthorizedException, NotFoundException, AccessDeniedException {
         if(userDTO == null)
             throw new NonAuthorizedException();
 

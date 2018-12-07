@@ -2,7 +2,8 @@ package ru.projects.prog_ja.dto;
 
 public enum NoticeType {
 
-    INFO("INFO"), MESSAGE("MESSAGE"), ERROR("ERROR");
+    INFO("INFO"), MESSAGE("MESSAGE"), ERROR("ERROR"), CREATE("CREATE"), COMMENT("COMMENT"),
+    RATE("RATE"), FORUM("FORUM");
 
     private final String name;
 

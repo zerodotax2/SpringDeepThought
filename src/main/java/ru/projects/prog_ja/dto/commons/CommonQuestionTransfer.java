@@ -9,22 +9,22 @@ public class CommonQuestionTransfer extends SmallQuestionTransfer {
 
     protected String content;
 
-    public CommonQuestionTransfer(long id, String title, Date createDate,  long rating, long views, long userId, String smallImagePath, String login, long userRating,
+    public CommonQuestionTransfer(long id, String title, Date createDate,  long rating, long views, long right, long userId, String login, String smallImagePath,  long userRating,
                                   String content) {
-        super(id, title, createDate,  rating, views, userId, smallImagePath, login, userRating);
+        super(id, title, createDate,  rating, views, right, userId, smallImagePath, login, userRating);
         this.content = content;
     }
 
-    public CommonQuestionTransfer(long id,  String title, Date createDate,  long rating, long views, SmallUserTransfer user, String content) {
-        super(id, title, createDate,  rating, views, user);
+    public CommonQuestionTransfer(long id,  String title, Date createDate,  long rating, long views, long right, SmallUserTransfer user, String content) {
+        super(id, title, createDate,  rating, views,right, user);
         this.content = content;
     }
 
-    public String getSubContent() {
+    public String getContent() {
         return content;
     }
 
-    public void setSubContent(String content) {
+    public void setContent(String content) {
         this.content = content;
     }
 }

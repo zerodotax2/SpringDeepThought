@@ -1,15 +1,31 @@
 <!DOCTYPE html>
-<html layout:decorate="~{templates/layout}"
+<html layout:decorate="~{templates/simple_layout}"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       th:charset="UTF-8">
 <head>
     <title>Нет доступа</title>
+    <link rel="stylesheet" th:href="@{/resources/css/403.css}"/>
 </head>
 <body>
 
     <div layout:fragment="content">
-
+        <div class="content">
+            <div class="left-side">
+                <img th:src="@{/resources/images/angrycoon.jpg}"/>
+            </div>
+            <div class="right-side">
+                <div class="code">
+                    403
+                </div>
+                <div class="text">
+                    Кажется вам сюда нельзя
+                </div>
+                <div class="action">
+                    <a th:href="@{/login}">Войти</a>
+                </div>
+            </div>
+        </div>
     </div>
 
 </body>

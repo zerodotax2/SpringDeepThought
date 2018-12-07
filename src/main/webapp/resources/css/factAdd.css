@@ -8,11 +8,19 @@
     font-size: 30px;
     color: #919191;
 }
+.tags .name{
+    color: #aaaaaa
+}
 .content{
     margin: 20px 0;
 }
+.chip{
+    cursor: pointer;
+}
 .content .tags svg{
     margin-top: 10px;
+    width: 20px;
+    height: 20px;
 }
 .content .describe{
     margin-top: 20px;

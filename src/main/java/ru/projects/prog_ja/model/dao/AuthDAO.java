@@ -1,7 +1,7 @@
 package ru.projects.prog_ja.model.dao;
 
-import ru.projects.prog_ja.dto.UserDTO;
-import ru.projects.prog_ja.dto.smalls.SmallUserTransfer;
+import ru.projects.prog_ja.dto.auth.AuthDTO;
+import ru.projects.prog_ja.dto.auth.UserDTO;
 import ru.projects.prog_ja.model.entity.user.SecuredToken;
 
 public interface AuthDAO {
@@ -29,17 +29,23 @@ public interface AuthDAO {
      **/
     boolean updatePass(String pass_h, long id);
 
-    /**
-     * User create new mail then we hash and save it
-     * if user not found then do nothing
-     **/
-    boolean updateLogin(String login, long id);
+    boolean saveActivateToken(String email, String token);
 
+    AuthDTO getAuthDTOByEmail(String email);
 
+    AuthDTO getAuthDTOByUserId(long userId);
+
+    boolean isFreeLogin(String login);
+
+    boolean isFreeEmail(String email);
     /**
      *
      * create user with this params
      * @return created user
      */
     UserDTO createUser(String login_h, String password_h, String email);
+
+    boolean activateAccount(String token);
+
+    long getUserIdByEmail(String email);
 }

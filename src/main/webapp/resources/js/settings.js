@@ -1,4 +1,4 @@
-
+'use strict';
 const editor = {
     instance: undefined,
     input: undefined,
@@ -35,15 +35,30 @@ const editValues = {
             return true;
         }
     },
+    'about': {
+      path: '/services/user/update/about',
+      check : function () {
+          const value = editor.input.value;
+          if(value.length < 10 || value.length > 1000){
+              modal.error("Информация о вас должна быть не менее 10 и не превышать 1000 символов");
+              return false;
+          }else if(!value.match(/^[A-z|А-я|\s|0-9]+$/)){
+              modal.error("Неверный формат информации о вас");
+              return false;
+          }
+
+          return true;
+      }
+    },
     'birthDay': {
         path: '/services/user/update/bday',
         check: function () {
             const value = editor.input.value,
                 dates = value.split('-');
-            if(!value.match(/^[0-9]{2}-[0-9]{2}-[0-9]{4}$/)){
+            if(!value.match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/)){
                 modal.error('Неверный формат даты');
                 return false;
-            }else if(Number(dates[0])>31 || Number(dates[0]) === 0){
+            }else if(Number(dates[2])>31 || Number(dates[2]) === 0){
                 modal.error('Неверный формат дня');
                 return false;
             }else if(Number(dates[1]) > 12 || Number(dates[1]) === 0) {
@@ -60,15 +75,15 @@ const editValues = {
             if(value.length < 6 || value.length > 50){
                 modal.error('Размер email должен быть от 6 до 50 символов');
                 return false;
-            }else if(!value.match(/^[A-z|0-9|_]+?@[A-z]+?\.[A-z]+?$/)){
+            }else if(!value.match(/^[A-z|0-9|_|.]+?@[A-z]+?\.[A-z]+?$/)){
                 modal.error('Неверный формат email');
                 return false;
             }
-            modal.info('Подтвердите почту для успешной смены email');
             return true;
         }
     },
     current: undefined,
+    name: ''
 };
 function initEditor() {
     const editorDIV = document.createElement('div');
@@ -87,16 +102,27 @@ function initEditor() {
            xhr.request({
                path: editValues.current.path,
                method: 'POST',
+               headers: {
+                   'Content-Type':'application/json'
+               },
                content: JSON.stringify({
                    value: editor.input.value
                })
            }, function (response,error) {
                if(response){
-                   editor.instance.parentNode.querySelector('.value span').innerText = editor.input.value;
-                   editor.instance.parentNode.querySelector('.value').style.display = 'flex';
+                   if(editValues.name !== 'email'){
+                       editor.instance.parentNode.querySelector('.value span').innerText = editor.input.value;
+                   }else{
+                       modal.info('Подтвердите почту для успешной смены email');
+                   }
+                   let value = editor.instance.parentNode.querySelector('.value'),
+                    empty = value.querySelector('.empty');
+                   value.style.display = 'flex';
+                   if(empty !== null)
+                       empty.style.display = 'none';
                    editor.instance.style.display = 'none';
                }else if(error){
-                   xhr.error('Не удалось обновить данные');
+                   modal.error('Не удалось обновить данные');
                    editor.instance.parentNode.querySelector('.value').style.display = 'flex';
                    editor.instance.style.display = 'none';
                }
@@ -109,20 +135,23 @@ function initEditor() {
 }
 function initEditValues(){
     const editPanels = document.querySelectorAll('.edit-marker');
-    Array.forEach(editPanels, function (panel) {
-        const edit = panel.querySelector('.edit');
+    for(let i = 0; i < editPanels.length; i++){
+        const panel = editPanels[i],
+            edit = panel.querySelector('.edit');
         edit.addEventListener('click', function (e) {
-            const target = e.currentTarget;
+            const target = e.currentTarget,
+                name = target.getAttribute('content');
             if(editor.instance.parentNode !== null){
                 editor.instance.parentNode.querySelector('.value').style.display = 'flex';
             }
-            editValues.current = editValues[target.getAttribute('content')];
+            editValues.name = name;
+            editValues.current = editValues[name];
             target.parentNode.style.display = 'none';
             target.parentNode.parentNode.appendChild(editor.instance);
             editor.instance.style.display ='block';
             editor.input.value = target.parentNode.querySelector('span').innerText;
         });
-    });
+    }
 }
     const userImage = {
         imageDiv: document.querySelector('.user-image')
@@ -134,14 +163,16 @@ function initEditValues(){
         userImage.fileInput.addEventListener('change', function () {
             let formData = new FormData();
             formData.append('file', userImage.fileInput.files[0]);
-            formData.append('type', 'type.user.profile');
             xhr.request({
-                path: '/services/upload',
+                path: '/services/user/update/image',
                 method: 'POST',
+                headers: {
+                  'Upload-Type':'user.profile'
+                },
                 content: formData
             }, function (response, error) {
                 if(response){
-                    userImage.img.src = JSON.parse(response).largeImagePath;
+                    userImage.img.src = '/' + JSON.parse(response).large;
                 }else if(error){
                     modal.error('Не удалось обновить фотографию');
                 }
@@ -163,10 +194,19 @@ if(window.location.href.toLowerCase().lastIndexOf('user') !== -1){
     tagEdit.tagContainer = tagEdit.value.querySelector('.tag-container');
     tagEdit.editor = tagEdit.elem.querySelector('.tags');
     addTagsToEditor();
-    tags.tagInput.addEventListener('keyup', onTagInput);
+    tags.tagInput.addEventListener('keydown', onTagInputStart);
+    tags.tagInput.addEventListener('keyup', onTagInputEnd);
     tagEdit.value.querySelector('.edit').addEventListener('click', function (e) {
         tagEdit.value.style.display = 'none';
         tagEdit.value.nextElementSibling.style.display = 'block';
+    });
+    tagEdit.elem.querySelector('#tags-input').addEventListener('focus', function () {
+        tags.tagView.style.display = 'flex';
+    });
+    tagEdit.elem.querySelector('#tags-input').addEventListener('blur', function () {
+        tags.closeTagViewTimer = setTimeout(function () {
+            tags.tagView.style.display = 'none';
+        }, 200);
     });
     tagEdit.elem.querySelector('.save').addEventListener('click', function (e) {
         const tagsIDS = Object.keys(tags.tagsCount),
@@ -174,14 +214,21 @@ if(window.location.href.toLowerCase().lastIndexOf('user') !== -1){
         xhr.request({
             path: '/services/user/update/interests',
             method: 'POST',
+            headers: {
+                'Content-Type':'application/json'
+            },
             content: JSON.stringify({
                 tags: tagsIDS
             })
         }, function (response, error) {
             if(response){
+                let empty = tagEdit.tagContainer.parentNode.querySelector('.empty');
+                if(empty !== null)
+                    empty.style.display = 'none';
                 tagEdit.tagContainer.innerHTML = '';
-                Array.forEach(selectedTags, function (selectedTag) {
-                    let addedTag = document.createElement('a'),
+                for(let i = 0; i < selectedTags.length; i++){
+                    let selectedTag = selectedTags[i],
+                        addedTag = document.createElement('a'),
                         tagID = selectedTag.getAttribute('content');
                     addedTag.classList.add('tag');
                     addedTag.setAttribute('color', selectedTag.style.background);
@@ -189,7 +236,7 @@ if(window.location.href.toLowerCase().lastIndexOf('user') !== -1){
                     addedTag.href = '/tags/'+tagID;
                     addedTag.innerText = selectedTag.innerText;
                     tagEdit.tagContainer.appendChild(addedTag);
-                });
+                }
             }else if(error){
                 modal.error('Не удалось обновить интересы');
             }
@@ -207,20 +254,21 @@ if(window.location.href.toLowerCase().lastIndexOf('user') !== -1){
     function addTagsToEditor() {
         let tagsOnDocument = tagEdit.tagContainer.querySelectorAll('.tag'),
             tagsOnEditor = tags.tagsInputContainer.querySelectorAll('.selected-tag');
-        Array.forEach(tagsOnEditor, function (tagOnEditor) {
-           tagOnEditor.parentNode.removeChild(tagOnEditor);
-        });
-        Array.forEach(tagsOnDocument, function (tagOnDocument) {
-            const selectedTag = document.createElement('div');
+        for(let i = 0; i < tagsOnEditor.length; i++){
+            tagsOnEditor[i].parentNode.removeChild(tagsOnEditor[i]);
+        }
+        for(let i = 0; i < tagsOnDocument.length; i++){
+            const tagOnDocument = tagsOnDocument[i],
+                selectedTag = document.createElement('div');
             selectedTag.classList.add('chip', 'chip-suggest', 'selected-tag');
             selectedTag.innerText = tagOnDocument.innerText;
-            selectedTag.onclick = deleteTagOnClick;
+            selectedTag.addEventListener('click', deleteTagOnClick);
             selectedTag.setAttribute('content', tagOnDocument.getAttribute('content'));
             selectedTag.style.background = tagOnDocument.getAttribute('color');
             selectedTag.style.minWidth = (selectedTag.innerText.length * 8) + 'px';
             tags.tagsCount[tagOnDocument.getAttribute('content')] = 1;
             tags.tagsInputContainer.insertBefore(selectedTag, tags.tagInput);
-        });
+        }
     }
 }else if(window.location.href.toLowerCase().lastIndexOf('account') !== -1){
     const passwordEdit = {
@@ -260,6 +308,9 @@ if(window.location.href.toLowerCase().lastIndexOf('user') !== -1){
         xhr.request({
             path: '/services/user/update/password',
             method: 'POST',
+            headers: {
+                'Content-Type':'application/json'
+            },
             content: JSON.stringify({
                 oldPassword: passwordEdit.oldPassword.value,
                 newPassword: passwordEdit.newPassword.value

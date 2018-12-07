@@ -4,18 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.projects.prog_ja.dto.UserDTO;
-import ru.projects.prog_ja.dto.commons.CommonArticleTransfer;
+import ru.projects.prog_ja.dto.auth.UserDTO;
 import ru.projects.prog_ja.dto.full.FullArticleTransfer;
 import ru.projects.prog_ja.dto.view.create.CreateArticleDTO;
 import ru.projects.prog_ja.dto.view.update.UpdateArticleDTO;
 import ru.projects.prog_ja.dto.view.update.UpdateRatingDTO;
+import ru.projects.prog_ja.exceptions.RepeatVotedException;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.ArticleReadService;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.ArticleWriteService;
 import ru.projects.prog_ja.services.AbstractRestService;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/services/articles")
@@ -34,29 +33,18 @@ public class RestArticlesService extends AbstractRestService {
 
 
     @GetMapping
-    public ResponseEntity<?> getArticles(@RequestParam(value = "q", required = false) String q,
-                                          @RequestParam(value = "sort", defaultValue = "1") String sort,
-                                          @RequestParam(value = "start") String start,
-                                          @RequestParam(value = "type", defaultValue = "rating") String type){
+    public ResponseEntity<?> getArticles(@RequestParam(name = "q", required = false) String q,
+                                          @RequestParam(name = "sort", defaultValue = "1") String sort,
+                                          @RequestParam(name = "page", defaultValue = "1") String page,
+                                          @RequestParam(name = "type", defaultValue = "rating") String type){
 
-        if(start == null || start.equals(""))
-            return badRequest();
-        else if(!start.matches("^\\d+&") || start.length() > 32)
-            return incorrectFormat();
-
-        List<CommonArticleTransfer> articles = articleReadService.getArticles(Integer.parseInt(start),
-                q, type, sort);
-        if(articles == null || articles.size() == 0){
-            return notFound();
-        }
-
-        return found(articles);
+        return found(articleReadService.getArticles(page, q, type, sort));
 
     }
 
     @PostMapping
     public ResponseEntity<?> createPost(@Valid @RequestBody CreateArticleDTO createArticleDTO, BindingResult bindingResult,
-                                        @SessionAttribute("user")UserDTO userDTO){
+                                        @SessionAttribute(name = "user" )UserDTO userDTO){
 
         if(bindingResult.hasErrors())
             return badRequest();
@@ -77,7 +65,7 @@ public class RestArticlesService extends AbstractRestService {
     
     @PutMapping
     public ResponseEntity<?> updatePost(@Valid @RequestBody UpdateArticleDTO updateArticleDTO, BindingResult bindingResult,
-                                        @SessionAttribute("user")UserDTO userDTO){
+                                        @SessionAttribute(name = "user", required = false)UserDTO userDTO){
 
         if(bindingResult.hasErrors())
             return badRequest();
@@ -96,16 +84,22 @@ public class RestArticlesService extends AbstractRestService {
 
     @PostMapping(value = "/rating")
     public ResponseEntity<?> changeRate(@Valid @RequestBody UpdateRatingDTO updateRatingDTO, BindingResult bindingResult,
-                                        @SessionAttribute("user") UserDTO userDTO){
+                                        @SessionAttribute(name = "user", required = false) UserDTO userDTO){
 
         if(bindingResult.hasErrors())
             return badRequest();
         if(userDTO == null || userDTO.getId() == -1){
             return accessDenied();
         }
-        if(articleWriteService.changeRate(updateRatingDTO.getId(), updateRatingDTO.getRate(), userDTO.getId())){
-            return found(updateRatingDTO);
+
+        try {
+            if(articleWriteService.changeRate(updateRatingDTO.getId(), updateRatingDTO.getRate(), userDTO.getId())){
+                return found(updateRatingDTO);
+            }
+        }catch (RepeatVotedException e){
+            return already();
         }
+
         return serverError();
     }
     

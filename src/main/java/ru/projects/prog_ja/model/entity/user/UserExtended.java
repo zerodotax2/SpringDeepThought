@@ -1,7 +1,9 @@
 package ru.projects.prog_ja.model.entity.user;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 
 @Entity
 @Table(name = "UserExtended")
@@ -12,41 +14,35 @@ public class UserExtended {
     @Column(name = "user_extended_id")
     private long user_extended_id;
 
-    @Basic
-    @Column(name = "email", length = 50)
-    private String email;
-
-    @Basic
     @Column(name = "firstName", length = 32)
     private String firstName;
 
-    @Basic
     @Column(name = "lastName", length = 32)
     private String lastName;
 
-    @Basic
     @Column(name = "createDate")
     private Date createDate;
 
-    @Basic
     @Column(name = "birthDate")
-    private Date birthDate;
+    private java.sql.Date birthDate;
 
-    @Basic
     @Column(name = "bgImage")
     private String bgImage;
 
-    @Basic
     @Column(name = "about")
+    @Type(type = "org.hibernate.type.TextType")
     private String about;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "user_extended_fk"))
+    private UserInfo user;
 
     public UserExtended(){}
 
-    public UserExtended(String email, String firstName, String lastName, Date birthDate, String bgImage, String about) {
-        this.email = email;
+    public UserExtended(String firstName, String lastName, java.sql.Date birthDate, String bgImage, String about) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.createDate = new Date(new java.util.Date().getTime());
+        this.createDate = new Date();
         this.birthDate = birthDate;
         this.bgImage = bgImage;
         this.about = about;
@@ -58,14 +54,6 @@ public class UserExtended {
 
     public void setUser_extended_id(long user_extended_id) {
         this.user_extended_id = user_extended_id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getLastName() {
@@ -84,11 +72,11 @@ public class UserExtended {
         this.createDate = createDate;
     }
 
-    public Date getBirthDate() {
+    public java.sql.Date getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(java.sql.Date birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -114,5 +102,13 @@ public class UserExtended {
 
     public void setAbout(String about) {
         this.about = about;
+    }
+
+    public UserInfo getUser() {
+        return user;
+    }
+
+    public void setUser(UserInfo user) {
+        this.user = user;
     }
 }

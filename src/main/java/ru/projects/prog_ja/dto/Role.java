@@ -2,7 +2,7 @@ package ru.projects.prog_ja.dto;
 
 public enum Role {
 
-    ROLE_ADMIN("ROLE_ADMIN"), ROLE_USER("ROLE_USER"), ROLE_MODER("ROLE_MODER");
+    ROLE_ADMIN("ROLE_ADMIN"), ROLE_USER("ROLE_USER"), ROLE_MODER("ROLE_MODER"), ROLE_NONACTIVE("ROLE_NONACTIVE");
 
     private final String name;
 

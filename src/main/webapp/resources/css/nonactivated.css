@@ -1,0 +1,27 @@
+.main .container{
+    text-align: center;
+}
+.header{
+    font-size: 40px;
+    color: dimgrey;
+}
+.image img{
+    height: 300px;
+}
+.suggest{
+    font-size: 20px;
+    color: dimgrey;
+    margin: 20px 0 0% 0;
+}
+.suggest span{
+    margin-left: 10px;
+    color: #ffffff;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    box-shadow:  0 0 10px #c0c0c0;
+    background-color: #F44336;
+}
+.suggest span:hover{
+    background-color: #da3931;
+}

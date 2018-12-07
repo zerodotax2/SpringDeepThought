@@ -2,12 +2,9 @@ package ru.projects.prog_ja.model.dao.Hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import ru.projects.prog_ja.dto.DefaultDTO;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class GenericDAO {
 
@@ -22,7 +19,11 @@ public abstract class GenericDAO {
     }
 
     protected <T extends DefaultDTO> Map<Long, T> toMap(List<T> entities){
-        HashMap<Long, T> resultMap = new HashMap<>();
+
+        if(entities == null)
+            return Collections.emptyMap();
+
+        HashMap<Long, T> resultMap = new LinkedHashMap<>();
 
         for(T entity : entities){
             resultMap.put(entity.getId(), entity);

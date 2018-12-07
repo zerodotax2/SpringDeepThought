@@ -79,6 +79,12 @@
     margin: 10px 0;
     color: #8a8a8a;
     font-size: 16px;
+    font-weight: 300;
+}
+.empty{
+    color: lightgray;
+    font-size: 14px;
+    font-weight: 300;
 }
 .user-card .right .interests {
     display: flex;
@@ -177,6 +183,8 @@
     width: 100%;
     display: flex;
     flex-flow: wrap;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 #article-panel .article{
     padding: 0;
@@ -186,10 +194,15 @@
 }
 #article-panel .article .card-content{
     padding: 15px;
-    color: #262626;
+    color: #7a7a7a;
 }
 #article-panel .article .card-image img{
     border-radius: 10px 10px 0 0;
+}
+#question-panel{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 #question-panel .question{
     width: 100%;
@@ -256,6 +269,11 @@
 }
 #question-panel .question .left-side .action{
     margin: 0 -5px;
+}
+#answer-panel{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 #answer-panel .answer{
     width: 100%;
@@ -325,6 +343,11 @@
 .HELL{
     background: #C62828;
 }
+.problem-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
 .problem-container .problem {
     width: 100%;
     display: flex;
@@ -372,6 +395,8 @@
 #fact-panel {
     display: flex;
     flex-flow: wrap;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 #fact-panel .fact {
     width: 30%;
@@ -387,6 +412,8 @@
 #tag-panel{
     display: flex;
     flex-wrap: wrap;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 #tag-panel .tag-card{
     padding: 0 !important;
@@ -577,12 +604,20 @@
     .user-card .right .name-line{
         justify-content: center;
     }
+    .user-card .right .name-line .name{
+        font-size: 16px;
+    }
     .user-card .right .name-line .rating {
         margin-left: 5px;
+        font-size: 14px;
+        margin-bottom: 5px;
     }
     .user-card .right .about{
         padding: 10px;
         font-size: 14px;
+    }
+    .user-card .settings{
+        margin-left: 10px;
     }
     .user-card .right .interests{
         margin: 0 5px;

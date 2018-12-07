@@ -23,11 +23,11 @@ import java.util.Set;
                 " ) " +
                 " from Tags t where t.tagId = :id"),
         @NamedQuery(name = "getFullTag", query = "select new ru.projects.prog_ja.dto.full.FullTagTransfer( " +
-                " t.tagId, t.name, t.description, t.color, tc.articles, tc.questions, tc.problems, tc.users, tc.facts, " +
+                " t.tagId, t.name, t.color, t.description, tc.articles, tc.questions, tc.problems, tc.users, tc.facts, " +
                 " t.createDate, u.userId, u.login, u.smallImagePath, u.rating " +
                 " ) from Tags t " +
-                " left join t.tagCounter as tc " +
-                " left join t.creator as u " +
+                " left join t.tagCounter tc " +
+                " left join t.creator u " +
                 " where t.tagId = :id"),
         @NamedQuery(name = "deleteTag", query = "delete from Tags t where t.tagId = :id and t.creator = :user"),
         @NamedQuery(name = "getSmallPopularTags", query = "select new ru.projects.prog_ja.dto.smalls.SmallTagTransfer ( " +
@@ -35,41 +35,39 @@ import java.util.Set;
                 " ) " +
                 " from Tags t" +
                 " left join t.tagCounter as tc" +
-                " order by tc.articles + tc.questions + tc.problems + tc.users + tc.facts "),
-        @NamedQuery(name = "getCommonPopularTags", query = "select new ru.projects.prog_ja.dto.smalls.SmallTagTransfer ( " +
+                " order by tc.uses "),
+        @NamedQuery(name = "getCommonPopularTags", query = "select new ru.projects.prog_ja.dto.commons.CommonTagTransfer ( " +
                 " t.id, t.name, t.color, t.description, tc.articles, tc.questions, tc.problems " +
                 " ) " +
                 " from Tags t" +
                 " left join t.tagCounter as tc" +
-                " order by tc.articles + tc.questions + tc.problems + tc.users + tc.facts "),
+                " order by tc.uses "),
         @NamedQuery(name = "getCommonTags", query = "select new ru.projects.prog_ja.dto.commons.CommonTagTransfer(" +
                 " t.tagId, t.name, t.color, t.description, tc.articles, tc.questions, tc.problems  " +
                 "  ) from Tags t" +
-                " left join t.tagCounter as tc  "),
-        @NamedQuery(name = "getCommonTag", query = "select new ru.projects.prog_ja.dto.commons.CommonTagTransfer(" +
+                " left join t.tagCounter tc "),
+        @NamedQuery(name = "getCommonTag", query ="select new ru.projects.prog_ja.dto.commons.CommonTagTransfer(" +
                 " t.tagId, t.name, t.color, t.description, tc.articles, tc.questions, tc.problems  " +
                 "  ) from Tags t" +
-                " left join t.tagCounter as tc  " +
-                " where t.tagId = :id"),
+                " left join t.tagCounter tc " +
+                " where t.tagId = :id" ),
         @NamedQuery(name = "findSmallTags", query = "select new ru.projects.prog_ja.dto.smalls.SmallTagTransfer (" +
                 "  t.tagId, t.name, t.color " +
                 " )  " +
                 " from Tags t " +
                 " where lower(t.name) like lower(:search)" +
                 " or lower(t.description) like lower(:search) "),
-        @NamedQuery(name = "countTags", query = "select distinct count(t.tagId) from Tags t")
+        @NamedQuery(name = "countTags", query = "select distinct count(t.tagId) from Tags t"),
+        @NamedQuery(name = "getTagName", query = "select name from Tags where tagId = :id"),
+        @NamedQuery(name = "updateTagOwnerRate", query = "update UserInfo set rating = rating + :rate " +
+                " where :tag in elements(tags)"),
+        @NamedQuery(name = "getTagsByPrefix", query = "select new ru.projects.prog_ja.dto.smalls.SmallTagTransfer(" +
+                " t.tagId, t.name, t.color" +
+                " ) from Tags t where t.name like :q"),
+        @NamedQuery(name = "getUpdateTagEntity", query = "select t from Tags t where t.tagId = :id"),
+        @NamedQuery(name = "getTagsByIDS", query = "select t from Tags t left join fetch t.tagCounter where t.tagId in (:tags)")
 })
 public class Tags {
-
-    public static final String DELETE_TAG = "deleteTag";
-    public static final String GET_SMALL_TAG = "getSmallTag";
-    public static final String GET_FULL_TAG = "getFullTag";
-    public static final String GET_COMMON_TAGS = "getCommonTags";
-    public static final String GET_COMMON_TAG = "getCommonTag";
-    public static final String GET_SMALL_POPULAR_TAGS = "getSmallPopularTags";
-    public static final String GET_COMMON_POPULAR_TAGS = "getCommonPopularTags";
-    public static final String FIND_SMALL_TAGS = "findSmallTags";
-    public static final String COUNT_TAGS = "countTags";
 
     private long tagId;
     private String name;
@@ -86,7 +84,7 @@ public class Tags {
     private Set<ProblemsTags> problems;
     private TagCounter tagCounter;
 
-    private boolean activated = false;
+    private boolean activated = true;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -100,7 +98,7 @@ public class Tags {
     }
 
     @Basic
-    @Column(name = "name")
+    @Column(name = "tag_name")
     public String getName() {
         return name;
     }
@@ -109,8 +107,7 @@ public class Tags {
         this.name = name;
     }
 
-    @Basic
-    @Column(name = "description")
+    @Column(name = "description", length = 1000)
     public String getDescription() {
         return description;
     }
@@ -127,7 +124,6 @@ public class Tags {
         this.description = description;
         this.color = color;
         this.creator = creator;
-        this.tagCounter = new TagCounter();
         this.createDate = new Date();
     }
 
@@ -153,7 +149,7 @@ public class Tags {
                 "Description: " + this.getDescription();
     }
 
-    @OneToMany(mappedBy = "tagId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tagId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @BatchSize(size = 10)
     public Set<FactsTags> getFacts() {
         return facts;
@@ -222,8 +218,8 @@ public class Tags {
         this.problems = problems;
     }
 
-    @OneToOne(optional = false, fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "tag_counter_id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "tag_counter_fk"))
+    @OneToOne(optional = false, mappedBy = "tag",
+            fetch = FetchType.LAZY, orphanRemoval = true,cascade = CascadeType.ALL)
     public TagCounter getTagCounter() {
         return tagCounter;
     }

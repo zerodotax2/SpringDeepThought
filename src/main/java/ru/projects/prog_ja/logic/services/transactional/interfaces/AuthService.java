@@ -1,7 +1,8 @@
 package ru.projects.prog_ja.logic.services.transactional.interfaces;
 
-import ru.projects.prog_ja.dto.UserDTO;
+import ru.projects.prog_ja.dto.auth.UserDTO;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public interface AuthService {
@@ -9,8 +10,20 @@ public interface AuthService {
     UserDTO createUser(String login, String password, String email,
                        boolean createCookie, HttpServletResponse response);
 
+    boolean sendActivateEmail(String login, String email);
+
+    String resendActivateEmail(long userId);
+
+    boolean activateAccount(String token);
+
+    boolean existEmail(String email);
+
+    boolean existLogin(String login);
+
     UserDTO checkUser(String login, String pass_h, boolean createCookie,
                       HttpServletResponse response);
+
+    UserDTO getUserByCookies(HttpServletRequest request);
 
     boolean createUserToken(long userId, HttpServletResponse response);
 
@@ -29,8 +42,13 @@ public interface AuthService {
 
     boolean updateEmail(long id, String email);
 
-    boolean updateLogin(long userId, String login);
+    boolean activateEmail(String token);
 
     UserDTO getUserByLogin(String login);
 
+    boolean restore(String email);
+
+    boolean containsRestoreToken(String token);
+
+    boolean restorePassword(String token, String password);
 }

@@ -11,27 +11,30 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "UserInbox")
+
 @NamedQueries({
         @NamedQuery(name = "getAllUserNotices", query = "select new ru.projects.prog_ja.dto.smalls.SmallNoticeTransfer (" +
                 " ui.userInboxId, ui.message, ui.noticeType, ui.createDate " +
-                " ) from UserInbox ui " +
-                " where ui.userInfo = :user "),
+                " ) from UserInbox ui" +
+                " left join ui.userInfo u " +
+                " where u.userId = :user" +
+                " order by ui.createDate "),
         @NamedQuery(name = "getLastUserNotices", query = "select new ru.projects.prog_ja.dto.smalls.SmallNoticeTransfer (" +
                 " ui.userInboxId, ui.message, ui.noticeType, ui.createDate " +
                 " ) from UserInbox ui " +
-                " where ui.userInfo = :user and ui.active = true "),
-        @NamedQuery(name = "getLastUserNotices", query = "select new ru.projects.prog_ja.dto.smalls.SmallNoticeTransfer (" +
+                " left join ui.userInfo u " +
+                " where u.userId = :user and ui.active = true" +
+                " order by ui.createDate"),
+        @NamedQuery(name = "getUserNotices", query = "select new ru.projects.prog_ja.dto.smalls.SmallNoticeTransfer (" +
                 " ui.userInboxId, ui.message, ui.noticeType, ui.createDate " +
                 " ) from UserInbox ui " +
-                " where ui.userInfo = :user"),
-        @NamedQuery(name = "unactivateNotice", query = "update UserInbox ui set ui.active = false where ui.userInboxId = :id ")
+                " left join ui.userInfo u  " +
+                " where u.userId = :user"),
+        @NamedQuery(name = "unactivateNotice", query = "update UserInbox ui set ui.active = false where ui.userInboxId = :id "),
+        @NamedQuery(name = "countNotices", query="select size(u.notices) from UserInfo u left join u.notices n where u.userId = :id"),
+        @NamedQuery(name = "unactivateAllNotices", query = "update UserInbox ui set ui.active = false where ui.userInfo = :user")
 })
 public class UserInbox {
-
-    public static final String GET_ALL_USER_NOTICES = "getAllUserNotices";
-    public static final String GET_USER_NOTICES = "getUserNotices";
-    public static final String GET_LAST_USER_NOTICES = "getLastUserNotices";
-    public static final String UNACTIVATE_NOTICE = "unactivateNotice";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,8 +1,7 @@
 package ru.projects.prog_ja.dto.smalls;
 
 import ru.projects.prog_ja.dto.TagsContainer;
-import ru.projects.prog_ja.model.entity.problems.Problem;
-import ru.projects.prog_ja.model.entity.problems.ProblemDifficult;
+import ru.projects.prog_ja.dto.view.ProblemDifficult;
 
 import java.util.Date;
 

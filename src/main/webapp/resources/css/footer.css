@@ -47,6 +47,7 @@
   }
   .footer-container .left{
     width: 100%;
+    justify-content: center;
   }
   .footer-container .right{
     width: 100%;

@@ -1,4 +1,4 @@
-
+'use strict';
 const result = {
     colorPickerInstance: undefined,
     nameInput: document.getElementById('nameInput'),
@@ -52,7 +52,7 @@ function create() {
        if(name.length < 3 || name.length > 32){
            modal.error('Длина имени должна быть не меньше 3 и не превышать 32 символа');
            return;
-       }else if(!name.match(/^[A-z|А-я]+$/)){
+       }else if(!name.match(/^[A-z|А-я|\s|-]+$/)){
            modal.error('Неправильный формат имени');
            return;
        }else if(describe.length < 50 || describe.length > 1000){
@@ -61,46 +61,52 @@ function create() {
        }
        result.creating = true;
        if(result.edit){
+           modal.load('Идёт обновление тега...');
            xhr.request({
                path: '/services/tags',
                method: 'PUT',
+               headers: {
+                   'Content-Type':'application/json'
+               },
                content: JSON.stringify({
-                   tagId: tag_id,
+                   tagId: result.tagId,
                    name: name,
-                   describe: describe,
+                   description: describe,
                    color: color
                })
            }, function (response, error) {
                if(response){
-                   const tag = JSON.parse(response),
-                       href = window.location.href;
-                   window.location.href = href.substring(0, href.lastIndexOf('add')) + tag.id
+                   const href = window.location.href;
+                   window.location.href = href.substring(0, href.lastIndexOf('edit'));
                }else if(error){
                    modal.error('Не удалось обновить тег');
                }
                result.creating = false;
            });
-           modal.load('Идёт обновление тега...');
        }else{
+           modal.load('Идёт создание тега');
            xhr.request({
                path: '/services/tags',
                method: 'POST',
+               headers: {
+                   'Content-Type':'application/json'
+               },
                content: JSON.stringify({
                    name: name,
-                   describe: describe,
+                   description: describe,
                    color: color
                })
            }, function (response, error) {
                if(response){
                    const tag = JSON.parse(response),
                        href = window.location.href;
-                   window.location.href = href.substring(0, href.lastIndexOf('add')) + tag.id
+                   if(tag !== undefined)
+                        window.location.href = href.substring(0, href.lastIndexOf('add')) + tag.id
                }else if(error){
                    modal.error('Не удалось создать тег');
                }
                result.creating = false;
            });
-           modal.load('Идёт создание тега');
        }
     });
 }
@@ -114,6 +120,8 @@ function initIfEdit(){
         rgb = hexToRgb(colorEdit.getAttribute('content')),
         nameEdit = document.getElementById('name_edit'),
         describeEdit = document.getElementById('describe_edit');
+
+    result.tagId = document.getElementById('tag_id').getAttribute('content');
 
     result.rgb = rgb;
     result.tagPreview.innerText = nameEdit.getAttribute('content');

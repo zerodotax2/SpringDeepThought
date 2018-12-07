@@ -10,6 +10,7 @@
 <body>
 
     <div layout:fragment="content">
+
         <div class="row form-wrapper">
             <form th:action="@{/register}" method="POST" th:object="${createUserDTO}" class="reg-form">
                 <div class="head">
@@ -27,7 +28,7 @@
                     <div class="input-field">
                         <svg class="prefix"  role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#adb5bd" d="M512 176.001C512 273.203 433.202 352 336 352c-11.22 0-22.19-1.062-32.827-3.069l-24.012 27.014A23.999 23.999 0 0 1 261.223 384H224v40c0 13.255-10.745 24-24 24h-40v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-78.059c0-6.365 2.529-12.47 7.029-16.971l161.802-161.802C163.108 213.814 160 195.271 160 176 160 78.798 238.797.001 335.999 0 433.488-.001 512 78.511 512 176.001zM336 128c0 26.51 21.49 48 48 48s48-21.49 48-48-21.49-48-48-48-48 21.49-48 48z"></path></svg>
                         <label  for="password">Пароль</label>
-                        <input th:field="*{[]assword}" type="password" id="password" name="password"/>
+                        <input th:field="*{password}" type="password" id="password" name="password"/>
                         <span style="display: none;" class="error red-text" id="password_error"></span>
                         <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class=".server-error error red-text" id="login_error"></span>
                     </div>
@@ -48,7 +49,7 @@
                 </div>
                 <div class="actions">
                     <div class="send">
-                        <input type="button" value="Зарегистрироваться"/>
+                        <input type="submit" value="Зарегистрироваться"/>
                     </div>
                     <div class="already-register">
                         <span>Уже зарегистрированы?</span>
@@ -56,6 +57,17 @@
                     </div>
                 </div>
             </form>
+        </div>
+        <div th:if="${#request.getParameter('error') != null}" class="message">
+            <div class="content">
+                <div class="top-line">
+                    <svg onclick="this.parentElement.parentElement.parentElement.parentElement.removeChild(this.parentElement.parentElement.parentElement)"
+                         role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512"><path fill="#C62828" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg>
+                </div>
+                <div class="text">
+                    Не удалось зарегистрироваться
+                </div>
+            </div>
         </div>
     </div>
     <th:block layout:fragment="js">

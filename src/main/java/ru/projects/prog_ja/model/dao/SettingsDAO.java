@@ -10,6 +10,6 @@ public interface SettingsDAO {
 
     SettingsAccountTransfer getSettingsAccount(long userId);
 
-    SettingsNotificationsTransfer getSettingsNotifications(long userId);
+    SettingsNotificationsTransfer getSettingsNotifications(long userId, int size, int page);
 
 }

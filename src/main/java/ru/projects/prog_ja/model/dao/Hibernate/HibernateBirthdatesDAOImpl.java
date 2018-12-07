@@ -5,11 +5,9 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ru.projects.prog_ja.dto.commons.CommonUserTransfer;
 import ru.projects.prog_ja.model.dao.BirthdatesDAO;
-import ru.projects.prog_ja.model.entity.user.UserInfo;
+import ru.projects.prog_ja.model.dao.Hibernate.queries.UserQueries;
 
 import java.sql.Date;
 import java.util.List;
@@ -25,7 +23,7 @@ public class HibernateBirthdatesDAOImpl extends GenericDAO implements Birthdates
     @Override
     public List<CommonUserTransfer> getTodayUsers() {
 
-        Query<CommonUserTransfer> query = session().createNamedQuery(UserInfo.GET_USERS_BY_BIRTHDATE, CommonUserTransfer.class)
+        Query<CommonUserTransfer> query = session().createNamedQuery(UserQueries.GET_USERS_BY_BIRTHDATE, CommonUserTransfer.class)
                 .setParameter("date", new java.util.Date());
 
         List<CommonUserTransfer> users = query.getResultList();
@@ -36,7 +34,7 @@ public class HibernateBirthdatesDAOImpl extends GenericDAO implements Birthdates
     @Override
     public List<String> getTodayEmails() {
 
-        Query<String> query = session().createNamedQuery(UserInfo.GET_USERS_EMAILS_BY_DATE, String.class)
+        Query<String> query = session().createNamedQuery(UserQueries.GET_USERS_EMAILS_BY_DATE, String.class)
                 .setParameter("date", new java.util.Date());
 
         List<String> emails = query.getResultList();
@@ -47,7 +45,7 @@ public class HibernateBirthdatesDAOImpl extends GenericDAO implements Birthdates
     @Override
     public List<CommonUserTransfer> getDateUsers(Date date) {
 
-        Query<CommonUserTransfer> query = session().createNamedQuery(UserInfo.GET_USERS_BY_BIRTHDATE, CommonUserTransfer.class)
+        Query<CommonUserTransfer> query = session().createNamedQuery(UserQueries.GET_USERS_BY_BIRTHDATE, CommonUserTransfer.class)
                 .setParameter("date", date);
 
         List<CommonUserTransfer> users = query.getResultList();
@@ -58,7 +56,7 @@ public class HibernateBirthdatesDAOImpl extends GenericDAO implements Birthdates
     @Override
     public List<String> getDateEmails(Date date) {
 
-        Query<String> query = session().createNamedQuery(UserInfo.GET_USERS_EMAILS_BY_DATE, String.class)
+        Query<String> query = session().createNamedQuery(UserQueries.GET_USERS_EMAILS_BY_DATE, String.class)
                 .setParameter("date", date);
 
         List<String> emails = query.getResultList();

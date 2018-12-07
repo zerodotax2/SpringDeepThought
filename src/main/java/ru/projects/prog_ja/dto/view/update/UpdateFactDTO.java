@@ -12,7 +12,7 @@ public class UpdateFactDTO {
 
     @NotNull
     @Size(min = 100, max = 1000)
-    @Pattern(regexp = "^[\\w|\\s]+$")
+    @Pattern(regexp = "^[А-я|ё|\\w|\\s|\\d|\\p{Punct}]+$")
     private String text;
 
     @NotNull

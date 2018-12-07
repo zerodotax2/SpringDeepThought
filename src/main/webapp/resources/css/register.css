@@ -1,6 +1,30 @@
 body{
   background: #f2f2f2 !important;
 }
+.message{
+  display: flex;
+  justify-content: center;
+}
+.message .content .top-line{
+  display: flex;
+  justify-content: right;
+  margin: 5px 5px -20px 0;
+}
+.message .content .top-line svg{
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+.message .content{
+  border-radius: 10px;
+  border: 1px solid #C62828;
+  background: #FFCDD2;
+}
+.message .content .text{
+  padding: 10px 40px;
+  color: #C62828;
+  font-weight: 300;
+}
 .form-wrapper{
   display: flex;
   justify-content: center;

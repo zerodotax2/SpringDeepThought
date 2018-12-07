@@ -4,11 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.projects.prog_ja.dto.UserDTO;
+import ru.projects.prog_ja.dto.auth.UserDTO;
 import ru.projects.prog_ja.dto.commons.CommonCommentTransfer;
 import ru.projects.prog_ja.dto.view.RemoveDTO;
 import ru.projects.prog_ja.dto.view.create.CreateCommentDTO;
 import ru.projects.prog_ja.dto.view.update.UpdateRatingDTO;
+import ru.projects.prog_ja.exceptions.RepeatVotedException;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.ArticleReadService;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.ArticleWriteService;
 import ru.projects.prog_ja.services.AbstractRestService;
@@ -31,7 +32,7 @@ public class RestArticlesCommentService extends AbstractRestService {
 
     @PostMapping
     public ResponseEntity<?> postComment(@Valid @RequestBody CreateCommentDTO createCommentDTO, BindingResult bindingResult,
-                                         @SessionAttribute UserDTO userDTO){
+                                         @SessionAttribute("user") UserDTO userDTO){
         if(bindingResult.hasErrors())
             return badRequest();
         if(userDTO == null || userDTO.getId() == -1){
@@ -46,7 +47,7 @@ public class RestArticlesCommentService extends AbstractRestService {
 
     @PutMapping
     public ResponseEntity<?> changeComment(@Valid @RequestBody CreateCommentDTO createCommentDTO, BindingResult bindingResult,
-                                           @SessionAttribute("user") UserDTO userDTO){
+                                           @SessionAttribute(name = "user", required = false) UserDTO userDTO){
         if(bindingResult.hasErrors())
             return badRequest();
 
@@ -61,7 +62,7 @@ public class RestArticlesCommentService extends AbstractRestService {
 
     @DeleteMapping
     public ResponseEntity<?> removeComment(@RequestBody RemoveDTO removeDTO,
-                                            @SessionAttribute("user") UserDTO userDTO){
+                                            @SessionAttribute(name = "user", required = false) UserDTO userDTO){
         if(userDTO == null || userDTO.getId() == -1){
             return accessDenied();
         }
@@ -73,15 +74,19 @@ public class RestArticlesCommentService extends AbstractRestService {
 
     @PostMapping(value = "/rating")
     public ResponseEntity<?> changeRate(@Valid @RequestBody UpdateRatingDTO updateRatingDTO, BindingResult bindingResult,
-                                        @SessionAttribute("user") UserDTO userDTO){
+                                        @SessionAttribute(name = "user", required = false) UserDTO userDTO){
 
         if(bindingResult.hasErrors())
             return badRequest();
         if(userDTO == null || userDTO.getId() == -1){
             return accessDenied();
         }
-        if(articleWriteService.updateCommentRate(updateRatingDTO.getId(), updateRatingDTO.getRate(), userDTO.getId())){
-            return found(updateRatingDTO);
+        try{
+            if(articleWriteService.updateCommentRate(updateRatingDTO.getId(), updateRatingDTO.getRate(), userDTO.getId())){
+                return found(updateRatingDTO);
+            }
+        }catch (RepeatVotedException e){
+            return already();
         }
         return serverError();
     }

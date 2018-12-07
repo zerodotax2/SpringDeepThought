@@ -6,12 +6,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.projects.prog_ja.dto.commons.CommonArticleTransfer;
+import ru.projects.prog_ja.dto.auth.UserDTO;
+import ru.projects.prog_ja.dto.dao.PageableEntity;
 import ru.projects.prog_ja.dto.full.FullArticleTransfer;
 import ru.projects.prog_ja.dto.smalls.SmallArticleTransfer;
-import ru.projects.prog_ja.dto.view.BySomethingContainer;
-import ru.projects.prog_ja.dto.view.ViewAnswerTransfer;
-import ru.projects.prog_ja.exceptions.BadRequestException;
+import ru.projects.prog_ja.dto.view.PageableContainer;
+import ru.projects.prog_ja.logic.queues.views.ViewsQueue;
+import ru.projects.prog_ja.logic.services.simple.implementations.RegexUtil;
+import ru.projects.prog_ja.logic.services.simple.interfaces.ValuesParser;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.ArticleReadService;
 import ru.projects.prog_ja.model.dao.ArticleDAO;
 
@@ -24,119 +26,173 @@ public class ArticleReadServiceImpl implements ArticleReadService {
 
 
     private final ArticleDAO articleDAO;
+    private final ValuesParser parser;
+    private final ViewsQueue viewsQueue;
 
-    @Value("${articles.small.show.size}")
+
     private static int smallArticlesSize;
-
-    @Value("${articles.common.show.size}")
     private static int commonArticlesSize;
-
-    @Value("{entities.max.size}")
-    private static int maxEntitiesSize;
 
 
     @Autowired
-    public ArticleReadServiceImpl(ArticleDAO articleDAO){
+    public ArticleReadServiceImpl(ArticleDAO articleDAO,
+                                  ViewsQueue viewsQueue,
+                                  ValuesParser parser){
         this.articleDAO = articleDAO;
+        this.viewsQueue = viewsQueue;
+        this.parser = parser;
     }
 
 
     @Override
-    public List<CommonArticleTransfer> getMiddleArticles(int start, String type, String sort){
+    public PageableContainer getMiddleArticles(String page, String type, String sort){
 
+        int parsedPage = parser.getPage(page);
+        PageableEntity pageable =
+                articleDAO.getArticles((parsedPage - 1) * commonArticlesSize, commonArticlesSize, getOrderField(type), parser.getSort(sort));
 
-        return articleDAO.getArticles(start, commonArticlesSize, getOrderField(type), getSort(sort));
+        return new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), commonArticlesSize));
     }
 
 
     @Override
-    public FullArticleTransfer getArticleByID(long id){
+    public FullArticleTransfer getArticleByID(long id, UserDTO userDTO){
 
-        return articleDAO.getArticleByID(id);
+        FullArticleTransfer fullArticleTransfer = articleDAO.getArticleByID(id);
+
+        if(fullArticleTransfer != null && userDTO != null && fullArticleTransfer.getUser().getId() != userDTO.getId()){
+
+            viewsQueue.addArticleView(fullArticleTransfer.getId());
+        }
+
+        return fullArticleTransfer;
     }
 
     @Override
-    public List<CommonArticleTransfer> findArticles(int start, String query, String type, String sort) {
+    public PageableContainer findArticles(String page, String query, String type, String sort) {
 
-        if(!query.matches("^[\\w|\\s]$"))
-            return getDefaultArticles(start, type, sort);
+        if(query == null || !RegexUtil.string(query).matches())
+            return getDefaultArticles(page, type, sort);
 
-        return articleDAO.findArticles(start, commonArticlesSize, query, getOrderField(type), getSort(sort));
+        int parsedPage = parser.getPage(page);
+        PageableEntity pageable =
+                articleDAO.findArticles((parsedPage - 1) * commonArticlesSize, commonArticlesSize, query, getOrderField(type), parser.getSort(sort));
+
+        return new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), commonArticlesSize));
     }
 
     @Override
-    public List<SmallArticleTransfer> findSmallArticles(int start, String search, String type, String sort){
+    public PageableContainer findSmallArticles(String page, String search, String type, String sort){
 
-        if(!search.matches("^[\\w|\\s]$"))
-            return getSmallArticles(start, type, sort);
+        if(search == null || !RegexUtil.string(search).matches())
+            return getSmallArticles(page, type, sort);
 
-        List<SmallArticleTransfer> rs = articleDAO.findSmallArticles(start, smallArticlesSize, search, getOrderField(type), getSort(sort));
+        int parsedPage = parser.getPage(page);
+        PageableEntity pageable
+                = articleDAO.findSmallArticles((parsedPage - 1) * commonArticlesSize, smallArticlesSize, search, getOrderField(type), parser.getSort(sort));
 
-        return rs;
+        return  new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), smallArticlesSize));
     }
 
     @Override
-    public List<SmallArticleTransfer> getSmallArticles(int start, String type, String sort) {
+    public PageableContainer getSmallArticles(String page, String type, String sort) {
 
-        return articleDAO.getSmallArticles(start, smallArticlesSize, getOrderField(type), getSort(sort));
+        int parsedPage = parser.getPage(page);
+        PageableEntity pageable =
+                articleDAO.getSmallArticles((parsedPage - 1) * smallArticlesSize, smallArticlesSize, getOrderField(type), parser.getSort(sort));
+
+        return new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), smallArticlesSize));
     }
 
     @Override
-    public List<SmallArticleTransfer> getPopularArticles(int start) {
+    public List<SmallArticleTransfer> getPopularArticles() {
 
-        return articleDAO.getSmallArticles(start, smallArticlesSize, "rating", 1);
+        PageableEntity pageable =
+                articleDAO.getSmallArticles(0, smallArticlesSize, "rating", 1);
+
+        return pageable.getList();
     }
 
     @Override
-    public BySomethingContainer getArticlesByUser(int start, String size, long userId, String type, String sort) {
+    public PageableContainer getSmallArticlesByUser(String page, String size, long userId, String query, String type, String sort) {
 
 
-        int parsedSize = getSize(size);
-        List<SmallArticleTransfer> articles =articleDAO.getSmallArticlesByUser(start, parsedSize+1,
-                userId, getOrderField(type), getSort(sort));
+        int parsedSize = parser.getSize(size),
+            parsedPage = parser.getPage(page);
+        PageableEntity pageable = articleDAO.getSmallArticlesByUser((parsedPage - 1) * smallArticlesSize, parsedSize+1,
+                userId, parser.getQuery(query), getOrderField(type), parser.getSort(sort));
 
-        return articles != null ? new BySomethingContainer(articles.size() > parsedSize, articles) : null;
+        return  new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), smallArticlesSize));
     }
 
     @Override
-    public BySomethingContainer getArticlesByTag(int start, String size, long tagId, String type, String sort) {
+    public PageableContainer getSmallArticlesByTag(String page, String size, long tagId, String query, String type, String sort) {
 
-        int parsedSize = getSize(size);
-        List<SmallArticleTransfer> articles =articleDAO.getSmallArticlesByTag(start, parsedSize+1,
-                tagId, getOrderField(type), getSort(sort));
+        int parsedSize = parser.getSize(size),
+            parsedPage = parser.getPage(page);
 
-        return articles != null ? new BySomethingContainer(articles.size() > parsedSize, articles) : null;
+        PageableEntity pageable = articleDAO.getSmallArticlesByTag((parsedPage - 1) * smallArticlesSize, parsedSize+1,
+                tagId, parser.getQuery(query), getOrderField(type), parser.getSort(sort));
+
+        return  new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), smallArticlesSize));
     }
 
     @Override
-    public List<CommonArticleTransfer> getArticles(int start, String query, String type, String sort) {
+    public PageableContainer getCommonArticlesByUser(String page, String size, long userId, String query, String type, String sort) {
+
+        int parsedSize = parser.getSize(size),
+            parsedPage = parser.getPage(page);
+        PageableEntity pageable = articleDAO.getCommonArticlesByUser((parsedPage - 1) * commonArticlesSize, parsedSize+1,
+                userId, parser.getQuery(query), getOrderField(type), parser.getSort(sort));
+
+        return  new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), commonArticlesSize));
+    }
+
+    @Override
+    public PageableContainer getCommonArticlesByTag(String page, String size, long tagId, String query, String type, String sort) {
+
+        int parsedSize = parser.getSize(size),
+            parsedPage = parser.getPage(page);
+        PageableEntity pageable =
+                articleDAO.getCommonArticlesByTag((parsedPage-1) * commonArticlesSize, parsedSize+1,
+                tagId, parser.getQuery(query), getOrderField(type), parser.getSort(sort));
+
+        return  new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), commonArticlesSize));
+    }
+
+    @Override
+    public PageableContainer getArticles(String page, String query, String type, String sort) {
         if(query == null || "".equals(query)){
-            return getDefaultArticles(start, type, sort);
+            return getDefaultArticles(page, type, sort);
         }else{
-            return findArticles(start, query, type, sort);
+            return findArticles(page, query, type, sort);
         }
     }
 
     @Override
-    public List<CommonArticleTransfer> getDefaultArticles(int start, String type, String sort){
+    public PageableContainer getDefaultArticles(String page, String type, String sort){
 
-        return articleDAO.getArticles(start, commonArticlesSize,getOrderField(type), getSort(sort));
-    }
+        int parsedPage = parser.getPage(page);
+        PageableEntity pageable =
+                articleDAO.getArticles((parsedPage - 1) * commonArticlesSize, commonArticlesSize,getOrderField(type), parser.getSort(sort));
 
-    private int getSize(String s){
-        try {
-            int i = Math.abs(Integer.parseInt(s));
-            return i > maxEntitiesSize ? 6 : i;
-        }catch (NumberFormatException e){
-            return 6;
-        }
-    }
-
-    private int getSort(String sort){
-        return "0".equals(sort) ? 0 : 1;
+        return new PageableContainer(pageable.getList(),
+                parser.getPages(parsedPage, pageable.getCount(), commonArticlesSize));
     }
 
     private String getOrderField(String type){
+
+        if(type == null)
+            return "rating";
+
         switch (type) {
             case "rating":
                 return type;
@@ -147,5 +203,15 @@ public class ArticleReadServiceImpl implements ArticleReadService {
             default:
                 return "rating";
         }
+    }
+
+    @Value("${articles.small.show.size}")
+    public void setSmallArticlesSize(int size) {
+        smallArticlesSize = size;
+    }
+
+    @Value("${articles.common.show.size}")
+    public void setCommonArticlesSize(int size) {
+        commonArticlesSize = size;
     }
 }

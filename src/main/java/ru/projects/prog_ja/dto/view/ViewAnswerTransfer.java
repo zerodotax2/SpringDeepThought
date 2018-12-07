@@ -11,13 +11,13 @@ public class ViewAnswerTransfer {
     private long rating;
     private boolean right;
 
-    public ViewAnswerTransfer(long id, long question_id, String question_title, Date createDate, long rating, boolean right) {
+    public ViewAnswerTransfer(long id, long question_id, String question_title, Date createDate, long rating, long right) {
         this.id = id;
         this.question_id = question_id;
         this.question_title = question_title;
         this.createDate = createDate;
         this.rating = rating;
-        this.right = right;
+        this.right = id == right;
     }
 
     public long getId() {

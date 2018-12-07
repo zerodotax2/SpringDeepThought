@@ -164,6 +164,7 @@
 #articles-panel {
     width: 100%;
     display: flex;
+    justify-content: space-around;
     flex-flow: wrap;
 }
 #articles-panel .article{
@@ -183,6 +184,8 @@
     width: 100%;
     display: flex;
     flex-flow: column;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 #questions-panel .question{
     width: 100%;
@@ -279,6 +282,8 @@
 #problems-panel{
     display: flex;
     flex-flow: column;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 #problems-panel .problem {
     width: 100%;
@@ -337,6 +342,8 @@
 #users-panel {
     display: flex;
     flex-flow: wrap;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 
 #users-panel .user{
@@ -375,6 +382,8 @@
 #facts-panel {
     display: flex;
     flex-flow: wrap;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 
 #facts-panel .fact {

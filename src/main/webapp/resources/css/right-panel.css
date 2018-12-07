@@ -100,6 +100,9 @@
   margin: 0 0 5px 5px;
   color: #757575;
 }
+.left-tags .head-divider{
+  margin-bottom: 20px;
+}
 .tag-more{
   margin-top: -13px;
 }

@@ -5,9 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.projects.prog_ja.dto.UserDTO;
+import ru.projects.prog_ja.dto.auth.UserDTO;
 import ru.projects.prog_ja.dto.commons.CommonTagTransfer;
-import ru.projects.prog_ja.dto.smalls.SmallTagTransfer;
 import ru.projects.prog_ja.dto.view.create.CreateTagDTO;
 import ru.projects.prog_ja.dto.view.update.UpdateTagDTO;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.TagsReadService;
@@ -15,7 +14,6 @@ import ru.projects.prog_ja.logic.services.transactional.interfaces.TagsWriteServ
 import ru.projects.prog_ja.services.AbstractRestService;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/services/tags")
@@ -38,34 +36,17 @@ public class RestTagsService extends AbstractRestService {
     @GetMapping("/popular")
     public ResponseEntity<?> getPopularTags(){
 
-        List<SmallTagTransfer> popularTags = tagsReadService.getPopularTags();
-        if(popularTags == null){
-            return serverError();
-        }
-
-        return found(popularTags);
+        return found(tagsReadService.getPopularTags());
     }
 
     @GetMapping
-    public ResponseEntity<?> getUsers(@RequestParam(value = "q", required = false) String q,
-                                      @RequestParam(value = "sort", defaultValue = "1") String sort,
-                                      @RequestParam(value = "start") String start,
-                                      @RequestParam(value = "type", defaultValue = "rating") String type){
+    public ResponseEntity<?> getTags(@RequestParam(name = "q", required = false) String q,
+                                      @RequestParam(name = "sort", defaultValue = "1") String sort,
+                                      @RequestParam(name = "start") String start,
+                                      @RequestParam(name = "type", defaultValue = "rating") String type,
+                                      @RequestParam(name = "page", defaultValue = "1") String page){
 
-        if(start == null || start.equals(""))
-
-            return badRequest();
-        else if(!start.matches("^\\d+$") || start.length() > 32){
-
-            return incorrectFormat();
-        }else{
-            List<CommonTagTransfer> tags = tagsReadService.getTags(Integer.parseInt(start), q, type, sort);
-            if(tags == null){
-                return serverError();
-            }
-
-            return found(tags);
-        }
+            return found(tagsReadService.getTags(page, q, type, sort));
     }
 
     /*
@@ -73,7 +54,7 @@ public class RestTagsService extends AbstractRestService {
     * */
     @PostMapping
     public ResponseEntity<?> createTag(@Valid @RequestBody CreateTagDTO createTagDTO, BindingResult bindingResult,
-                                       @SessionAttribute("user") UserDTO userDTO){
+                                       @SessionAttribute(name = "user", required = false) UserDTO userDTO){
 
 
         if(bindingResult.hasErrors()){
@@ -96,7 +77,7 @@ public class RestTagsService extends AbstractRestService {
 
     @PutMapping
     public ResponseEntity<?> updateTag(@Valid @RequestBody UpdateTagDTO updateTagDTO, BindingResult bindingResult,
-                                       @SessionAttribute("user") UserDTO userDTO){
+                                       @SessionAttribute(name = "user", required = false) UserDTO userDTO){
 
 
         if(bindingResult.hasErrors()){
@@ -124,5 +105,11 @@ public class RestTagsService extends AbstractRestService {
         }
 
         return found(tag);
+    }
+
+    @GetMapping("/small")
+    public ResponseEntity<?> getTagsByPrefix(@RequestParam(name = "q", defaultValue = "") String q){
+
+        return !"".equals(q) ?found(tagsReadService.getTagsByPrefix(q)) : badRequest();
     }
 }

@@ -15,11 +15,13 @@
     <link rel="stylesheet" href="../../../resources/css/header.css"/>
     <link rel="stylesheet" href="../../../resources/css/right-panel.css"/>
     <link rel="stylesheet" href="../../../resources/css/function_panel.css"/>
+    <link rel="stylesheet" href="../../../resources/css/entity_pages.css"/>
     <link rel="stylesheet" href="../../../resources/css/articles.css"/>
 
     <meta id="fileServerLocation" content="http://localhost:80"/>
     <meta id="_csrf_header" content="csrf"/>
     <meta id="_csrf" content="0"/>
+    <meta id="user_id" content="1"/>
 
     <!--Top icon-->
     <link rel="shortcut icon" href="../../../resources/images/icon2.ico" type="image/x-icon"/>
@@ -48,6 +50,20 @@
                     <li id="problemsElement"><a class="white-text" href="/problems">ЗАДАЧИ</a></li>
                     <li id="supportElement"><a class="white-text" href="/support">ПОМОЩЬ</a></li>
                     <!--Dropdown button-->
+                    <li class="user-notifications">
+                        <div class="action">
+                            <svg role="img" xmlns="http://www.w3.org/2000/svg" fill="#EEEEEE" viewBox="0 0 448 512"><path d="M224 512c35.32 0 63.97-28.65 63.97-64H160.03c0 35.35 28.65 64 63.97 64zm215.39-149.71c-19.32-20.76-55.47-51.99-55.47-154.29 0-77.7-54.48-139.9-127.94-155.16V32c0-17.67-14.32-32-31.98-32s-31.98 14.33-31.98 32v20.84C118.56 68.1 64.08 130.3 64.08 208c0 102.3-36.15 133.53-55.47 154.29-6 6.45-8.66 14.16-8.61 21.71.11 16.4 12.98 32 32.1 32h383.8c19.12 0 32-15.6 32.1-32 .05-7.55-2.61-15.27-8.61-21.71z"></path></svg>
+                            <div class="nums">10</div>
+                        </div>
+                        <div class="panel" style="display: none;">
+                            <div class="loader">
+                                <div class="lds-dual-ring"></div>
+                            </div>
+                            <div class="empty" style="display: none;">Нет уведомлений</div>
+                            <div class="error" style="display: none;">Ошибка при загрузке уведомлений</div>
+                            <a href="/settings/user" class="more">Смотреть всё</a>
+                        </div>
+                    </li>
                     <li class="user-account">
                         <div class="user">
                             <div class="info">
@@ -142,6 +158,9 @@
                         </div>
                     </div>
 
+                    <!--<div class="col s12 no-content">-->
+                        <!--По вашему запросу ничего не найдено-->
+                    <!--</div>-->
                     <div id="articles_container">
                         <div class='card hoverable col z-depth-2 s12'>
                             <div class='card-image row' >
@@ -158,12 +177,27 @@
                                     <h6 class="grey-text">0</h6>
                                     <svg aria-hidden="true" data-prefix="far" data-icon="eye" class="svg-inline--fa fa-eye fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#adb5bd" d="M569.354 231.631C512.97 135.949 407.81 72 288 72 168.14 72 63.004 135.994 6.646 231.631a47.999 47.999 0 0 0 0 48.739C63.031 376.051 168.19 440 288 440c119.86 0 224.996-63.994 281.354-159.631a47.997 47.997 0 0 0 0-48.738zM288 392c-102.556 0-192.091-54.701-240-136 44.157-74.933 123.677-127.27 216.162-135.007C273.958 131.078 280 144.83 280 160c0 30.928-25.072 56-56 56s-56-25.072-56-56l.001-.042C157.794 179.043 152 200.844 152 224c0 75.111 60.889 136 136 136s136-60.889 136-136c0-31.031-10.4-59.629-27.895-82.515C451.704 164.638 498.009 205.106 528 256c-47.908 81.299-137.444 136-240 136z"></path></svg>
                                 </div>
-                                <div class='comments action-stat'>
+                                <div class='action-stat'>
                                     <h6 class="grey-text">0</h6>
-                                    <svg aria-hidden="true" data-prefix="fas" data-icon="comment" class="svg-inline--fa fa-comment fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#adb5bd" d="M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z"></path></svg>
+                                    <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#adb5bd" d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"></path></svg>
                                 </div>
-                                <a href='/articles/1' class='btn col s5 l3 red waves-effect waves-light'>Читать</a>
+                                <a href='/articles/1' class='btn col s5 l3 blue waves-effect waves-light'>Читать</a>
                             </div>
+                        </div>
+                    </div>
+                    <div class="pagination col s12">
+                        <div class="content">
+                            <a href="/articles?page=0" class="previous elem act">Назад</a>
+                            <div class="center">
+                                <a href="/articles?page=1" class="elem">2</a>
+                                <a href="/articles?page=1" class="elem active">3</a>
+                                <a href="/articles?page=1" class="elem">4</a>
+                                <div class="all-pages">
+                                    <span class="divide">...</span>
+                                    <a href="/articles?page=1" class="elem">1211</a>
+                                </div>
+                            </div>
+                            <a href="/articles?page=2" class="next elem act">Далее</a>
                         </div>
                     </div>
                 </div>

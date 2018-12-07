@@ -1,17 +1,14 @@
 package ru.projects.prog_ja.dto.view.create;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 public class CreateCommentDTO {
 
-    @NotNull
     private long id;
 
-    @NotNull
     @Size(min = 5, max = 1000)
-    @Pattern(regexp = "^[\\w|\\s]+$")
+    @Pattern(regexp = "^[А-я|ё|\\w|\\s|\\d|\\p{Punct}|\n]+$")
     private String text;
 
     public CreateCommentDTO(){ }

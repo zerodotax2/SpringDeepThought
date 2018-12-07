@@ -1,42 +1,44 @@
 package ru.projects.prog_ja.model.entity.articles;
 
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 import ru.projects.prog_ja.model.entity.user.UserInfo;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "ArticleInfo")
-@org.hibernate.annotations.NamedQueries({
-        @org.hibernate.annotations.NamedQuery(name = "getSmallArticles", query = "select new ru.projects.prog_ja.dto.smalls.SmallArticleTransfer(p.articleId, p.title, p.smallImagePath, p.rating)" +
+@NamedQueries({
+        @NamedQuery(name = "getSmallArticles", query = "select new ru.projects.prog_ja.dto.smalls.SmallArticleTransfer(p.articleId, p.title, p.smallImagePath, p.rating)" +
                 " from ArticleInfo p " +
                 " order by p.views desc "),
-        @org.hibernate.annotations.NamedQuery(name = "getCommonArticles", query = "select new ru.projects.prog_ja.dto.commons.CommonArticleTransfer (" +
+        @NamedQuery(name = "getCommonArticles", query = "select new ru.projects.prog_ja.dto.commons.CommonArticleTransfer (" +
                 " p.articleId, p.title, p.middleImagePath, p.createDate, p.views, p.rating" +
                 " ) " +
                 " from ArticleInfo p " +
                 " group by p.articleId  " +
                 " order by p.createDate desc"),
-        @org.hibernate.annotations.NamedQuery(name = "getFullArticle", query = "select p from ArticleInfo p " +
-                " left join fetch p.articleContent as content" +
-                " left join fetch p.userInfo as u " +
-                " left join fetch p.tags as t" +
-                " left join fetch t.tagId " +
-                " left join fetch p.articleComments pcs" +
-                " where p.articleId = :id"),
-        @org.hibernate.annotations.NamedQuery(name = "findSmallArticles", query = "select new ru.projects.prog_ja.dto.smalls.SmallArticleTransfer(p.articleId, p.title, p.smallImagePath, p.rating)" +
+        @NamedQuery(name = "getFullArticle", query = "select new ru.projects.prog_ja.dto.full.FullArticleTransfer(" +
+                " a.articleId, a.title,  a.largeImagePath, a.createDate, a.views, a.rating, u.userId, u.login, u.smallImagePath, u.rating, c.subtitle, c.htmlContent, a.smallImagePath, a.middleImagePath  " +
+                " ) from ArticleInfo a" +
+                " left join a.articleContent c" +
+                " left join a.userInfo u " +
+                " where a.articleId = :id"),
+        @NamedQuery(name = "findSmallArticles", query = "select new ru.projects.prog_ja.dto.smalls.SmallArticleTransfer(p.articleId, p.title, p.smallImagePath, p.rating)" +
                 " from ArticleInfo p" +
                 " left join p.articleContent pc " +
                 " where lower(p.title) like lower(:search)" +
                 " or lower(pc.subtitle) like lower(:search) " +
                 " order by p.createDate desc"),
-        @org.hibernate.annotations.NamedQuery(name = "findCommonArticles", query = "select new ru.projects.prog_ja.dto.commons.CommonArticleTransfer(" +
+        @NamedQuery(name = "findCommonArticles", query = "select new ru.projects.prog_ja.dto.commons.CommonArticleTransfer(" +
                 " p.articleId, p.title, p.middleImagePath, p.createDate, p.views, p.rating" +
                 " ) " +
                 " from ArticleInfo p " +
@@ -45,39 +47,57 @@ import java.util.Set;
                 " or lower(pc.subtitle) like lower(:search) " +
                 " group by p.articleId  " +
                 " order by p.createDate desc"),
-        @org.hibernate.annotations.NamedQuery(name = "deleteArticle", query = "delete from ArticleInfo p where p.articleId = :id and p.userInfo = :user"),
-        @org.hibernate.annotations.NamedQuery(name = "updateArticleComment", query = "update ArticleComments set comment = :comment where postCommentId = :id and userInfo = :user"),
-        @org.hibernate.annotations.NamedQuery(name = "updateArticleCommentRate", query = "update ArticleComments set rating = rating + :rate where postCommentId = :id"),
-        @org.hibernate.annotations.NamedQuery(name = "deleteArticleComment", query = "delete from ArticleComments where postCommentId = :id and userInfo = :user"),
-        @org.hibernate.annotations.NamedQuery(name = "getArticleComment", query = "select new ru.projects.prog_ja.dto.CommonCommentTransfer(" +
+        @NamedQuery(name = "deleteArticle", query = "delete from ArticleInfo p where p.articleId = :id and p.userInfo = :user"),
+        @NamedQuery(name = "updateArticleComment", query = "update ArticleComments set comment = :comment where postCommentId = :id and userInfo = :user"),
+        @NamedQuery(name = "updateArticleCommentRate", query = "update ArticleComments set rating = rating + :rate where postCommentId = :id and userInfo != :user"),
+        @NamedQuery(name = "deleteArticleComment", query = "delete from ArticleComments where postCommentId = :id and userInfo = :user"),
+        @NamedQuery(name = "getArticleComment", query = "select new ru.projects.prog_ja.dto.commons.CommonCommentTransfer(" +
                 " ac.postCommentId, ac.comment, ac.rating, ac.createDate, u.userId, u.login, u.smallImagePath, u.rating " +
                 ") from ArticleComments ac " +
                 " left join ac.userInfo as u " +
                 " where ac.postCommentId = :id"),
-        @org.hibernate.annotations.NamedQuery(name = "countArticles", query = "select distinct count(a.articleId) from Articles a"),
-        @org.hibernate.annotations.NamedQuery(name = "changeArticleRate", query = "update Articles set rating = rating + :rate where articleId = :id")
+        @NamedQuery(name = "countArticles", query = "select distinct count(a.articleId) from ArticleInfo a"),
+        @NamedQuery(name = "changeArticleRate", query = "update ArticleInfo set rating = rating + :rate where articleId = :id and userInfo != :user"),
+        @NamedQuery(name = "getArticleTitle", query = "select a.title from ArticleInfo a where a.articleId = :id "),
+        @NamedQuery(name = "updateArticleOwnerRate", query = "update UserInfo set rating = rating + :rate " +
+                " where :article in elements(userArticles) and userId != :user"),
+        @NamedQuery(name = "updateArticleCommentOwnerRate", query = "update UserInfo set rating = rating + :rate " +
+                " where :comment in elements(userArticleComments) and userId != :user"),
+        @NamedQuery(name = "updateArticleView", query = "update ArticleInfo set views = views + :view where articleId = :id "),
+        @NamedQuery(name = "getArticleNoticeTemplate", query = "select new ru.projects.prog_ja.dto.NoticeEntityTemplateDTO (" +
+                " u.userId, a.title " +
+                " ) from ArticleInfo a left join a.userInfo u where a.articleId = :id"),
+        @NamedQuery(name = "getArticleNoticeCommentTemplate", query = "select new ru.projects.prog_ja.dto.NoticeCommentTemplateDTO (" +
+                " a.articleId, u.userId, a.title " +
+                " ) from ArticleComments ac left join ac.articleInfo a left join ac.userInfo u where ac.postCommentId = :id"),
+        @NamedQuery(name = "getTagsByArticle", query = "select t.tagId from ArticleInfo a left join a.tags at left join at.tagId t where a.articleId = :id"),
+        @NamedQuery(name = "getArticleComments", query = "select new ru.projects.prog_ja.dto.commons.CommonCommentTransfer( " +
+                " ac.postCommentId, ac.comment, ac.rating, ac.createDate, u.userId, u.login, u.smallImagePath, u.rating " +
+                " ) from ArticleComments ac " +
+                " left join ac.userInfo u " +
+                " where ac.articleInfo = :article"),
+        @NamedQuery(name = "getSmallArticleTags",query = "select new ru.projects.prog_ja.dto.smalls.SmallTagTransfer(" +
+                " t.tagId, t.name, t.color " +
+                " ) from Tags t left join t.articles ta where ta.articleId = :article"),
+        @NamedQuery(name = "getUpdateEntityArticle", query = "select a from ArticleInfo a " +
+                " left join fetch a.tags t " +
+                " left join fetch t.tagId ti" +
+                " left join fetch ti.tagCounter tc " +
+                " left join fetch a.articleContent c" +
+                " where a.articleId = :id"),
+        @NamedQuery(name = "removeArticleTags", query = "delete from ArticlesTags where tagId in (:tags)"),
+        @NamedQuery(name = "isArticleVoted", query = "select articleVotersId from ArticleVoters where article = :article and user = :user"),
+        @NamedQuery(name = "isCommentArticleVoted", query = "select articleCommentVotersId from ArticleCommentVoters where comment = :comment and user = :user")
 })
 public class ArticleInfo {
-
-    public static final String GET_SMALL_ARTICLES = "getSmallArticles";
-    public static final String GET_COMMON_ARTICLES = "getCommonArticles";
-    public static final String GET_FULL_ARTICLE = "getFullArticle";
-    public static final String DELETE_ARTICLE = "deleteArticle";
-    public static final String FIND_SMALL_ARTICLES = "findSmallArticles";
-    public static final String FIND_COMMON_ARTICLES = "findCommonArticles";
-    public static final String UPDATE_ARTICLE_COMMENT = "updateArticleComment";
-    public static final String UPDATE_ARTICLE_COMMENT_RATE = "updateArticleCommentRate";
-    public static final String DELETE_ARTICLE_COMMENT = "deleteArticleComment";
-    public static final String GET_ARTICLE_COMMENT = "getArticleComment";
-    public static final String COUNT_ARTICLES = "countArticles";
-    public static final String CHANGE_ARTICLE_RATE = "changeArticleRate";
 
     private long articleId;
     private String title;
     private Date createDate;
-    private Integer views;
+    private long views;
     private long rating;
     private Set<ArticlesTags> tags;
+    private List<ArticleVoters> voters;
     private ArticleContent articleContent;
     private UserInfo userInfo;
     private Set<ArticleComments> articleComments;
@@ -119,11 +139,11 @@ public class ArticleInfo {
 
     @Basic
     @Column(name = "views")
-    public Integer getViews() {
+    public long getViews() {
         return views;
     }
 
-    public void setViews(Integer views) {
+    public void setViews(long views) {
         this.views = views;
     }
 
@@ -131,12 +151,10 @@ public class ArticleInfo {
 
     public ArticleInfo(String title, String smallImagePath, String middleImagePath, String largeImagePath) {
         this.title = title;
-        this.createDate = new Date(new java.util.Date().getTime());
+        this.createDate = new Date();
         this.smallImagePath = smallImagePath;
         this.middleImagePath = middleImagePath;
         this.largeImagePath = largeImagePath;
-        rating = 0;
-        views = 0;
     }
 
     @Override
@@ -167,7 +185,7 @@ public class ArticleInfo {
 
     @Fetch(FetchMode.SELECT)
     @BatchSize(size = 10)
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "articleId")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "articleId", cascade = CascadeType.ALL)
     public Set<ArticlesTags> getTags() {
         return tags;
     }
@@ -176,8 +194,7 @@ public class ArticleInfo {
         this.tags = tags;
     }
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
-    @JoinColumn(name = "article_content_id", nullable = false, unique = true)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "article", fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
     public ArticleContent getArticleContent() {
         return articleContent;
     }
@@ -216,7 +233,7 @@ public class ArticleInfo {
         this.activated = activated;
     }
 
-    @Column(name = "smallImagePath", nullable = false, unique = true, length = 300)
+    @Column(name = "smallImagePath", nullable = false, length = 300)
     public String getSmallImagePath() {
         return smallImagePath;
     }
@@ -225,7 +242,7 @@ public class ArticleInfo {
         this.smallImagePath = smallImagePath;
     }
 
-    @Column(name = "middleImagePath", nullable = false, unique = true, length = 300)
+    @Column(name = "middleImagePath", nullable = false, length = 300)
     public String getMiddleImagePath() {
         return middleImagePath;
     }
@@ -234,7 +251,7 @@ public class ArticleInfo {
         this.middleImagePath = middleImagePath;
     }
 
-    @Column(name = "largeImagePath", nullable = false, unique = true, length = 300)
+    @Column(name = "largeImagePath", nullable = false, length = 300)
     public String getLargeImagePath() {
         return largeImagePath;
     }
@@ -250,5 +267,14 @@ public class ArticleInfo {
 
     public void setRating(long rating) {
         this.rating = rating;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "article")
+    public List<ArticleVoters> getVoters() {
+        return voters;
+    }
+
+    public void setVoters(List<ArticleVoters> voters) {
+        this.voters = voters;
     }
 }

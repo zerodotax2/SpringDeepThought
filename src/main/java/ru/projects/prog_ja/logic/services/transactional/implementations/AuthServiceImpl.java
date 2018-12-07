@@ -5,16 +5,24 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.projects.prog_ja.dto.UserDTO;
+import ru.projects.prog_ja.dto.auth.AuthDTO;
+import ru.projects.prog_ja.dto.auth.RestoreMessage;
+import ru.projects.prog_ja.dto.auth.UpdateEmail;
+import ru.projects.prog_ja.dto.auth.UserDTO;
+import ru.projects.prog_ja.logic.caches.interfaces.AuthCache;
+import ru.projects.prog_ja.logic.queues.notifications.services.ForumNoticeService;
 import ru.projects.prog_ja.logic.services.simple.implementations.HashType;
 import ru.projects.prog_ja.logic.services.simple.interfaces.CookieService;
 import ru.projects.prog_ja.logic.services.simple.interfaces.HashService;
 import ru.projects.prog_ja.logic.services.transactional.interfaces.AuthService;
+import ru.projects.prog_ja.logic.services.transactional.interfaces.EmailService;
 import ru.projects.prog_ja.model.dao.AuthDAO;
 import ru.projects.prog_ja.model.entity.user.SecuredToken;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Scope("prototype")
@@ -28,6 +36,9 @@ public class AuthServiceImpl implements AuthService {
      * */
     private final HashService hashService;
     private final CookieService cookieService;
+    private final ForumNoticeService noticeService;
+    private final AuthCache authCache;
+    private final EmailService emailService;
 
     /**
      * class to get and put user tokens to database
@@ -37,10 +48,16 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     public AuthServiceImpl(AuthDAO authDAO,
                             HashService hashService,
-                           CookieService cookieService){
+                           CookieService cookieService,
+                           ForumNoticeService noticeService,
+                           AuthCache authCache,
+                           EmailService emailService){
         this.hashService = hashService;
         this.authDAO = authDAO;
         this.cookieService = cookieService;
+        this.noticeService = noticeService;
+        this.authCache = authCache;
+        this.emailService = emailService;
     }
 
     /**
@@ -48,12 +65,10 @@ public class AuthServiceImpl implements AuthService {
      * @param email - create SHA-256 hash for LogInfo and add in UserInfo
      * @param password create bcrypt hash for LogInfo
      * @param login - login for UserInfo
-     *
-     * Also create default user image for UserImages()
      * */
     @Override
     public UserDTO createUser(String login, String password, String email,
-                              boolean createCookie, HttpServletResponse response) {
+                              boolean createCookie, HttpServletResponse response){
 
 
         String password_h = hashService.bcrypt(password);
@@ -65,16 +80,43 @@ public class AuthServiceImpl implements AuthService {
         if(user == null)
             return null;
 
-        /*
-         * Создаём для пользователя токен и добавляем его в куки
-         * */
-        if(!createUserToken(user.getId(), response))
+        if(!sendActivateEmail(login, email))
             return null;
 
+        noticeService.accountCreateNotice(user.getId());
         /*
          * Возвращаем созданного пользователя
          * */
         return user;
+    }
+
+    @Override
+    public String resendActivateEmail(long userId) {
+
+        AuthDTO auth = authDAO.getAuthDTOByUserId(userId);
+        if(auth == null) return null;
+
+        if(!sendActivateEmail(auth.getLogin(), auth.getEmail()))
+            return null;
+
+        return auth.getEmail();
+    }
+
+    @Override
+    public boolean sendActivateEmail(String login, String email){
+
+        String token = hashService.getSalt(64);
+
+        if(!authDAO.saveActivateToken(email, token))
+            return false;
+
+        return emailService.sendActivateEmail(login, email, token);
+    }
+
+    @Override
+    public boolean activateAccount(String token) {
+
+        return authDAO.activateAccount(token);
     }
 
     /**
@@ -101,6 +143,33 @@ public class AuthServiceImpl implements AuthService {
          * Возвращаем найденного пользователя
          * */
         return user;
+    }
+
+    @Override
+    public boolean existEmail(String email) {
+        return !authDAO.isFreeEmail(email);
+    }
+
+    @Override
+    public boolean existLogin(String login) {
+        return !authDAO.isFreeLogin(login);
+    }
+
+    /**
+     * checking if mail_h and pass_h in cookies exist
+     * if yes then check user with this mail_g and pass_h
+     * and return founded
+     * */
+    @Override
+    public UserDTO getUserByCookies(HttpServletRequest request) {
+
+        Map<String, String> cookieMap = cookieService.findCookies(request);
+
+        if(!cookieMap.containsKey("login") || !cookieMap.containsKey("password_h"))
+            return null;
+
+        return checkUser(cookieMap.get("login"),
+                cookieMap.get("password_h"), false, null);
     }
 
     /**
@@ -161,7 +230,27 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public boolean updateEmail(long id, String email) {
 
-       return authDAO.updateEmail(id, email);
+        long userId = authDAO.getUserIdByEmail(email);
+        if(userId != -1)
+            return false;
+
+        String token = hashService.getSalt(64);
+
+        if(!authCache.putUpdateEmailMessage(new UpdateEmail(id, email, token)))
+            return false;
+
+        return emailService.sendConfirmEmail(email, token);
+    }
+
+    @Override
+    public boolean activateEmail(String token){
+
+        UpdateEmail updateEmail = authCache.pollUpdateEmailMessage(token);
+        if(updateEmail == null)
+            return false;
+
+
+        return authDAO.updateEmail(updateEmail.getUserId(), updateEmail.getEmail());
     }
 
     /**
@@ -172,14 +261,6 @@ public class AuthServiceImpl implements AuthService {
 
         return authDAO.updatePass(hashService.bcrypt(pass), id);
     }
-
-    @Override
-    public boolean updateLogin(long userId, String login){
-
-
-        return  authDAO.updateLogin(login, userId);
-
-    }
     /**
      * Get small user by name
      * */
@@ -187,5 +268,39 @@ public class AuthServiceImpl implements AuthService {
     public UserDTO getUserByLogin(String name){
 
         return authDAO.getSmallUserByLogin(name);
+    }
+
+    @Override
+    public boolean restore(String email) {
+
+        long userId = authDAO.getUserIdByEmail(email);
+        if(userId == -1)
+            return false;
+
+        String token = hashService.getSalt(64);
+
+        if(authCache.putRestoreMessage(new RestoreMessage(userId, token)))
+            return false;
+
+        return emailService.sendRestoreEmail(token, email);
+    }
+
+    @Override
+    public boolean containsRestoreToken(String token){
+
+        return authCache.containsRestoreToken(token);
+    }
+
+    @Override
+    public boolean restorePassword(String token, String password){
+
+        RestoreMessage restoreMessage =
+                authCache.pollRestoreMessage(token);
+        if(restoreMessage == null)
+            return false;
+
+        String hashPassword = hashService.bcrypt(password);
+
+        return authDAO.updatePass(hashPassword, restoreMessage.getUserId());
     }
 }

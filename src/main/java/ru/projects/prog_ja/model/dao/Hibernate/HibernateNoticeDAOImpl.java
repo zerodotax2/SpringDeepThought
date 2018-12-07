@@ -4,9 +4,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.projects.prog_ja.dto.NoticeType;
 import ru.projects.prog_ja.dto.smalls.SmallNoticeTransfer;
+import ru.projects.prog_ja.model.dao.Hibernate.queries.UserInboxQueries;
 import ru.projects.prog_ja.model.dao.NoticeDAO;
 import ru.projects.prog_ja.model.entity.user.UserInbox;
 import ru.projects.prog_ja.model.entity.user.UserInfo;
@@ -14,11 +17,11 @@ import ru.projects.prog_ja.model.entity.user.UserInfo;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Root;
-import java.util.Collections;
 import java.util.List;
 
-@Service
+@Repository
 @Scope("prototype")
+@Transactional(propagation = Propagation.REQUIRED)
 public class HibernateNoticeDAOImpl extends GenericDAO implements NoticeDAO {
 
     public HibernateNoticeDAOImpl(@Autowired SessionFactory sessionFactory) {
@@ -28,31 +31,20 @@ public class HibernateNoticeDAOImpl extends GenericDAO implements NoticeDAO {
     @Override
     public List<SmallNoticeTransfer> getNoticesByUser(long userId, int start, int size) {
 
-        Session session = session();
-        UserInfo user = session.load(UserInfo.class, userId);
-        if(user == null){
-            return Collections.emptyList();
-        }
-
-        return session.createNamedQuery(UserInbox.GET_ALL_USER_NOTICES, SmallNoticeTransfer.class)
+        return session().createNamedQuery(UserInboxQueries.GET_ALL_USER_NOTICES, SmallNoticeTransfer.class)
                 .setFirstResult(start)
                 .setMaxResults(size)
-                .setParameter("user", user)
+                .setParameter("user", userId)
                 .getResultList();
     }
 
     @Override
     public List<SmallNoticeTransfer> getLastNoticesByUser(long userId, int start, int size) {
-        Session session = session();
-        UserInfo user = session.load(UserInfo.class, userId);
-        if(user == null){
-            return Collections.emptyList();
-        }
 
-        return session.createNamedQuery(UserInbox.GET_LAST_USER_NOTICES, SmallNoticeTransfer.class)
+        return session().createNamedQuery(UserInboxQueries.GET_LAST_USER_NOTICES, SmallNoticeTransfer.class)
                 .setFirstResult(start)
                 .setMaxResults(size)
-                .setParameter("user", user)
+                .setParameter("user", userId)
                 .getResultList();
     }
 
@@ -64,9 +56,6 @@ public class HibernateNoticeDAOImpl extends GenericDAO implements NoticeDAO {
             Session session = session();
 
             UserInfo user = session.load(UserInfo.class, userId);
-            if(user == null){
-                return false;
-            }
 
             UserInbox userInbox = new UserInbox(message, type);
             userInbox.setUserInfo(user);
@@ -82,7 +71,7 @@ public class HibernateNoticeDAOImpl extends GenericDAO implements NoticeDAO {
     @Override
     public boolean unactivateNotice(long noticeId) {
         try {
-            return session().createNamedQuery(UserInbox.UNACTIVATE_NOTICE)
+            return session().createNamedQuery(UserInboxQueries.UNACTIVATE_NOTICE)
                     .setParameter("id", noticeId)
                     .executeUpdate() != 0;
         }catch (Exception e){
@@ -107,5 +96,13 @@ public class HibernateNoticeDAOImpl extends GenericDAO implements NoticeDAO {
         }catch (Exception e){
             return false;
         }
+    }
+
+    @Override
+    public boolean setWatchedNotices(long userId) {
+        Session session = session();
+        return session.createNamedQuery(UserInboxQueries.UNACTIVATE_ALL_NOTICES)
+                .setParameter("user", session.load(UserInfo.class, userId))
+                .executeUpdate() != 0;
     }
 }

@@ -6,7 +6,6 @@ import ru.projects.prog_ja.dto.smalls.SmallTagTransfer;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class FullUserTransfer extends CommonUserTransfer {
 
@@ -18,9 +17,10 @@ public class FullUserTransfer extends CommonUserTransfer {
     private long tags;
     private long facts;
     private long decided;
+    private String about;
     private Set<SmallTagTransfer> interests;
 
-    public FullUserTransfer(long id, String login, String middleImage, long rating, String firstName, String lastName, Date createDate, Date birthDate,
+    public FullUserTransfer(long id, String login, String middleImage, long rating, String firstName, String lastName, Date createDate, Date birthDate, String about,
                             long articles, long comments, long questions,long answers,  long problems, long decided, long tags, long facts) {
         super(id, login, middleImage, rating,firstName, lastName, createDate, birthDate);
         this.articles = articles;
@@ -32,6 +32,7 @@ public class FullUserTransfer extends CommonUserTransfer {
         this.problems = problems;
         this.decided = decided;
         this.facts = facts;
+        this.about = about;
     }
 
     public long getArticles() {
@@ -104,5 +105,13 @@ public class FullUserTransfer extends CommonUserTransfer {
 
     public void setDecided(long decided) {
         this.decided = decided;
+    }
+
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
     }
 }

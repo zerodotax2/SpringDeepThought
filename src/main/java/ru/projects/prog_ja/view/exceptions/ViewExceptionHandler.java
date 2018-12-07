@@ -4,6 +4,7 @@ import org.hibernate.HibernateException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
+import ru.projects.prog_ja.exceptions.AccessDeniedException;
 import ru.projects.prog_ja.exceptions.BadRequestException;
 import ru.projects.prog_ja.exceptions.InternalServerException;
 import ru.projects.prog_ja.exceptions.NotFoundException;
@@ -46,4 +47,11 @@ public class ViewExceptionHandler {
 
         return new ModelAndView("errors/500");
     }
+
+    @ExceptionHandler(value = AccessDeniedException.class)
+    public ModelAndView accessException(){
+
+        return new ModelAndView("errors/403");
+    }
+
 }

@@ -10,7 +10,7 @@ public class FeedbackDTO {
 
     @NotNull
     @Size(min = 5, max = 500)
-    @Pattern(regexp = "^[\\w|\\s]+$")
+    @Pattern(regexp = "^[А-я|ё|\\w|\\s|\\d|\\p{Punct}]+$")
     private String text;
 
     public FeedbackDTO() {

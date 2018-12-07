@@ -1,6 +1,7 @@
 package ru.projects.prog_ja.model.dao;
 
 import ru.projects.prog_ja.dto.commons.CommonTagTransfer;
+import ru.projects.prog_ja.dto.dao.PageableEntity;
 import ru.projects.prog_ja.dto.full.FullTagTransfer;
 import ru.projects.prog_ja.dto.smalls.SmallTagTransfer;
 
@@ -22,6 +23,8 @@ public interface TagsDAO {
     */
     FullTagTransfer getFullTag(long id);
 
+    String getName(long articleId);
+
     /**
      * @return tag with name and id
      * */
@@ -36,9 +39,9 @@ public interface TagsDAO {
     /**
      * @return list with CommonTagTransfer dto
      * */
-    List<CommonTagTransfer> getCommonTags(int start, int size, String orderField, int sort);
+    PageableEntity getCommonTags(int start, int size, String orderField, int sort);
 
-    List<CommonTagTransfer> findCommonTags(int start, int size, String search, String orderField, int sort);
+    PageableEntity findCommonTags(int start, int size, String search, String orderField, int sort);
 
     /**
      * create tag with
@@ -54,12 +57,12 @@ public interface TagsDAO {
     /**
      * @return tags by search string
      * */
-    List<SmallTagTransfer> findTags(int start, int size, String search, String orderField, int sort);
+    PageableEntity findTags(int start, int size, String search, String orderField, int sort);
 
     /**
     * @return most used tags
     */
-    List<SmallTagTransfer> getSmallTags(int start, int size, String orderField, int sort);
+    PageableEntity getSmallTags(int start, int size, String orderField, int sort);
 
     List<SmallTagTransfer> getSmallPopularTags(int start, int size);
 
@@ -70,5 +73,9 @@ public interface TagsDAO {
      * */
     List<CommonTagTransfer> getAllTags();
 
+    List<SmallTagTransfer> getTagsByPrefix(String prefix, int size);
+
     long getTagsNum();
+
+    PageableEntity getTagsByUser(int start, int size, long userId, String q, String orderField, int sort);
 }

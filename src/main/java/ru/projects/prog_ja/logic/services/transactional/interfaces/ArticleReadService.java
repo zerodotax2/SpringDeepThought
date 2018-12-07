@@ -1,37 +1,35 @@
 package ru.projects.prog_ja.logic.services.transactional.interfaces;
 
-import ru.projects.prog_ja.dto.commons.CommonArticleTransfer;
-import ru.projects.prog_ja.dto.commons.CommonCommentTransfer;
+import ru.projects.prog_ja.dto.auth.UserDTO;
 import ru.projects.prog_ja.dto.full.FullArticleTransfer;
 import ru.projects.prog_ja.dto.smalls.SmallArticleTransfer;
-import ru.projects.prog_ja.dto.view.BySomethingContainer;
-import ru.projects.prog_ja.dto.view.ThreeImagesPathDTO;
-import ru.projects.prog_ja.exceptions.BadRequestException;
+import ru.projects.prog_ja.dto.view.PageableContainer;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Future;
 
 public interface ArticleReadService {
 
-    List<CommonArticleTransfer> getMiddleArticles(int start, String type, String sort);
+    PageableContainer getMiddleArticles(String page, String type, String sort);
 
-    FullArticleTransfer getArticleByID(long id);
+    FullArticleTransfer getArticleByID(long id, UserDTO userDTO);
 
-    List<CommonArticleTransfer> findArticles(int start, String search, String type, String sort);
+    PageableContainer findArticles(String page, String search, String type, String sort);
 
-    List<SmallArticleTransfer> findSmallArticles(int start, String search, String type, String sort);
+    PageableContainer findSmallArticles(String page, String search, String type, String sort);
 
-    List<SmallArticleTransfer> getSmallArticles(int start, String type, String sort);
+    PageableContainer getSmallArticles(String page, String type, String sort);
 
-    List<CommonArticleTransfer> getArticles(int start, String query, String type, String sort);
+    PageableContainer getArticles(String page, String query, String type, String sort);
 
-    List<CommonArticleTransfer> getDefaultArticles(int start, String type, String sort);
+    PageableContainer getDefaultArticles(String page, String type, String sort);
 
-    List<SmallArticleTransfer> getPopularArticles(int start);
+    List<SmallArticleTransfer> getPopularArticles();
 
-    BySomethingContainer getArticlesByUser(int start, String size, long userId, String type, String sort);
+    PageableContainer getSmallArticlesByUser(String page, String size, long userId, String query, String type, String sort);
 
-    BySomethingContainer getArticlesByTag(int start, String size, long tagId, String type, String sort);
+    PageableContainer getCommonArticlesByUser(String page, String size, long userId, String query, String type, String sort);
+
+    PageableContainer getCommonArticlesByTag(String page, String size, long tagId,String query, String type, String sort);
+
+    PageableContainer getSmallArticlesByTag(String page, String size, long tagId,String query, String type, String sort);
 }

@@ -1,23 +1,27 @@
 package ru.projects.prog_ja.model.entity.questions;
 
+import org.hibernate.annotations.Type;
 import ru.projects.prog_ja.model.entity.user.UserInfo;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "Answer")
 @org.hibernate.annotations.NamedQueries({
         @org.hibernate.annotations.NamedQuery(name = "deleteAnswer", query = "delete from Answer a where a.answerId = :id and a.userInfo = :user"),
-        @org.hibernate.annotations.NamedQuery(name = "updateAnswerRate", query = "update Answer set rating = rating + :rate  where answerId = :id"),
+        @org.hibernate.annotations.NamedQuery(name = "updateAnswerRate", query = "update Answer set rating = rating + :rate  where answerId = :id and userInfo != :user"),
         @org.hibernate.annotations.NamedQuery(name = "getFullAnswer", query = "select a from Answer a " +
                 " left join fetch a.userInfo " +
                 " where a.answerId = :id"),
-        @org.hibernate.annotations.NamedQuery(name = "getCommonAnswer", query = "select new ru.projects.prog_ja.dto.commons.CommonAnswerTranswer(" +
-                " a.answerId, a.htmlContent,a.rating,  a.createDate, a.userInfo.userId, a.userInfo.login, a.userInfo.smallImagePath, a.userInfo.rating " +
+        @org.hibernate.annotations.NamedQuery(name = "getCommonAnswer", query = "select new ru.projects.prog_ja.dto.commons.CommonAnswerTransfer(" +
+                " a.answerId, a.htmlContent,a.rating,  a.createDate, u.userId, u.login, u.smallImagePath, u.rating " +
                 " ) from Answer a " +
-                " where a.answerId = :id ")
+		" left join a.userInfo u " +
+                " where a.answerId = :id "),
+        @org.hibernate.annotations.NamedQuery(name = "isAnswerVoted", query = "select answerVotersId from AnswerVoters where answer = :answer and user = :user")
 })
 public class Answer {
 
@@ -32,16 +36,20 @@ public class Answer {
     private long answerId;
 
     @Column(name = "htmlContent")
+    @Type(type = "org.hibernate.type.TextType")
     private String htmlContent;
 
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "answer_user_fk"))
     private UserInfo userInfo;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "question_id", nullable = false, foreignKey = @ForeignKey(name = "question_answer_fk"))
     private Questions question;
+
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "answer")
+    private List<AnswerVoters> voters;
 
     @Basic
     @Column(name = "createDate", nullable = false)
@@ -54,7 +62,7 @@ public class Answer {
 
     public Answer(String htmlContent) {
         this.htmlContent = htmlContent;
-        this.createDate = new Date(new java.util.Date().getTime());
+        this.createDate = new Date();
         rating = 0;
     }
 
@@ -120,4 +128,11 @@ public class Answer {
         this.rating = rating;
     }
 
+    public List<AnswerVoters> getVoters() {
+        return voters;
+    }
+
+    public void setVoters(List<AnswerVoters> voters) {
+        this.voters = voters;
+    }
 }

@@ -25,8 +25,9 @@ body {
   margin-top: -10px;
 }
 .login_panel form .input-field .prefix svg{
-  width: 25px;
-  height: 25px;
+  width: 20px;
+  height: 20px;
+  margin-left: 5px;
 }
 .login_panel .switch{
   margin-top: -5px;
@@ -59,4 +60,12 @@ body {
 }
 .actions a:first-of-type{
   border-right: 1px solid lightgray;
+}
+@media (max-device-width: 600px) {
+  .login_panel .top_line h4{
+    font-size: 16px;
+  }
+  .login_panel form .input-field label{
+    font-size: 12px;
+  }
 }

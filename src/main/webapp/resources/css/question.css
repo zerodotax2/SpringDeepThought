@@ -155,6 +155,10 @@
     justify-content: space-between;
     margin-top: 15px;
 }
+.add-answer .add-actions .btns{
+    display: flex;
+    align-items: center;
+}
 .add-answer .add-actions .send-btn{
     padding: 7px 15px;
     background: #2196F3;
@@ -163,6 +167,15 @@
     cursor: pointer;
     box-shadow:0 0 10px #a4a4a4;
     transition-duration: 0.3s;
+}
+.add-answer .add-actions .cancel{
+    margin-left: 5px;
+    border-radius: 10px;
+    background-color: #b7b7b7;
+    color: #ffffff;
+    padding: 7px 10px;
+    cursor: pointer;
+    box-shadow: 0 0 8px #b8b8b8;
 }
 .add-answer .add-actions .send-btn:hover{
     box-shadow: 0 0 20px #a4a4a4;

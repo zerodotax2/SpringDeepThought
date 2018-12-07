@@ -5,6 +5,7 @@ import ru.projects.prog_ja.model.entity.user.UserInfo;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "ProblemComment")
@@ -15,8 +16,9 @@ public class ProblemComment implements Comparable<ProblemComment>{
     @Column(name = "problem_comment_id")
     private long problemCommentId;
 
-    @Type(type = "TextType")
+ 
     @Column(name = "comment", nullable = false)
+    @Type(type = "org.hibernate.type.TextType")
     private String comment;
 
     @Column(name = "createDate", nullable = false)
@@ -32,6 +34,9 @@ public class ProblemComment implements Comparable<ProblemComment>{
     @ManyToOne
     @JoinColumn(name = "problem_id", nullable = false, foreignKey = @ForeignKey(name = "problem_comments_fk"))
     private Problem problem;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "comment")
+    private List<ProblemCommentVoters> voters;
 
 
     public ProblemComment(){}
@@ -93,5 +98,13 @@ public class ProblemComment implements Comparable<ProblemComment>{
 
     public void setProblem(Problem problem) {
         this.problem = problem;
+    }
+
+    public List<ProblemCommentVoters> getVoters() {
+        return voters;
+    }
+
+    public void setVoters(List<ProblemCommentVoters> voters) {
+        this.voters = voters;
     }
 }
