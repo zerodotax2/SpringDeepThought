@@ -9,7 +9,7 @@
     <meta id="owner_id" th:content="${fullUserDTO.id}"/>
     <meta id="owner_img" th:content="'/'+${fullUserDTO.userImage}"/>
     <meta id="owner_login" th:content="${fullUserDTO.login}"/>
-    <meta id="host" th:content="#{host}"/>
+    <meta id="host" th:content="${@properties['host']}"/>
 
     <title th:text="'Пользователь | '+${fullUserDTO.login}"></title>
 </head>
