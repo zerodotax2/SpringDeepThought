@@ -67,11 +67,11 @@ public class UserReadServiceImpl implements UserReadService {
     @Override
     public PageableContainer getUsers(String page, String query, String type, String sort){
         if(query != null && RegexUtil.string(query).matches()){
-            if(type.equals("moder"))
+            if(type != null && type.equals("moder"))
                 return findModers(page, query, type, sort);
             return findSmallUsers(page, query, type, sort);
         }else{
-            if(type.equals("moder"))
+            if(type != null && type.equals("moder"))
                 return getModers(page, type, sort);
             return getSmallUsers(page, type, sort);
         }

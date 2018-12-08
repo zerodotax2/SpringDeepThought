@@ -57,12 +57,12 @@
                 </div>
             </div>
         </div>
-        <div th:if="${${#lists.isEmpty(users)}}" class="col s12 no-content">
+        <div th:if="${#lists.isEmpty(users)}" class="col s12 no-content">
             По вашему запросу ничего не найдено
         </div>
         <div class="users-container">
             <div th:each="userElement : ${users}" class="user">
-                <div class="ava"><img th:src="@{${userElement.userImage}}" /></div>
+                <div class="ava"><img th:src="@{'/'+${userElement.userImage}}" /></div>
                 <div class="info">
                     <div class="login" th:text="${userElement.login}"></div>
                     <div class="rating">
