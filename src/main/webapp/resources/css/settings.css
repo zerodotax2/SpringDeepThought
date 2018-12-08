@@ -162,12 +162,10 @@
 .notification{
     display: flex;
     align-items: center;
-    justify-content: space-between;
     padding: 15px 10px;
 }
 .notification .left{
     display: flex;
-    align-items: center;
 }
 .notification .logo svg{
     width: 15px;

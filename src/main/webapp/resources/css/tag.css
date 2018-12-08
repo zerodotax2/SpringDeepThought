@@ -420,6 +420,7 @@
     }
     .creator .date{
         justify-content: end;
+	margin: 10px 10px 0 0;
     }
     .describe{
         font-size: 12px;

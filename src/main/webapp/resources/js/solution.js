@@ -200,7 +200,10 @@ function editComment(comment) {
                 commentId = content[0],
                 rate = content[1],
                 commentOwner = target.parentElement.parentElement.parentElement.getAttribute('user');
-            if(commentOwner === userId){
+            if(userId === '-1'){
+		modal.error('Вы не зарегистрировались, чтобы голосовать');
+		return;
+	    }else if(commentOwner === userId){
                 modal.error('Нельзя голосовать за свой комментарий');
                 return;
             }

@@ -9,10 +9,14 @@
     color: #919191;
 }
 .tags .name{
-    color: #aaaaaa
+    color: #aaaaaa;
+    
 }
 .content{
     margin: 20px 0;
+}
+.tags .selected-tag{
+   margin: 2px 3px !important;
 }
 .chip{
     cursor: pointer;
@@ -43,7 +47,8 @@
     display: flex;
     align-items: center;
     padding: 0 !important;
-    justify-content: right;
+    justify-content: flex-end;
+    justify-items: right !important;
     border-radius: 0 0 15px 15px !important;
 }
 .card-action .create{
@@ -64,5 +69,10 @@
         width: 100%;
         border-radius: 0 0 15px 15px;
         text-align: center;
+    }
+}
+@media (max-device-width: 992px){
+    .tags .input-field{
+	padding-top: 10px;
     }
 }

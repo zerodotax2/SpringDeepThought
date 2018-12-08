@@ -167,7 +167,7 @@ const components = {
                     "                            </div>" +
                     "                        </div>" +
                     "                    </a>";
-            });
+            };
             if(this.content.pages.total > 1){
                 container.appendChild(genericComponents.moreBtn('/users/tag/'+tag_id));
             }
@@ -219,7 +219,7 @@ function initPanels() {
     components.currentPanel.container.style.display = 'flex';
     loadPanel( firstPanel );
 
-    for(let i = 0; i < tags.length; i++){
+    for(let i = 0; i < tabs.length; i++){
         let tab = tabs[i];
         tab.addEventListener("click", function (e) {
             let target = e.currentTarget,

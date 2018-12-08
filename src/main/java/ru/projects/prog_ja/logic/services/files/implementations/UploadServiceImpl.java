@@ -27,12 +27,12 @@ public class UploadServiceImpl extends FileResponseMessages implements UploadSer
     private static final Map<String, List<FileSize>> sizes
                 = new ConcurrentHashMap<String, List<FileSize>>(){{
                     put("user.profile", Arrays.asList(
-                            new FileSize(100, 100, "small"),
-                            new FileSize(200, 200, "middle"),
-                            new FileSize(400, 400, "large")
+                            new FileSize(200, 200, "small"),
+                            new FileSize(400, 400, "middle"),
+                            new FileSize(600, 600, "large")
                     ));
                     put("article.main", Arrays.asList(
-                            new FileSize(100, 100, "small"),
+                            new FileSize(200, 200, "small"),
                             new FileSize(720, 400, "middle"),
                             new FileSize(1200, 700, "large")
                     ));

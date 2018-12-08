@@ -19,7 +19,10 @@ function initRating() {
     function changeRate(rate) {
         if(voted){
             return;
-        }else if(ownerId === userId){
+        }else if(userId === '-1'){
+	    modal.error('Вы не зарегистрированы, чтобы голосовать');
+	    return;
+	}else if(ownerId === userId){
             modal.error('Нельзя голосовать за свою статью');
             return;
         }
@@ -239,7 +242,10 @@ function initComments() {
                 commentId = content[0],
                 rate = content[1],
                 commentOwnerId = target.parentElement.parentElement.parentElement.getAttribute('user');
-            if(commentOwnerId === userId){
+            if(userId === '-1'){
+		modal.error('Вы не зарегистрированы, чтобы голосовать');
+		return;
+	    }else if(commentOwnerId === userId){
                 modal.error('Нельзя голосовать за свой комментарий');
                 return;
             }

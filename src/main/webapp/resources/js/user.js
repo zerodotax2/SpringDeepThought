@@ -1,5 +1,8 @@
 'use strict';
-const userId = document.getElementById('owner_id').getAttribute('content');
+const userId = document.getElementById('owner_id').getAttribute('content'),
+    host = document.getElementById('host').getAttribute('content'),
+    ownerLogin = document.getElementById('owner_login').getAttribute('content'),
+    ownerImg = document.getElementById('owner_img').getAttribute('content');
 
 const genericComponents = {
     moreBtn : function (path) {
@@ -18,10 +21,14 @@ const genericComponents = {
     "                        <svg style='width: 20px;height: 20px;' role='img' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'><path fill='#F44336' d='M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z'></path></svg>" +
     "                        <div class='message red-text'>Произошла ошибка</div>" +
     "                    </div>",
-    societyShare: '<div class="modal-container grey-text" style="display: flex;flex-flow: column;justify-content: center;text-align: center;">' +
+    societyShare: ''
+};
+
+function shareBtn() {
+    genericComponents.societyShare = '<div class="modal-container grey-text" style="display: flex;flex-flow: column;justify-content: center;text-align: center;">' +
         '                <h4 style="margin: 20px 30px 20px 30px;">Поделиться профилем</h4>' +
         '                <div class="social-btns" style="display: flex;align-items: center;justify-content: center;">' +
-        '                    <a href="https://vk.com/share.php?url=YOUR-URL&title=YOUR-TITLE&description=YOUR-DESCRIPTION&image=YOUR-IMAGE-SRC&noparse=true">' +
+        '                    <a href="https://vk.com/share.php?url='+window.location.href+'&title='+ownerLogin+'%20-%20DeepThought&description=%D0%9C%D0%BE%D0%B9%20%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8C%20%D0%B2%20DeepThought&image='+host+ownerImg+'&noparse=true">' +
         '                        <?xml version="1.0" encoding="UTF-8"?>' +
         '                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 48 48" version="1.1" width="48px" height="48px">' +
         '                            <g id="surface1">' +
@@ -30,7 +37,7 @@ const genericComponents = {
         '                            </g>' +
         '                        </svg>' +
         '                    </a>' +
-        '                    <a href="https://twitter.com/intent/tweet?text=YOUR-TITLE&url=YOUR-URL&via=TWITTER-HANDLE">' +
+        '                    <a href="https://twitter.com/intent/tweet?text='+ownerLogin+'%20-%20DeepThought&url='+window.location.href+'&via=TWITTER-HANDLE">' +
         '                        <?xml version="1.0" encoding="UTF-8"?>' +
         '                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 48 48" version="1.1" width="48px" height="48px">' +
         '                            <g id="surface1">' +
@@ -38,7 +45,7 @@ const genericComponents = {
         '                            </g>' +
         '                        </svg>' +
         '                    </a>' +
-        '                    <a href="https://www.facebook.com/sharer/sharer.php?u=YOUR-URL">' +
+        '                    <a href="https://www.facebook.com/sharer/sharer.php?u='+window.location.href+'">' +
         '                        <?xml version="1.0" encoding="UTF-8"?>' +
         '                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 48 48" version="1.1" width="48px" height="48px">' +
         '                            <g id="surface1">' +
@@ -47,7 +54,7 @@ const genericComponents = {
         '                            </g>' +
         '                        </svg>' +
         '                    </a>' +
-        '                    <a href="https://plus.google.com/share?url=YOUR-URL">' +
+        '                    <a href="https://plus.google.com/share?url='+window.location.href+'">' +
         '                        <?xml version="1.0" encoding="iso-8859-1"?>' +
         '                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 48 48" style="enable-background:new 0 0 48 48;" xml:space="preserve" width="48px" height="48px">' +
         '                            <circle style="fill:#1E88E5;" cx="24" cy="24" r="20"/>' +
@@ -56,10 +63,7 @@ const genericComponents = {
         '                        </svg>' +
         '                    </a>' +
         '                </div>' +
-        '            </div>'
-};
-
-function shareBtn() {
+        '            </div>';
     const share = document.querySelector(".share"),
         shareImgPath = share.querySelector('path');
     share.addEventListener('click', function (e) {

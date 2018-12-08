@@ -83,7 +83,7 @@
 .card-action{
     display: flex;
     align-items: center;
-    justify-content: right;
+    justify-content: flex-end;
     border-radius: 0 0 15px 15px !important;
     padding: 0 !important;
 }

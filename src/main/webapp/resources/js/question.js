@@ -129,7 +129,10 @@ function initAnswers(){
     function changeRate(rate) {
         if(rateUping || voted){
             return;
-        }else if(userId === ownerId){
+        }else if(userId === '-1'){
+	    modal.error('Вы не зарегистрированы, чтобы голосовать');
+	    return;
+	}else if(userId === ownerId){
             modal.error('Нельзя голосовать за свой вопрос');
             return;
         }
@@ -164,7 +167,10 @@ function initAnswers(){
             answerId = rateHelp[0],
             rate = rateHelp[1],
             answerOwner = target.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute('user');
-            if(answerOwner === userId){
+            if(userId === '-1'){
+		modal.error('Вы не зарегистрированы, чтобы голосовать');
+		return;
+	    }else if(answerOwner === userId){
                 modal.error('Нельзя голосовать за свой ответ');
                 return;
             }

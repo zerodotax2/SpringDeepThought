@@ -6,7 +6,7 @@
 <head>
     <title th:text="'Статья | '+${fullArticleDTO.title}"></title>
     <link rel="stylesheet" th:href="@{/resources/css/article.css}"/>
-    <meta id="article_id" content="-1"/>
+    <meta id="article_id" th:content="${fullArticleDTO.id}"/>
     <meta id="owner_id" th:content="${fullArticleDTO.user.id}"/>
 </head>
 <body>

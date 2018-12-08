@@ -35,7 +35,6 @@ function initTags(){
 }
     let removeFromEmpty = false;
     function onTagInputStart(e) {
-        console.log(tags.tagInput.value);
         if(tags.tagInput.value.length < 1) {
             removeFromEmpty = true;
         }else{

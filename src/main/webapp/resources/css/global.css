@@ -49,7 +49,9 @@ body {
 .main {
   width: 100vw;
   padding-top: 50px;
-  padding-bottom: 50px; }
+  padding-bottom: 50px; 
+  min-height: 80vh;
+}
 
 .collection-text{
   font-size: 14px;
@@ -77,17 +79,8 @@ body {
   background: white;
   border-radius: 10px;
   border: 2px solid #f9690e;
-  height: 150px;
+  height: 170px;
   width: 250px;
-}
-
-#tag-popup:after{
-  content: '';
-  position: absolute;
-  left: 120px;
-  top: -14px;
-  border: 7px solid transparent;
-  border-bottom: 7px solid #f9690e;
 }
 
 #tag-popup .card-content{

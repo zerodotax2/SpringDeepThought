@@ -6,7 +6,6 @@
 <head>
     <title th:text="'Задача | '+${fullProblemDTO.title}"></title>
     <link rel="stylesheet" th:href="@{/resources/css/problem.css}"/>
-    <meta id="user_id" th:content="${session.user==null?-1:session.user.id}"/>
     <meta id="owner_id" th:content="${fullProblemDTO.user.id}"/>
     <meta id="problem_id" th:content="${fullProblemDTO.id}"/>
 </head>

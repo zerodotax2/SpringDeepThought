@@ -20,6 +20,9 @@ function initRate() {
     function changeRate(rate) {
       if(vote ){
         return;
+      }else if(userId === '-1'){
+	  modal.error('Вы не зарегистрированы, чтобы голосовать');
+	  return;
       }else if(ownerId === userId){
           modal.error('Нельзя голосовать за свою задачу');
           return;
