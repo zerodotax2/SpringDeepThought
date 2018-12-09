@@ -93,7 +93,7 @@
 }
 .actions{
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
 }
 #create-problem{
     padding: 10px 20px;

@@ -11,6 +11,8 @@ import java.io.InputStream;
 
 public class ImageConverter {
 
+    private final static double NORMAL_DIFFERENCE = 0.1;
+
     public byte[] convertAndGet(byte[] image, int width, int height){
 
         /*
@@ -25,9 +27,9 @@ public class ImageConverter {
             * */
             return convertImage(is, width, height).toByteArray();
 
-        }catch (IOException e){ }
-
-        return null;
+        }catch (IOException e){
+            return null;
+        }
     }
 
 
@@ -43,13 +45,32 @@ public class ImageConverter {
             * Читаем изображение из поступившего массива байтов,
             * и сразу обрезаем его, чтобы во время сжатия не нарушить пропорции
             * */
-            BufferedImage oldImage = createProportion(ImageIO.read( image ), width, height);
+
+            BufferedImage oldImage = ImageIO.read( image ), preparedImage;
+            if(width == 0){
+
+                double heightRatio =  (double) height / (double) oldImage.getHeight();
+                width = (int) (oldImage.getWidth() * heightRatio);
+
+                preparedImage = new BufferedImage(oldImage.getWidth(), oldImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+                preparedImage.getGraphics().drawImage(oldImage, 0, 0, null);
+
+            }else if(height == 0){
+
+                double widthRatio = (double) width / (double) oldImage.getWidth();
+                height = (int) (oldImage.getHeight() * widthRatio);
+
+                preparedImage = new BufferedImage(oldImage.getWidth(), oldImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+                preparedImage.getGraphics().drawImage(oldImage, 0, 0, null);
+
+            }else
+                preparedImage = createProportion(oldImage, width, height);
 
             /*
             * Сжимаем поступившее изображение до указанных размеров с помощью стандартных алгоритмов в java,
             * записываем полученное изображение в созданный BufferedImage
             * */
-            Image scaledImage = oldImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+            Image scaledImage = preparedImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 
             BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
             newImage.createGraphics().drawImage(scaledImage, 0, 0, null);
@@ -77,7 +98,7 @@ public class ImageConverter {
         /*
         * Если разница меньше одной десятой, то возвращаем это изображение
         * */
-        if( Math.abs(difference) <= 0.1F ){
+        if( Math.abs(difference) < NORMAL_DIFFERENCE ){
 
             return image;
             /*
@@ -85,7 +106,7 @@ public class ImageConverter {
             * то значит ширина изображения недостаточна и т.к.
             * мы не можем увеличивать изображение, то мы уменьшим высоту
             * */
-        }else if(difference < 0){
+        }else if(difference < 0.0){
 
             /*
             * Вычисляем уменьшенную высоту изображения, создаём по нему полотно

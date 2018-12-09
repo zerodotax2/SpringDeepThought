@@ -6789,7 +6789,7 @@ BaseTheme.DEFAULTS = (0, _extend2.default)(true, {}, _theme2.default.DEFAULTS, {
                     if(response){
                         let range = _this3.quill.getSelection(true),
                             result = JSON.parse(response);
-                        _this3.quill.updateContents(new _quillDelta2.default().retain(range.index).delete(range.length).insert({ image: result.path }), _emitter2.default.sources.USER);
+                        _this3.quill.updateContents(new _quillDelta2.default().retain(range.index).delete(range.length).insert({ image: '/' + result.path }), _emitter2.default.sources.USER);
                         _this3.quill.setSelection(range.index + 1, _emitter2.default.sources.SILENT);
                         fileInput.value = "";
                     }else if(error){

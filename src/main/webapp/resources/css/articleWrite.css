@@ -109,7 +109,7 @@
 }
 .actions .right{
     display: flex;
-    justify-content: right;
+    justify-content: flex-end;
     width: 50%;
 }
 .actions .create-article{

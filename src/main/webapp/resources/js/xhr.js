@@ -9,9 +9,9 @@ window.xhr = {
 
         xhr.request({path: path, method: "POST",
             content: formData}, function(response, error){
-            if(error){
+            if(response){
                 callback(response)
-            }else if(response){
+            }else if(error){
                 callback(undefined, error);
             }
         });

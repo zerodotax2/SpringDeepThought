@@ -37,7 +37,7 @@ public class UploadServiceImpl extends FileResponseMessages implements UploadSer
                             new FileSize(1200, 700, "large")
                     ));
                     put("image.default", Arrays.asList(
-                            new FileSize(1280, 700, "path")
+                            new FileSize(1280, 0, "path")
                     ));
     }};
     private static final Pattern DOCS = Pattern.compile("\\.(docs?|xls|xlsn)$");
