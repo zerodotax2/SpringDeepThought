@@ -58,8 +58,12 @@ public class FactNoticeQueue extends AbstractNotificationQueue<FactNoticeMessage
         NoticeEntityTemplateDTO templateDTO =  factsDAO.getNoticeTemplate(message.getId());
         String commenter = userDAO.getUsername(message.getUserId());
 
+        String newTitle = templateDTO.getTitle();
+        if(newTitle.length() > 50)
+            newTitle = newTitle.substring(0, 50) + "...";
+
         String noticeMessage = String.format(FactTemplates.RATE_TEMPLATE, message.getUserId(), commenter,
-                templateDTO.getTitle());
+                newTitle);
 
         return new NotificationMessage(templateDTO.getId(), noticeMessage, NoticeType.RATE);
     }

@@ -66,8 +66,12 @@ public class QuestionNoticeQueue extends AbstractNotificationQueue<QuestionNotic
         NoticeEntityTemplateDTO noticeTemplate = questionsDAO.getNoticeTemplate(message.getEntityID());
         String commenter = userDAO.getUsername(message.getUserID());
 
+        String newTitle = noticeTemplate.getTitle();
+        if(newTitle.length() > 50)
+            newTitle = newTitle.substring(0, 50) + "...";
+
         String noticeMessage = String.format(QuestionTemplates.RATE_TEMPLATE, message.getUserID(), commenter,
-                message.getEntityID(), noticeTemplate.getTitle());
+                message.getEntityID(), newTitle);
 
         return new NotificationMessage(noticeTemplate.getId(), noticeMessage, NoticeType.RATE);
     }
@@ -77,8 +81,12 @@ public class QuestionNoticeQueue extends AbstractNotificationQueue<QuestionNotic
         NoticeEntityTemplateDTO noticeTemplate = questionsDAO.getNoticeTemplate(message.getEntityID());
         String commenter = userDAO.getUsername(message.getUserID());
 
+        String newTitle = noticeTemplate.getTitle();
+        if(newTitle.length() > 50)
+            newTitle = newTitle.substring(0, 50) + "...";
+
         String noticeMessage = String.format(QuestionTemplates.ANSWER_TEMPLATE, message.getUserID(), commenter,
-                message.getEntityID(), noticeTemplate.getTitle());
+                message.getEntityID(), newTitle);
 
         return new NotificationMessage(noticeTemplate.getId(), noticeMessage, NoticeType.COMMENT);
     }
@@ -88,8 +96,12 @@ public class QuestionNoticeQueue extends AbstractNotificationQueue<QuestionNotic
         NoticeCommentTemplateDTO noticeTemplate = questionsDAO.getNoticeCommentTemplate(message.getEntityID());
         String commenter = userDAO.getUsername(message.getUserID());
 
+        String newTitle = noticeTemplate.getTitle();
+        if(newTitle.length() > 50)
+            newTitle = newTitle.substring(0, 50) + "...";
+
         String noticeMessage = String.format(QuestionTemplates.ANSWER_RATE_TEMPLATE, message.getUserID(), commenter,
-                noticeTemplate.getId(), noticeTemplate.getTitle());
+                noticeTemplate.getId(), newTitle);
 
         return new NotificationMessage(noticeTemplate.getUserId(), noticeMessage, NoticeType.RATE);
     }
@@ -99,8 +111,12 @@ public class QuestionNoticeQueue extends AbstractNotificationQueue<QuestionNotic
         NoticeEntityTemplateDTO noticeTemplate = questionsDAO.getNoticeTemplate(message.getEntityID());
         String commenter = userDAO.getUsername(message.getUserID());
 
+        String newTitle = noticeTemplate.getTitle();
+        if(newTitle.length() > 50)
+            newTitle = newTitle.substring(0, 50) + "...";
+
         String noticeMessage = String.format(QuestionTemplates.RIGHT_ANSWER_TEMPLATE, message.getUserID(), commenter,
-                message.getEntityID(), noticeTemplate.getTitle());
+                message.getEntityID(), newTitle);
 
         return new NotificationMessage(noticeTemplate.getId(), noticeMessage, NoticeType.INFO);
     }

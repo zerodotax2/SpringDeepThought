@@ -69,8 +69,12 @@ public class ProblemNoticeQueue extends AbstractNotificationQueue<ProblemNoticeM
         NoticeEntityTemplateDTO noticeTemplate = problemsDAO.getNoticeTemplate(message.getEntityID());
         String commenter = userDAO.getUsername(message.getUserID());
 
+        String newTitle = noticeTemplate.getTitle();
+        if(newTitle.length() > 50)
+            newTitle = newTitle.substring(0, 50) + "...";
+
         String noticeMessage = String.format(ProblemTemplates.RATE_TEMPLATE, message.getUserID(), commenter,
-                message.getEntityID(), noticeTemplate.getTitle());
+                message.getEntityID(), newTitle);
 
         return new NotificationMessage(noticeTemplate.getId(), noticeMessage, NoticeType.RATE);
     }
@@ -80,8 +84,12 @@ public class ProblemNoticeQueue extends AbstractNotificationQueue<ProblemNoticeM
         NoticeEntityTemplateDTO noticeTemplate = problemsDAO.getNoticeTemplate(message.getEntityID());
         String commenter = userDAO.getUsername(message.getUserID());
 
+        String newTitle = noticeTemplate.getTitle();
+        if(newTitle.length() > 50)
+            newTitle = newTitle.substring(0, 50) + "...";
+
         String noticeMessage = String.format(ProblemTemplates.COMMENT_TEMPLATE, message.getUserID(), commenter,
-                message.getEntityID(), noticeTemplate.getTitle());
+                message.getEntityID(), newTitle);
 
         return new NotificationMessage(noticeTemplate.getId(), noticeMessage, NoticeType.COMMENT);
 
@@ -92,8 +100,12 @@ public class ProblemNoticeQueue extends AbstractNotificationQueue<ProblemNoticeM
         NoticeCommentTemplateDTO noticeTemplate = problemsDAO.getNoticeCommentTemplate(message.getEntityID());
         String commenter = userDAO.getUsername(message.getUserID());
 
+        String newTitle = noticeTemplate.getTitle();
+        if(newTitle.length() > 50)
+            newTitle = newTitle.substring(0, 50) + "...";
+
         String noticeMessage = String.format(ProblemTemplates.COMMENT_RATE_TEMPLATE, message.getUserID(), commenter,
-                noticeTemplate.getId(), noticeTemplate.getTitle());
+                noticeTemplate.getId(), newTitle);
 
         return new NotificationMessage(noticeTemplate.getUserId(), noticeMessage, NoticeType.RATE);
 
@@ -104,8 +116,12 @@ public class ProblemNoticeQueue extends AbstractNotificationQueue<ProblemNoticeM
         NoticeEntityTemplateDTO noticeTemplate = problemsDAO.getNoticeTemplate(message.getEntityID());
         String commenter = userDAO.getUsername(message.getUserID());
 
+        String newTitle = noticeTemplate.getTitle();
+        if(newTitle.length() > 50)
+            newTitle = newTitle.substring(0, 50) + "...";
+
         String noticeMessage = String.format(ProblemTemplates.FEEDBACK_TEMPLATE, message.getUserID(), commenter,
-                message.getEntityID(), noticeTemplate.getTitle());
+                message.getEntityID(), newTitle);
 
         return new NotificationMessage(noticeTemplate.getId(), noticeMessage, NoticeType.INFO);
 

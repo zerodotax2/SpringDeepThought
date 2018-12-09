@@ -72,8 +72,12 @@ public class ArticleNoticeQueue extends AbstractNotificationQueue<ArticleNoticeM
         String commenter = userDAO.getUsername(message.getUserID());
 
 
+        String newTitle = noticeTemplate.getTitle();
+        if(newTitle.length() > 50)
+            newTitle = newTitle.substring(0, 50) + "...";
+
         String noticeMessage = String.format(ArticleTemplates.RATE_TEMPLATE, message.getUserID(), commenter,
-                message.getEntityID(), noticeTemplate.getTitle());
+                message.getEntityID(), newTitle);
 
         return new NotificationMessage(noticeTemplate.getId(), noticeMessage, NoticeType.RATE);
     }
@@ -83,8 +87,12 @@ public class ArticleNoticeQueue extends AbstractNotificationQueue<ArticleNoticeM
         NoticeEntityTemplateDTO noticeTemplate = articleDAO.getArticleNoticeTemplate(message.getEntityID());
         String commenter = userDAO.getUsername(message.getUserID());
 
+        String newTitle = noticeTemplate.getTitle();
+        if(newTitle.length() > 50)
+            newTitle = newTitle.substring(0, 50) + "...";
+
         String noticeMessage = String.format(ArticleTemplates.COMMENT_TEMPLATE, message.getUserID(), commenter,
-                message.getEntityID(), noticeTemplate.getTitle());
+                message.getEntityID(), newTitle);
 
         return new NotificationMessage(noticeTemplate.getId(), noticeMessage, NoticeType.COMMENT);
     }
@@ -94,8 +102,12 @@ public class ArticleNoticeQueue extends AbstractNotificationQueue<ArticleNoticeM
         NoticeCommentTemplateDTO noticeTemplate = articleDAO.getCommentNoticeTemplate(message.getEntityID());
         String commenter = userDAO.getUsername(message.getUserID());
 
+        String newTitle = noticeTemplate.getTitle();
+        if(newTitle.length() > 50)
+            newTitle = newTitle.substring(0, 50) + "...";
+
         String noticeMessage = String.format(ArticleTemplates.COMMENT_RATE_TEMPLATE, message.getUserID(),
-                commenter, noticeTemplate.getId(), noticeTemplate.getTitle());
+                commenter, noticeTemplate.getId(), newTitle);
 
         return new NotificationMessage(noticeTemplate.getUserId(), noticeMessage, NoticeType.RATE);
     }
