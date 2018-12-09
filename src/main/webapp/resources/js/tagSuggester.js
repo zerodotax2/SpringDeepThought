@@ -131,7 +131,6 @@ function initTags(){
             id = target.getAttribute('content');
         clearTimeout(tags.closeTagViewTimer);
         selectedTag.classList.add('selected-tag');
-        selectedTag.style.minWidth = (selectedTag.innerHTML.length * 9) + "px";
         selectedTag.addEventListener('click',  deleteTagOnClick);
         if(Object.keys(tags.tagsCount).length < 5 && tags.tagsCount[id] === undefined){
             tags.tagsCount[id] = 1;

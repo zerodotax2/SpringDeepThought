@@ -10,7 +10,7 @@ public class CreateTagDTO {
     private String name;
 
     @Size(min = 100, max = 1000)
-    @Pattern(regexp = "^[А-я|ё|\\w|\\s|\\d|\\p{Punct}]+$")
+    @Pattern(regexp = "^[А-я|ё|Ё|\\w|\\s|\\d|\\p{Punct}]+$")
     private String description;
 
     @Size(max = 7, min = 7)

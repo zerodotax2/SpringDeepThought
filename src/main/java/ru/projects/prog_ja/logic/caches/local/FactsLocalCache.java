@@ -86,7 +86,7 @@ public class FactsLocalCache implements FactsCache {
     }
 
     /**
-    * Обновляем кеш каждые 60c * 60 (час),
+    * Обновляем кеш каждые 1000mc * 60 * 60 (час),
     * */
     @Scheduled(fixedRate = 3_600_000)
     public void update(){

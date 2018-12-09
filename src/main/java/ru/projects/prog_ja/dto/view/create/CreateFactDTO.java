@@ -13,7 +13,7 @@ public class CreateFactDTO {
     private String text;
 
     @NotNull
-    @Size(min = 3, max = 5)
+    @Size(min = 2, max = 5)
     private List<Long> tags;
 
     public CreateFactDTO() {

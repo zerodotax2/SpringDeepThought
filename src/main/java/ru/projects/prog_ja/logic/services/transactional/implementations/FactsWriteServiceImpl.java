@@ -84,9 +84,6 @@ public class FactsWriteServiceImpl implements FactsWriteService {
         int parsedRate = getRate(rate);
         if(factsDAO.updateFactRate(factId, parsedRate, userId)){
 
-
-
-            factNoticeService.factRate(factId, userId);
             ratingService.updateFactOwnerRate(factId, parsedRate);
             return true;
         }

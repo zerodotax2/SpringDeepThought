@@ -22,8 +22,8 @@ function create(){
        if(editor.creating){
            return;
        }
-       if(tagsIDS.length < 3 || tagsIDS.length > 5){
-           modal.error('Кол-во тегов должно быть от 3 до 5');
+       if(tagsIDS.length < 2 || tagsIDS.length > 5){
+           modal.error('Кол-во тегов должно быть от 2 до 5');
            return;
        }else if(describe.length < 100 || describe.length > 1000){
            modal.error('Длина описания должна быть больше 100 и не превышать 1000 символов');

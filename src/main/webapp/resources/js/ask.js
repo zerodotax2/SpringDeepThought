@@ -74,7 +74,7 @@ function initCreator(){
                 modal.error('Длина заголовка не должна быть меньше 10 и превышать 100 символов');
                 return;
             }else if(tagsIDS.length < 2 || tagsIDS.length > 5){
-                modal.error('Количество тегов должно быть от 3-х до 5');
+                modal.error('Количество тегов должно быть от 2-х до 5');
                 return;
             }else if(textContent.length > 10000 || textContent.length < 100){
                 modal.error('Длина вопроса не может быть меньше 100 или больше 10000 символов');

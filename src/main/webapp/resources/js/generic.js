@@ -17,6 +17,12 @@ function initChips(){
 
     tagPopup.setAttribute('id', 'tag-popup');
     tagPopup.style.display = 'none';
+    tagPopup.addEventListener('click', function(){
+	tagPopup.style.display = 'block';
+    });
+    document.addEventListener('click', function(){
+	tagPopup.style.display = 'none';
+    }, true);
     main.appendChild(tagPopup);
 
     for(let i = 0; i < chips.length; i++) {
@@ -81,8 +87,8 @@ function showTag(tag, chip) {
 
     let coordinates = getCoords(chip);
 
-    tagPopup.style.left = coordinates.left - chip.clientWidth/2 + "px";
-    tagPopup.style.top = coordinates.top + chip.clientHeight + "px";
+    tagPopup.style.left = coordinates.left - chip.clientWidth/2 - tagPopup.clientWidth/2 + "px";
+    tagPopup.style.top = coordinates.top + chip.clientHeight + 5+ "px";
 
     tagPopup.style.display = 'block';
 

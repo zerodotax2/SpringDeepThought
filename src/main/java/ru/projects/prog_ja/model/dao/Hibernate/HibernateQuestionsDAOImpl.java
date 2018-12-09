@@ -59,7 +59,7 @@ public class HibernateQuestionsDAOImpl extends GenericDAO implements QuestionsDA
             /*Создаём обычный вопрос и ставим юзера, который его создал*/
             List<Tags> tagsList = session.createNamedQuery(TagQueries.GET_TAGS_BY_IDS, Tags.class)
                     .setParameterList("tags", tags).getResultList();
-            if(tagsList == null || tagsList.size() < 3){
+            if(tagsList == null || tagsList.size() < 2){
                 return null;
             }
             Set<QuestionsTags> tagsSet = new HashSet<>(tagsList.size());
@@ -480,8 +480,8 @@ public class HibernateQuestionsDAOImpl extends GenericDAO implements QuestionsDA
 
         Set<QuestionsTags> oldTags = question.getTags();
 
-        if(newTags == null || newTags.size() < 3){
-            return oldTags;
+        if(newTags == null || newTags.size() < 2){
+            return Collections.emptySet();
         }
 
         /*

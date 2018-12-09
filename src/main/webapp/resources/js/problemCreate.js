@@ -148,8 +148,8 @@ function initCreator(){
         }else if(title.length < 10 || title.length > 100){
             modal.error('Длина заголовка должна быть от 10 до 100 символов');
             return;
-        }else if(tagsIDS.length < 3 || tagsIDS.length > 5){
-            modal.error('Количество тегов должно быть от 3-х до 5');
+        }else if(tagsIDS.length < 2 || tagsIDS.length > 5){
+            modal.error('Количество тегов должно быть от 2-х до 5');
             return;
         }else if(problemText.length < 100 || problemText.length > 10000){
             modal.error('Количество символов в условии задачи не может быть меньше 100 и превышать 10000');

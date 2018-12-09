@@ -24,7 +24,7 @@ import java.util.Set;
                 " left join fetch t.tagId " +
                 " where f.factId = :id"),
         @NamedQuery(name = "getFacts", query = "select f from Facts f "),
-        @NamedQuery(name = "updateFactRate", query = "update Facts set rating = rating + :rate where factId = :id"),
+        @NamedQuery(name = "updateFactRate", query = "update Facts set rating = rating + :rate where factId = :id and creator != :user"),
         @NamedQuery(name = "getCommonFacts", query = "select new ru.projects.prog_ja.dto.commons.CommonFactTransfer(" +
                 " f.factId, f.text " +
                 "   ) from Facts f"),

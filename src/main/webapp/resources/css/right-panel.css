@@ -83,6 +83,8 @@
   word-break: break-all;
   display: flex;
   color: #616161;
+  font-weight: 100;
+  font-size: 13px;
 }
 #factText .progress{
   margin-top: 20px;

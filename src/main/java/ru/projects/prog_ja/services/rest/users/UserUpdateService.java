@@ -144,7 +144,7 @@ public class UserUpdateService extends AbstractRestService {
         else if(tagsContainerDTO == null || tagsContainerDTO.getTags() == null)
             return badRequest();
 
-        else if(tagsContainerDTO.getTags().size() < 3 || tagsContainerDTO.getTags().size() > 5)
+        else if(tagsContainerDTO.getTags().size() < 2 || tagsContainerDTO.getTags().size() > 5)
             return incorrectFormat();
 
         else if(userWriteService.updateInterests(userDTO.getId(), tagsContainerDTO.getTags()))

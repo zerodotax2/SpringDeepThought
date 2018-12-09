@@ -54,7 +54,7 @@ public class FactsReadServiceImpl implements FactsReadService {
 
         int factsCount = factsCache.cacheSize();
         if(factsCount != 0){
-            fact = factsCache.getFact(random.nextInt(factsCount));
+            fact = factsCache.getFact(random.nextInt((factsCount-1)));
         }
 
         if(fact != null){
@@ -63,7 +63,7 @@ public class FactsReadServiceImpl implements FactsReadService {
 
         long count = factsDAO.getFactsNum();
 
-        return count > 0 ? factsDAO.getFact(random.nextInt((int) count)) : null;
+        return count > 0 ? factsDAO.getFact(random.nextInt((int) (count-1))) : null;
     }
 
     @Override

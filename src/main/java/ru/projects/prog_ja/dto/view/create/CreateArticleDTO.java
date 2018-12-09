@@ -32,7 +32,7 @@ public class CreateArticleDTO {
     @NotNull(message = "Поле не может быть пустым")
     private String htmlContent;
 
-    @Size(min = 3, max = 5)
+    @Size(min = 2, max = 5)
     @NotNull(message = "Поле не может быть пустым")
     private List<Long> tags;
 

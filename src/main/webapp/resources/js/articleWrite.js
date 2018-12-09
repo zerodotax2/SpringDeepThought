@@ -179,8 +179,8 @@ function initCreate() {
         }else if(inputs.subtitleInput.length < 10 || inputs.subtitleInput.length > 100){
             modal.error('Длина подзаголовка должна быть больше 10 и не превышать 100 символов');
             return;
-        } else if(tagsIDS.length < 3 || tagsIDS.length > 5){
-            modal.error('Количество тегов должно быть больше 3-х и меньше 5-ти');
+        } else if(tagsIDS.length < 2 || tagsIDS.length > 5){
+            modal.error('Количество тегов должно быть больше 2-х и меньше 5-ти');
             return;
         }else if(innerText.length < 2 || innerText.length > 10000){
             modal.error('Длина статьи должна быть больше 500 и не превышать 10000 символов');

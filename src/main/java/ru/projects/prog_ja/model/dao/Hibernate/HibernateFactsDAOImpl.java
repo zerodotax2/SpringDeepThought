@@ -56,7 +56,7 @@ public class HibernateFactsDAOImpl extends GenericDAO implements FactsDAO {
 
             List<Tags> tagsList = session.createNamedQuery(TagQueries.GET_TAGS_BY_IDS, Tags.class)
                     .setParameterList("tags", tags).getResultList();
-            if(tagsList == null || tagsList.size() < 3){
+            if(tagsList == null || tagsList.size() < 2){
                 return null;
             }
             Set<FactsTags> tagsSet = new HashSet<>(tagsList.size());
@@ -138,8 +138,8 @@ public class HibernateFactsDAOImpl extends GenericDAO implements FactsDAO {
 
         Set<FactsTags> oldTags = fact.getTags();
 
-        if(newTags == null || newTags.size() < 3){
-            return oldTags;
+        if(newTags == null || newTags.size() < 2){
+            return Collections.emptySet();
         }
 
         /*
@@ -181,9 +181,11 @@ public class HibernateFactsDAOImpl extends GenericDAO implements FactsDAO {
     @Override
     public boolean updateFactRate(long factId, int rate, long userId) {
         try{
-            return session().createNamedQuery(FactQueries.UPDATE_FACT_RATE)
+            Session session = session();
+            return session.createNamedQuery(FactQueries.UPDATE_FACT_RATE)
                     .setParameter("id", factId)
                     .setParameter("rate",(long) rate)
+                    .setParameter("user", session.load(UserInfo.class, userId))
                     .executeUpdate() != 0;
         }catch (Exception e){
             return false;

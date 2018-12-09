@@ -211,6 +211,10 @@ if(window.location.href.toLowerCase().lastIndexOf('user') !== -1){
     tagEdit.elem.querySelector('.save').addEventListener('click', function (e) {
         const tagsIDS = Object.keys(tags.tagsCount),
               selectedTags = tags.tagsInputContainer.querySelectorAll('.selected-tag');
+	if(tagsIDS.length<2||tagsIDS.length>5){
+		modal.error('Количество тегов должно быть от 2-х до 5');
+		return;
+	}
         xhr.request({
             path: '/services/user/update/interests',
             method: 'POST',

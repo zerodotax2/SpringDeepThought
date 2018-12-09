@@ -387,7 +387,7 @@ public class HibernateArticleDAOImpl extends GenericDAO implements ArticleDAO {
             /*Устанавливаем для поста все его ссылочные переменные*/
             List<Tags> tagsList = session.createNamedQuery(TagQueries.GET_TAGS_BY_IDS, Tags.class)
                     .setParameterList("tags", tags).getResultList();
-            if(tagsList == null || tagsList.size() < 3){
+            if(tagsList == null || tagsList.size() < 2){
                 return null;
             }
             Set<ArticlesTags> tagsSet = new HashSet<>(tagsList.size());
@@ -460,8 +460,8 @@ public class HibernateArticleDAOImpl extends GenericDAO implements ArticleDAO {
 
         Set<ArticlesTags> oldTags = article.getTags();
 
-        if(newTags == null || newTags.size() < 3){
-            return oldTags;
+        if(newTags == null || newTags.size() < 2){
+            return Collections.emptySet();
         }
 
         /*

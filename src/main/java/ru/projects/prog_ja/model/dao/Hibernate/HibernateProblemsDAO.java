@@ -57,7 +57,7 @@ public class HibernateProblemsDAO extends GenericDAO implements ProblemsDAO{
 
             List<Tags> tagsList = session.createNamedQuery(TagQueries.GET_TAGS_BY_IDS, Tags.class)
                     .setParameterList("tags", tags).getResultList();
-            if(tagsList == null || tagsList.size() < 3){
+            if(tagsList == null || tagsList.size() < 2){
                 return null;
             }
             Set<ProblemsTags> tagsSet = new HashSet<>(tagsList.size());
@@ -120,8 +120,8 @@ public class HibernateProblemsDAO extends GenericDAO implements ProblemsDAO{
 
         Set<ProblemsTags> oldTags = problem.getTags();
 
-        if(newTags == null || newTags.size() < 3){
-            return oldTags;
+        if(newTags == null || newTags.size() < 2){
+            return Collections.emptySet();
         }
 
         /*

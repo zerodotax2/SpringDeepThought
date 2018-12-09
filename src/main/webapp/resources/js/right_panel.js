@@ -39,7 +39,7 @@ function clickFact(rate){
             fact.factID = nFact.id;
             fact.factText.innerHTML = nFact.text;
 
-            for(let i = 0; i < factTags; i++){
+            for(let i = 0; i < factTags.length; i++){
                 let factTag = factTags[i],
                     newTag = document.createElement('a');
                 newTag.href = '/tags/' + factTag.id;
