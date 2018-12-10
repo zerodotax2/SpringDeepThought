@@ -3,7 +3,7 @@ const editors = {
     quillOptions: {
         theme: 'bubble',
         placeholder: 'Опишите условия задачи',
-        fontSize: '20',
+        fontSize: '25',
         modules: {
             toolbar: [
                 [{size : ['small', false, 'large', 'huge']}],

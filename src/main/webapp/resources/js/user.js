@@ -336,7 +336,7 @@ const components = {
             for(let i = 0; i < facts.length; i++){
                 let fact = facts[i],
                     tags = fact.tags, tagsHtml = "";
-                for(let j = 0; i < tags.length; j++) {
+                for(let j = 0; j < tags.length; j++) {
                     let tag = tags[j];
                     tagsHtml += "<a href='/tags/"+tag.id+"' class='chip' style='background: "+tag.color+"'>"+tag.name+"</a>";
                 };

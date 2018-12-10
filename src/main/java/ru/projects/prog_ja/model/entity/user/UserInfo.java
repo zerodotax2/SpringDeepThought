@@ -94,7 +94,8 @@ import java.util.Set;
                 " ) from UserInfo u" +
                 " left join u.userExtended ue " +
                 " left join u.userCounter uc " +
-                " where u.userId = :id"),
+                " where u.userId = :id " +
+		"  "),
         @NamedQuery(name = "updateImage", query = "update UserInfo set smallImagePath = :small, middleImagePath = :middle, largeImagePath = :large where userId = :id"),
         @NamedQuery(name = "updateBirthDate", query = "update UserExtended set birthDate = :date  where user = :user"),
         @NamedQuery(name = "updateFirstName", query = "update UserExtended  set firstName = :firstName  where user = :user"),

@@ -24,7 +24,7 @@ import java.util.Objects;
                 " ) from UserInbox ui " +
                 " left join ui.userInfo u " +
                 " where u.userId = :user and ui.active = true" +
-                " order by ui.createDate"),
+                " order by ui.createDate desc"),
         @NamedQuery(name = "getUserNotices", query = "select new ru.projects.prog_ja.dto.smalls.SmallNoticeTransfer (" +
                 " ui.userInboxId, ui.message, ui.noticeType, ui.createDate " +
                 " ) from UserInbox ui " +

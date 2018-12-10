@@ -53,6 +53,6 @@ public class SmallNoticeTransfer implements Comparable<SmallNoticeTransfer>{
 
     @Override
     public int compareTo(SmallNoticeTransfer o) {
-        return this.createDate.after(o.createDate) ? 1 : -1;
+        return this.createDate.after(o.createDate) ? -1 : 1;
     }
 }

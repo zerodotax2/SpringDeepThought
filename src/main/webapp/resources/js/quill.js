@@ -6766,7 +6766,11 @@ var BaseTheme = function (_Theme) {
 
   return BaseTheme;
 }(_theme2.default);
-
+var nonNull = document.createElement('div');
+nonNull.style.fontSize = '13px';
+nonNull.style.fontWeight = '300';
+nonNull.style.color = '#F44336';
+nonNull.innerText = 'Поле не может быть пустым';
 BaseTheme.DEFAULTS = (0, _extend2.default)(true, {}, _theme2.default.DEFAULTS, {
   modules: {
     toolbar: {
@@ -6777,31 +6781,61 @@ BaseTheme.DEFAULTS = (0, _extend2.default)(true, {}, _theme2.default.DEFAULTS, {
         image: function image() {
           var _this3 = this;
 
-          var fileInput = this.container.querySelector('input.ql-image[type=file]');
-          if (fileInput == null) {
-            fileInput = document.createElement('input');
-            fileInput.setAttribute('type', 'file');
-            fileInput.setAttribute('accept', 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon');
-            fileInput.classList.add('ql-image');
-            fileInput.addEventListener('change', function () {
-              if (fileInput.files != null && fileInput.files[0] != null) {
-                xhr.file('/upload', fileInput.files[0], function (response, error) {
-                    if(response){
-                        let range = _this3.quill.getSelection(true),
-                            result = JSON.parse(response);
-                        _this3.quill.updateContents(new _quillDelta2.default().retain(range.index).delete(range.length).insert({ image: '/' + result.path }), _emitter2.default.sources.USER);
-                        _this3.quill.setSelection(range.index + 1, _emitter2.default.sources.SILENT);
-                        fileInput.value = "";
-                    }else if(error){
+          modal.head.style.background = '#ab47bc';
+          modal.head.innerText = 'Загрузка изображения';
+          modal.content.innerHTML = '<input id="img_path" style="border: 1px solid lightgray;border-radius: 5px;font-size: 14px;box-shadow: none;padding: 0 10px;height: 35px;"' +
+              ' type="text" placeholder="Ссылка на изображение"/>';
 
-                    }
-                });
+          var fileBtn = document.createElement('div');
+          fileBtn.innerText = 'Файл';
+          fileBtn.style.background  = '#ab47bc';
+          fileBtn.classList.add('action-btn');
+          fileBtn.addEventListener('click', function () {
+              var fileInput = _this3.container.querySelector('input.ql-image[type=file]');
+              if (fileInput == null) {
+                  fileInput = document.createElement('input');
+                  fileInput.setAttribute('type', 'file');
+                  fileInput.setAttribute('accept', 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon');
+                  fileInput.classList.add('ql-image');
+                  fileInput.addEventListener('change', function () {
+                      if (fileInput.files != null && fileInput.files[0] != null) {
+                          xhr.file('/upload', fileInput.files[0], function (response, error) {
+                              if(response){
+                                  var range = _this3.quill.getSelection(true),
+                                      result = JSON.parse(response);
+                                  _this3.quill.updateContents(new _quillDelta2.default().retain(range.index).delete(range.length).insert({ image: '/' + result.path }), _emitter2.default.sources.USER);
+                                  _this3.quill.setSelection(range.index + 1, _emitter2.default.sources.SILENT);
+                                  fileInput.value = "";
+                              }
+                          });
 
+                      }
+                  });
+                  _this3.container.appendChild(fileInput);
               }
-            });
-            this.container.appendChild(fileInput);
-          }
-          fileInput.click();
+              modal.close();
+              fileInput.click();
+          });
+
+          var linkBtn = document.createElement('div');
+          linkBtn.classList.add('action-btn');
+          linkBtn.style.background = '#2196F3';
+          linkBtn.innerText = 'Вставить';
+          linkBtn.addEventListener('click', function(){
+              var path = modal.content.querySelector('#img_path').value,
+                  range = _this3.quill.getSelection(true);
+              if(path.trim().length < 1){
+                  modal.content.appendChild(nonNull);
+                  return;
+              }
+
+              _this3.quill.updateContents(new _quillDelta2.default().retain(range.index).delete(range.length).insert({ image: path }), _emitter2.default.sources.USER);
+              _this3.quill.setSelection(range.index + 1, _emitter2.default.sources.SILENT);
+              modal.close();
+          });
+
+          modal.customActions(fileBtn, linkBtn);
+          modal.show();
         },
         video: function video() {
           this.quill.theme.tooltip.edit('video');

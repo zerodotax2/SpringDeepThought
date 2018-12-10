@@ -3,7 +3,7 @@ const articleEditor = document.querySelector('#article-editor'),
     quill = new Quill(articleEditor, {
         theme: 'bubble',
         placeholder: 'Напишите о чём нибудь интересном',
-        fontSize: '20',
+        fontSize: '25',
         modules: {
             toolbar: [
                 [{size : ['small', false, 'large', 'huge']}],
