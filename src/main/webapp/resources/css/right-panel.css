@@ -50,7 +50,6 @@
   background-color: #f3f3f3;
 }
 .fact{
-  cursor: pointer;
   position: relative;
 }
 .fact .card-action a{
@@ -65,19 +64,43 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-flow: column;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   background-color: rgba(0, 0, 0, 0.36);
 }
+.fact-hover .fact-rate{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 25px;
+}
 .fact-hover svg{
   width: 50px;
   height: 50px;
   margin: 0 20px;
+  cursor: pointer;
 }
 .fact-hover svg:hover{
   fill: lightgray !important;
+}
+.fact-hover .fact-link{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fact-hover .fact-link a{
+  padding: 5px 40px;
+  color: #fff;
+  border-radius: 5px;
+  box-shadow:  0 0 5px #747474;
+  background-color: #cc2ee0;
+}
+.fact-hover .fact-link a:hover{
+  background-color: #c42ed9;
+  box-shadow: 0 0 5px #535353;
 }
 #factText{
   word-break: break-all;

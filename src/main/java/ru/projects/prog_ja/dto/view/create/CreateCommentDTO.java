@@ -8,7 +8,7 @@ public class CreateCommentDTO {
     private long id;
 
     @Size(min = 5, max = 1000)
-    @Pattern(regexp = "^[А-я|ё|\\w|\\s|\\d|\\p{Punct}|\n]+$")
+    @Pattern(regexp = "^[А-я|Ё|ё|\\w|\\d|\\s|\\p{Punct}|:|,|\n]+$")
     private String text;
 
     public CreateCommentDTO(){ }

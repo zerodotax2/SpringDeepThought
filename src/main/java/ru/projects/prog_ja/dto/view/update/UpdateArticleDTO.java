@@ -24,12 +24,12 @@ public class UpdateArticleDTO {
 
     @Size(min = 10, max = 100)
     @NotNull(message = "Поле не может быть пустым")
-    @Pattern(regexp = "^[A-z|1-9|А-я|\\s]+$", message = "Заголовок может включать только следующие символы (A-z, А-я, 1-9)")
+    @Pattern(regexp = "^[А-я|Ё|ё|\\w|\\d|\\s|\\p{Punct}|:|,]+$", message = "Заголовок может включать только следующие символы (A-z, А-я, 1-9)")
     private String title;
 
     @Size(min = 10, max = 100)
     @NotNull(message = "Поле не может быть пустым")
-    @Pattern(regexp = "^[A-z|0-9|А-я|\\s]+$", message = "Подзаголовок может включать только следующие символы (A-z, А-я, 1-9)")
+    @Pattern(regexp = "^[А-я|Ё|ё|\\w|\\d|\\s|\\p{Punct}|:|,]+$", message = "Подзаголовок может включать только следующие символы (A-z, А-я, 1-9)")
     private String subtitle;
 
     @NotNull(message = "Поле не может быть пустым")

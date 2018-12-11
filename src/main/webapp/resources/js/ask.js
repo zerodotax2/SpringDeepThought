@@ -73,7 +73,10 @@ function initCreator(){
             if(title.length < 10 || title.length > 100){
                 modal.error('Длина заголовка не должна быть меньше 10 и превышать 100 символов');
                 return;
-            }else if(tagsIDS.length < 2 || tagsIDS.length > 5){
+            }else if(!title.match(/^[А-я|Ё|ё|\w|\s|\d|.|,|:|-]+$/)){
+		modal.error('Заголовок может содержать только буквы, цифры и знаки препинания');
+		return;
+	    }else if(tagsIDS.length < 2 || tagsIDS.length > 5){
                 modal.error('Количество тегов должно быть от 2-х до 5');
                 return;
             }else if(textContent.length > 10000 || textContent.length < 100){
@@ -128,6 +131,7 @@ function initCreator(){
             }else if(error){
                 modal.error('Не удалось обновить вопрос');
             }
+	    creating = false;
         });
         modal.load('Идёт обновление вопроса...');
     }

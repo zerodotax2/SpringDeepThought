@@ -47,8 +47,8 @@ function initAnswerEditor() {
             return;
         }
         const text = editor.answerQuill.getText();
-        if(text.length < 100 || text.length > 1000){
-            modal.error('Длина ответа должна быть меньше 100 и не превышать 1000 символов');
+        if(text.length < 100 || text.length > 10000){
+            modal.error('Длина ответа должна быть не меньше 100 и не превышать 10000 символов');
             return;
         }
         editor.creating = true;

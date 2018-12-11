@@ -12,7 +12,7 @@ public class UpdateProblemDTO {
 
     @NotNull
     @Size(min = 10, max = 100)
-    @Pattern(regexp = "^[А-я|\\s|\\d|\\w]+$")
+    @Pattern(regexp = "^[А-я|Ё|ё|\\w|\\d|\\s|\\p{Punct}|:|,]+$")
     private String title;
 
     @NotNull

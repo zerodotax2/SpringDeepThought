@@ -140,6 +140,9 @@
     color: #4d4d4d;
     font-weight: 300;
 }
+.question .question-content a{
+color: #42A5F5 !important;
+}
 .add-answer .add-content{
     width: 100%;
     border-radius: 20px;

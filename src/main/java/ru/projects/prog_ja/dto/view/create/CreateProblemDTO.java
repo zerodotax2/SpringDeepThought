@@ -10,7 +10,7 @@ public class CreateProblemDTO {
 
     @NotNull
     @Size(min = 10, max = 100)
-    @Pattern(regexp = "^[А-я|ё|\\w|\\s|\\d|\\p{Punct}]+$")
+    @Pattern(regexp = "^[А-я|Ё|ё|\\w|\\d|\\s|\\p{Punct}|:|,]+$")
     private String title;
 
     @NotNull

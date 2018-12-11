@@ -148,19 +148,25 @@ function initCreator(){
         }else if(title.length < 10 || title.length > 100){
             modal.error('Длина заголовка должна быть от 10 до 100 символов');
             return;
-        }else if(tagsIDS.length < 2 || tagsIDS.length > 5){
+        }else if(!title.match(/^[А-я|Ё|ё|\w|\s|\d|.|,|:|-]+$/)){
+	    modal.error('Заголовок может содержать только буквы, цифры и знаки препинания');
+	    return;
+	}else if(tagsIDS.length < 2 || tagsIDS.length > 5){
             modal.error('Количество тегов должно быть от 2-х до 5');
             return;
         }else if(problemText.length < 100 || problemText.length > 10000){
             modal.error('Количество символов в условии задачи не может быть меньше 100 и превышать 10000');
             return;
-        } else if(solutionText.length < 100 || solutionText.length > 10000){
-            modal.error('Количество символов в решении задачи не может быть меньше 100 и превышать 10000');
+        } else if(solutionText.length < 100 || solutionText.length > 100000){
+            modal.error('Количество символов в решении задачи не может быть меньше 100 и превышать 100000');
             return;
         }else if(answer.length < 1 || answer.length > 100){
             modal.error('Длина ответа задачи не может быть больше 100 символов');
             return;
-        }
+        }else if(!answer.match(/^[А-я|Ё|ё|\w|\s|\d|.|,|:|-]+$/)){
+	    modal.error('Ответ может содержать только буквы, цифры и знаки препинания');
+	    return;
+	}
         creating = true;
         const problem = {
             title: title,

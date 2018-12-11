@@ -55,13 +55,13 @@ function create() {
        }else if(!name.match(/^[A-z|А-я|\s|-]+$/)){
            modal.error('Неправильный формат имени');
            return;
-       }else if(!describe.match(/^[А-я|Ё|ё|\w|\s|.|,|;|-|\d]+$/)) {
-	   modal.error('Неверный формат описания');
-	   return;
        }else if(describe.length < 100 || describe.length > 1000){
            modal.error('Длина описания должна быть не меньше 50 и не превышать 1000 символов');
            return;
-       }
+       }else if(!describe.match(/^[А-я|Ё|ё|\w|\s|\d|.|,|:|-|\n]+$/)){
+	   modal.error('Описание может состоять только из букв, цифр и знаков препинания');
+	   return;
+	}
        result.creating = true;
        if(result.edit){
            modal.load('Идёт обновление тега...');

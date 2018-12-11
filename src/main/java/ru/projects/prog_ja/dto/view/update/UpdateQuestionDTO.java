@@ -12,7 +12,7 @@ public class UpdateQuestionDTO {
 
     @NotNull
     @Size(min = 10, max = 50)
-    @Pattern(regexp = "^[А-я|\\w|\\s|\\d]+$", message = "Неверный формат названия")
+    @Pattern(regexp = "^[А-я|Ё|ё|\\w|\\d|\\s|\\p{Punct}|:|,]+$", message = "Неверный формат названия")
     private String title;
 
     @NotNull

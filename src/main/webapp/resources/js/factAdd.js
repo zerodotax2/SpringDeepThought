@@ -28,7 +28,10 @@ function create(){
        }else if(describe.length < 100 || describe.length > 1000){
            modal.error('Длина описания должна быть больше 100 и не превышать 1000 символов');
            return;
-       }
+       }else if(!describe.match(/^[А-я|Ё|ё|\w|\s|\d|.|,|:|-|\n]+$/)){
+	   modal.error('Описание может содержать только буквы, цифры и знаки препинания');
+	   return;
+	}
        editor.creating = true;
        if(editor.edit){
            xhr.request({

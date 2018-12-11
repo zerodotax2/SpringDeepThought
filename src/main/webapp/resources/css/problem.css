@@ -112,6 +112,9 @@
     margin-bottom: 20px;
     color: #2f2f2f;
 }
+.problem-container a{
+ color: #42A5F5 !important;
+}
 .send-answer {
     display: flex;
     justify-content: center;

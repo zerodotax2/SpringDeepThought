@@ -9,7 +9,7 @@ public final class RegexUtil {
      * Pattern for default string
      * */
     private static final Pattern stringPattern
-            = Pattern.compile("^[А-я| |0-9|A-z|\\-|_]+$");
+            = Pattern.compile("^[А-я|Ё|ё|\\s|\\d|\\w|\\-|\\p{Punct}]+$");
 
     /**
      * Pattern for int value

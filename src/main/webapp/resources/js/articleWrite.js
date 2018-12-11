@@ -176,14 +176,20 @@ function initCreate() {
         if(inputs.titleInput.value.length > 100 || inputs.titleInput.value.length < 10){
             modal.error('Длина заголовка должна быть больше 10 и не превышать 100 символов');
             return;
-        }else if(inputs.subtitleInput.length < 10 || inputs.subtitleInput.length > 100){
+        }else if(!inputs.titleInput.value.match(/^[А-я|Ё|ё|\w|\s|\d|.|,|:|-]+$/)){
+	    modal.error('Заголовок может содержать только буквы, цифры и знаки препинания');
+	    return;
+	}else if(inputs.subtitleInput.length < 10 || inputs.subtitleInput.length > 100){
             modal.error('Длина подзаголовка должна быть больше 10 и не превышать 100 символов');
             return;
-        } else if(tagsIDS.length < 2 || tagsIDS.length > 5){
+        }else if(!inputs.subtitleInput.value.match(/^[А-я|Ё|ё|\w|\s|\d|.|,|:|-]+$/)){
+	    modal.error('Подзаголовок может содержать только буквы, цифры и знаки препинания');
+	    return;
+	}else if(tagsIDS.length < 2 || tagsIDS.length > 5){
             modal.error('Количество тегов должно быть больше 2-х и меньше 5-ти');
             return;
-        }else if(innerText.length < 2 || innerText.length > 10000){
-            modal.error('Длина статьи должна быть больше 500 и не превышать 10000 символов');
+        }else if(innerText.length < 1000 || innerText.length > 100000){
+            modal.error('Длина статьи должна быть больше 1000 символов, но меньше 100000 символов');
             return;
         }else if(images.smallImagePath === undefined || images.middleImagePath === undefined
                 || images.largeImagePath === undefined){
@@ -225,6 +231,7 @@ function initCreate() {
             }else if(error){
                 modal.error('Не удалось создать статью');
             }
+	    creating = false;
         });
     }
 
@@ -244,6 +251,7 @@ function initCreate() {
             }else if(error){
                 modal.error('Не удалось обновить статью');
             }
+	    creating = false;
         });
     }
 /*
