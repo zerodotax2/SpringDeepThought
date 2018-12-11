@@ -108,7 +108,7 @@ function initCreator(){
         }, function (response, error) {
             if(response){
                 let obj = JSON.parse(response);
-                location.href = 'http://localhost:80/questions/' + obj.id;
+                location.href = location.href.replace('ask','') + obj.id;
             }else if(error){
                 modal.error('Не удалось создать вопрос');
             }
@@ -127,7 +127,7 @@ function initCreator(){
             content: JSON.stringify(question)
         }, function (response, error) {
             if(response){
-                location.href = 'http://localhost:80/questions/' + inputs.questionId;
+                location.href = location.href.replace('edit','') + inputs.questionId;
             }else if(error){
                 modal.error('Не удалось обновить вопрос');
             }

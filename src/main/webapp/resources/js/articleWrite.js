@@ -227,7 +227,7 @@ function initCreate() {
         }, function (result, error) {
             if(result){
                 let obj = JSON.parse(result);
-                window.location.href = 'http://localhost/articles/' + obj.id;
+                window.location.href = window.location.href.replace('write','') + obj.id;
             }else if(error){
                 modal.error('Не удалось создать статью');
             }
@@ -247,7 +247,7 @@ function initCreate() {
             content: JSON.stringify(article)
         }, function (result, error) {
             if(result){
-                window.location.href = 'http://localhost:80/articles/' + inputs.articleId;
+                window.location.href = window.location.href.replace('edit','') + inputs.articleId;
             }else if(error){
                 modal.error('Не удалось обновить статью');
             }

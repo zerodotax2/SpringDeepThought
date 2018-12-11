@@ -76,6 +76,46 @@
 .content a{
   color: #42A5F5 !important;
 }
+.ql-size-large{
+  font-size: 1.5em;
+}
+.ql-size-huge{
+  font-size: 2.5em;
+}
+.ql-size-small{
+  font-size: .75em;
+}
+.content strong{
+ color: #5B5B5B !important;
+}
+.content h1{
+ font-size: 2.5em;
+}
+.content h2{
+ font-size: 2.0em;
+}
+.content h3{
+ font-size: 1.5em;
+}
+.content h4{
+ font-size: 1.3em;
+}
+.content h5{
+ font-size: 1.1em;
+}
+.content h6{
+ font-size: 1.0em;
+}
+.content pre{
+ background-color: #23241f;
+ color: #f8f8f2;
+ overflow: visible;
+ white-space: pre-wrap;
+ margin-bottom: 5px;
+ margin-top: 5px;
+ padding: 5px 10px;
+ border-radius: 3px;
+}
 .article-footer{
   margin: 20px 0;
   display: flex;

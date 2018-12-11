@@ -29,12 +29,12 @@ public class EmailServiceImpl implements EmailService {
         try {
              MimeMessage message = mailSender.createMimeMessage();
 
-             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
              message.setContent("<html><body><p>Для восстановления доступа к аккаунту перейдите по следующей</p>" +
                      "<a href='"+host+"/restore/"+token+"'> ссылке</a></body></html>", "text/html;charset=utf-8");
+             message.setSubject("Восстановление доступа", "UTF-8");
+
+             MimeMessageHelper helper = new MimeMessageHelper(message, true);
              helper.setTo(email);
-             helper.setSubject("Восстановление доступа");
 
              mailSender.send(message);
          }catch (Exception e){
@@ -50,13 +50,14 @@ public class EmailServiceImpl implements EmailService {
 
             MimeMessage message = mailSender.createMimeMessage();
 
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
             message.setContent("<html><body><p>Добро пожаловать на форум, "+login+"</p>" +
                             "<p>Для окончания регистрации перейдите по следующей <a href='"+host+"/account/activate/"+token+"'>" +
                             "ссылке</a></p></body><html>"
                     , "text/html;charset=utf-8");
+            message.setSubject("Активация аккаунта", "UTF-8");
+
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(email);
-            helper.setSubject("Активация аккаунта");
 
             mailSender.send(message);
         }catch (Exception e){
@@ -72,12 +73,13 @@ public class EmailServiceImpl implements EmailService {
 
             MimeMessage message = mailSender.createMimeMessage();
 
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
             message.setContent("<html><body>Для подтверждения email перейдите по следующей" +
                             " <a href='"+host+"/account/email/activate/"+token+"'>ссылке</a></body><html>"
                     , "text/html;charset=utf-8");
+            message.setSubject("Подтверждение email", "UTF-8");
+
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(email);
-            helper.setSubject("Подтверждение email");
 
             mailSender.send(message);
         }catch (Exception e){

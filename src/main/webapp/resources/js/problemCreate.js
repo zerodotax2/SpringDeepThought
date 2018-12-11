@@ -197,7 +197,7 @@ function initCreator(){
         }, function (response, error) {
             if(response){
                 let obj = JSON.parse(response);
-                location.href = 'http://localhost/problems/' + obj.id;
+                location.href = location.href.replace('create', '') + obj.id;
             }if(error){
                 modal.error('Не удалось создать новую задачу');
                 creating = false;
@@ -216,7 +216,7 @@ function initCreator(){
             content: JSON.stringify(problem)
         }, function (response, error) {
             if(response){
-                location.href = 'http://localhost:80/problems/' + inputs.problemId;
+                location.href = location.href.replace('edit', '') + inputs.problemId;
             }if(error){
                 modal.error('Не удалось обновить задачу');
                 creating = false;
