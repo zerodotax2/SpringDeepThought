@@ -13,11 +13,11 @@
     <properties>
         <maven.compile.source>1.8</maven.compile.source>
         <maveb.compile.target>1.8</maveb.compile.target>
-        <spring.version>5.0.8.RELEASE</spring.version>
+        <spring.version>5.0.16.RELEASE</spring.version>
         <hibernate.version>5.3.4.Final</hibernate.version>
         <mysql.version>8.0.12</mysql.version>
         <cglib.version>3.2.7</cglib.version>
-        <jackson.version>2.9.9</jackson.version>
+        <jackson.version>2.9.10.1</jackson.version>
         <hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
         <servlet.version>4.0.0</servlet.version>
         <jsp.version>2.3.1</jsp.version>
